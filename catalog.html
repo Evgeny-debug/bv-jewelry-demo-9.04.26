@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Каталог | BV Jewelry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="menu-overlay" id="overlay"></div>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h2 data-i18n="cart_title">Кошик</h2>
+            <button class="cart-close" id="cartClose" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-body custom-scrollbar" id="cartBody"></div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span data-i18n="cart_subtotal">Підсумок:</span>
+                <span class="cart-subtotal-val">0 ₴</span>
+            </div>
+            <button class="btn-checkout" data-i18n="cart_checkout">Оформити замовлення</button>
+        </div>
+    </div>
+
+    <div class="cart-overlay" id="favOverlay" onclick="toggleFavDrawer()"></div>
+    <div class="cart-drawer" id="favDrawer">
+        <div class="cart-header">
+            <h2 data-i18n="fav_title">Улюблене</h2>
+            <button class="cart-close" onclick="toggleFavDrawer()">×</button>
+        </div>
+        <div class="cart-body custom-scrollbar" id="favBody"></div>
+    </div>
+
+    <header id="header">
+        <div class="header-left">
+            <div class="burger" id="burger"><span></span><span></span><span></span></div>
+            <nav class="nav-left desktop-only">
+                <a href="index.html" data-i18n="m1">Головна</a>
+                <div class="catalog-dropdown-wrapper group">
+                    <span class="catalog-toggle flex items-center gap-1" data-i18n="m2">
+                        Каталог 
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-180 transition-transform"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                    <div class="mega-menu">
+                        <div class="mega-col-1"></div>
+                        <div class="mega-col-3" id="megaCol3"></div>
+                    </div>
+                </div>
+                <div class="dropdown-wrapper group" style="padding: 20px 0; margin: -20px 0;">
+                    <span class="flex items-center gap-1 text-[12px] font-medium uppercase tracking-[1px] text-[var(--text-main)] opacity-80 transition hover:opacity-100 hover:text-[var(--gold-muted)] cursor-pointer">
+                        Інфо <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:rotate-180 transition-transform"><path d="M6 9l6 6 6-6"/></svg>
+                    </span>
+                    <div class="dropdown-menu">
+                        <a href="info.html?p=services" class="dropdown-item">Послуги та Прайс</a>
+                        <a href="info.html?p=about" class="dropdown-item">Про нас</a>
+                        <a href="info.html?p=warranty" class="dropdown-item">Гарантія</a>
+                        <a href="info.html?p=terms" class="dropdown-item">Умови</a>
+                        <a href="info.html?p=reviews" class="dropdown-item">Відгуки</a>
+                    </div>
+                </div>
+                <a href="exclusive.html" class="btn-order" data-i18n="m_atelier">Замовити ексклюзив</a>
+            </nav>
+            <div class="search-box desktop-only">
+                <input type="text" class="search-input" data-i18n-placeholder="search_ph" placeholder="Пошук...">
+                <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+        </div>
+
+        <a href="index.html" class="bv-logo"><span>BV</span><span>jewelry</span></a>
+
+        <div class="header-right">
+            <a href="tel:+380634540901" class="header-phone-link desktop-only">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <span class="header-phone-text">+38 063 45 40 901</span>
+            </a>
+            <div id="themeToggle" class="icon-btn desktop-only" onclick="toggleTheme()">
+                <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+            </div>
+            <a href="#" onclick="event.preventDefault(); toggleFavDrawer();" class="icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span class="cart-badge fav-badge" style="background: var(--danger);">0</span>
+            </a>
+            <a href="#" onclick="event.preventDefault(); toggleCart();" class="icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <span class="cart-badge">0</span>
+            </a>
+        </div>
+    </header>
+
+    <nav class="side-menu" id="sideMenu"></nav>
+
+    <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+        <div class="text-center mb-12">
+            <h1 class="font-['Playfair_Display'] text-4xl md:text-5xl mb-4 text-[var(--gold-muted)] italic">Каталог</h1>
+            <p class="text-[var(--text-muted)] text-sm max-w-lg mx-auto">Оберіть свій ідеальний виріб серед нашої колекції високого ювелірного мистецтва.</p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3 mb-12" id="filterContainer"></div>
+
+        <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
+
+        <div id="loadMoreContainer" class="flex justify-center mt-12 mb-8 hidden">
+            <button id="loadMoreBtn" class="px-8 py-3 border border-[var(--gold-muted)] text-[var(--gold-muted)] hover:bg-[var(--gold-muted)] hover:text-black transition-all duration-300 uppercase tracking-widest text-[10px] font-semibold">
+                Показати ще 100 товарів
+            </button>
+        </div>
+
+        <div id="emptyState" class="hidden text-center py-20 text-[var(--text-muted)]">
+            <svg class="w-16 h-16 mx-auto mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m8-10V7a4 4 0 0 0-8 0v4m8 0H8"/></svg>
+            <p>У цій категорії поки що немає товарів.</p>
+        </div>
+    </main>
+
+    <button id="scrollToTop" class="fixed bottom-24 right-6 w-11 h-11 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--gold-muted)] rounded-full shadow-2xl flex items-center justify-center opacity-0 invisible transition-all duration-500 z-[90] hover:scale-110 active:scale-95">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+
+    <footer id="footer" class="py-12 md:py-20 px-6 bg-[var(--bg-card)] border-t border-[var(--border)]">
+        </footer>
+
+    <script src="main.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterContainer = document.getElementById('filterContainer');
+            const grid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyState');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            const loadMoreContainer = document.getElementById('loadMoreContainer');
+            const scrollToTop = document.getElementById('scrollToTop');
+
+            let filteredProducts = []; // Всі відфільтровані товари
+            let displayedCount = 0;    // Скільки вже на екрані
+            const step = 100;          // Крок завантаження
+
+            // 1. Функція рендеру фільтрів
+            function renderFilters() {
+                if (typeof categoriesTree === 'undefined') return;
+                filterContainer.innerHTML = `<button class="filter-btn active" data-filter="all">Всі вироби</button>`;
+                categoriesTree.forEach(c => {
+                    filterContainer.innerHTML += `<button class="filter-btn" data-filter="${c.id}">${c.name}</button>`;
+                });
+            }
+
+            // 2. Функція порційного рендеру
+            window.renderBatch = function(reset = false) {
+                if (reset) {
+                    grid.innerHTML = '';
+                    displayedCount = 0;
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+                }
+
+                const nextBatch = filteredProducts.slice(displayedCount, displayedCount + step);
+                
+                if (nextBatch.length > 0) {
+                    const html = nextBatch.map(prod => window.renderProductCard(prod)).join('');
+                    grid.insertAdjacentHTML('beforeend', html);
+                    displayedCount += nextBatch.length;
+                }
+
+                // Керування кнопкою "Показати ще"
+                if (displayedCount < filteredProducts.length) {
+                    loadMoreContainer.classList.remove('hidden');
+                } else {
+                    loadMoreContainer.classList.add('hidden');
+                }
+
+                // Порожній стан
+                if (filteredProducts.length === 0) {
+                    grid.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                } else {
+                    grid.classList.remove('hidden');
+                    emptyState.classList.add('hidden');
+                }
+            };
+
+            // 3. Глобальна функція для зміни фільтрів
+            window.renderCatalogBatch = function(productsToRender) {
+                filteredProducts = productsToRender || (typeof products !== 'undefined' ? products : []);
+                window.renderBatch(true);
+            };
+
+            // 4. Обробка кліків по кнопках-фільтрах
+            filterContainer.addEventListener('click', (e) => {
+                if(e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    const filter = e.target.getAttribute('data-filter');
+                    if (filter === 'all') {
+                        history.pushState("", document.title, window.location.pathname + window.location.search);
+                        window.renderCatalogBatch(products);
+                    } else {
+                        window.location.hash = filter;
+                        window.renderCatalogBatch(products.filter(p => p.category === filter || p.subcategory === filter));
+                    }
+                }
+            });
+
+            // 5. Логіка Hash (URL)
+            window.addEventListener('hashchange', applyHashFilter);
+
+            function applyHashFilter() {
+                const hash = window.location.hash.replace('#', '');
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                
+                let targetProducts = typeof products !== 'undefined' ? products : [];
+
+                if (hash) {
+                    const btn = document.querySelector(`.filter-btn[data-filter="${hash}"]`);
+                    if(btn) btn.classList.add('active');
+                    targetProducts = targetProducts.filter(p => p.category === hash || p.subcategory === hash);
+                } else {
+                    const btnAll = document.querySelector('.filter-btn[data-filter="all"]');
+                    if (btnAll) btnAll.classList.add('active');
+                }
+                window.renderCatalogBatch(targetProducts);
+            }
+
+            // 6. Логіка скролу та стрілки
+            window.addEventListener('scroll', () => {
+                // З'являється після прокрутки 1000px ТА якщо на екрані вже понад 100 товарів
+                if (window.scrollY > 1000 && displayedCount > 100) {
+                    scrollToTop.classList.remove('opacity-0', 'invisible');
+                    scrollToTop.classList.add('opacity-100', 'visible');
+                } else {
+                    scrollToTop.classList.add('opacity-0', 'invisible');
+                    scrollToTop.classList.remove('opacity-100', 'visible');
+                }
+            });
+
+            scrollToTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 7. Кнопка "Показати ще"
+            loadMoreBtn.addEventListener('click', () => window.renderBatch(false));
+
+            // Запуск після завантаження даних з main.js
+            setTimeout(() => {
+                renderFilters();
+                applyHashFilter();
+            }, 150); 
+        });
+    </script>
+</body>
+</html>
