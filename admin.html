@@ -13,11 +13,12 @@
         .input-field { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 14px; color: white; outline: none; transition: border-color 0.3s; font-size: 14px; }
         .input-field:focus { border-color: #c5a059; }
         
-        /* ВИПРАВЛЕННЯ ДЛЯ ВИПАДАЮЧИХ СПИСКІВ */
         select.input-field option { background-color: #1c1c1e; color: #f5f5f7; }
         
         .btn-primary { background: #c5a059; color: #000; font-weight: 600; padding: 12px 20px; border-radius: 8px; transition: opacity 0.3s; cursor: pointer; text-align: center; }
         .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: 0.3s; cursor: pointer; text-align: center; font-size: 13px;}
+        .btn-secondary:hover { background: rgba(255,255,255,0.2); }
         
         .admin-sidebar { position: fixed; inset-y: 0; left: -100%; z-index: 50; transition: 0.4s; width: 280px; }
         .admin-sidebar.open { left: 0; }
@@ -32,7 +33,7 @@
 
         .file-upload-wrapper { position: relative; width: 100%; height: 120px; border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; transition: 0.3s; }
         .file-upload-wrapper:hover { border-color: #c5a059; }
-        .file-upload-wrapper input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 10; }
+        .file-upload-wrapper input[type="file"], .file-upload-wrapper input[type="text"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 10; }
         .file-upload-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; display: none; }
         .file-upload-text { color: gray; font-size: 12px; z-index: 1; pointer-events: none; text-align: center; padding: 0 10px; }
         
@@ -42,9 +43,10 @@
         .subcat-list { margin-left: 20px; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 10px; margin-top: 10px; }
         .subcat-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* TOAST NOTIFICATION */
         .toast { position: fixed; bottom: 20px; right: 20px; background: #c5a059; color: #000; padding: 12px 24px; border-radius: 8px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; }
         .toast.show { transform: translateY(0); opacity: 1; }
+        
+        .pagination-container { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-top: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body class="h-screen overflow-hidden flex flex-col lg:flex-row relative">
@@ -84,6 +86,7 @@
             <button onclick="switchTab('products')" id="tab-products" class="tab-btn w-full text-left px-4 py-3 rounded-lg bg-white/5 text-[#c5a059] font-medium transition text-sm">📦 Товари</button>
             <button onclick="switchTab('categories-list')" id="tab-categories-list" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">🗂 Структура Категорій</button>
             <button onclick="switchTab('categories-home')" id="tab-categories-home" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">🖼 Фото на Головній</button>
+            <button onclick="switchTab('banners')" id="tab-banners" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">📺 Банери Слайдера</button>
             <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">⚙️ Налаштування сайту</button>
         </nav>
         <div class="p-4 border-t border-white/10 space-y-2">
@@ -97,24 +100,34 @@
         <section id="content-products" class="tab-content h-full hidden-first">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <h2 class="text-2xl font-semibold">Управління товарами</h2>
-                <button onclick="openProductModal()" class="btn-primary w-full sm:w-auto">+ Додати товар</button>
+                <div class="flex gap-3 w-full sm:w-auto">
+                    <input type="text" id="prodSearch" onkeyup="searchProducts()" placeholder="Пошук по назві/ID..." class="input-field py-2 flex-grow sm:w-64">
+                    <button onclick="openProductModal()" class="btn-primary whitespace-nowrap">+ Додати товар</button>
+                </div>
             </div>
             
-            <div class="glass-panel p-4">
-                <div class="table-container">
+            <div class="glass-panel">
+                <div class="table-container border-none border-b border-white/10 rounded-b-none">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-white/5 uppercase text-[10px] text-gray-400 tracking-wider">
                             <tr>
                                 <th class="p-4 rounded-tl-lg">Фото</th>
-                                <th class="p-4">Назва</th>
-                                <th class="p-4">Категорія > Підкатегорія</th>
+                                <th class="p-4">Назва / ID</th>
+                                <th class="p-4">Категорія</th>
                                 <th class="p-4">Ціна</th>
-                                <th class="p-4">Бейдж / Статус</th>
+                                <th class="p-4">Статус</th>
                                 <th class="p-4 rounded-tr-lg">Дії</th>
                             </tr>
                         </thead>
                         <tbody id="productsTableBody" class="divide-y divide-white/5"></tbody>
                     </table>
+                </div>
+                <div class="pagination-container text-sm text-gray-400">
+                    <span id="pageInfo">Показано 1-50 з 0</span>
+                    <div class="flex gap-2">
+                        <button onclick="changePage(-1)" class="btn-secondary" id="btnPrevPage">Попередня</button>
+                        <button onclick="changePage(1)" class="btn-secondary" id="btnNextPage">Наступна</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -125,7 +138,7 @@
                 <button onclick="openCategoryModal()" class="btn-primary w-full sm:w-auto">+ Додати Головну Категорію</button>
             </div>
             <div class="glass-panel p-6">
-                <p class="text-xs text-gray-400 mb-6 leading-relaxed">Створюйте головні категорії (напр., "Каблучки") та додавайте до них підкатегорії (напр., "Для заручин").</p>
+                <p class="text-xs text-gray-400 mb-6 leading-relaxed">Створюйте головні категорії (напр., "Каблучки") та додавайте до них підкатегорії.</p>
                 <div id="categoriesListContainer" class="flex flex-col gap-4"></div>
             </div>
         </section>
@@ -140,9 +153,20 @@
                     <option value="grid-3">Шаблон 3 (3 вертикальні плитки)</option>
                 </select>
                 
-                <p class="text-xs text-gray-400 mb-4">Налаштуйте кожну плитку:</p>
+                <p class="text-xs text-gray-400 mb-4">Налаштуйте кожну плитку (вставте URL або завантажте):</p>
                 <div id="homeCategoriesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 <button onclick="saveHomeCategories()" class="btn-primary w-full sm:w-auto mt-6">Зберегти Колаж</button>
+            </div>
+        </section>
+
+        <section id="content-banners" class="tab-content hidden h-full">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <h2 class="text-2xl font-semibold">Банери Головної Сторінки</h2>
+                <button onclick="openBannerModal()" class="btn-primary w-full sm:w-auto">+ Додати Банер</button>
+            </div>
+            <div class="glass-panel p-6">
+                <p class="text-xs text-gray-400 mb-6 leading-relaxed">Банери, що будуть перегортатися у слайдері на головній. Порядок можна змінити.</p>
+                <div id="bannersListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
         </section>
 
@@ -169,14 +193,13 @@
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 lg:col-span-2">
-                    <h3 class="text-sm font-semibold uppercase tracking-widest text-[#c5a059] mb-4">Фон головної сторінки (Hero)</h3>
+                <div class="glass-panel p-6">
+                    <h3 class="text-sm font-semibold uppercase tracking-widest text-[#c5a059] mb-4">Фон сторінки "Ексклюзив"</h3>
                     <div class="file-upload-wrapper" id="heroUploadWrapper">
-                        <input type="file" accept="image/*" onchange="handleImageUpload(event, 'heroPreview', 'set-hero')">
+                        <input type="text" id="set-hero" class="input-field opacity-0 z-0 h-full w-full absolute inset-0 cursor-text text-center text-transparent" placeholder="Вставте URL картинки" oninput="document.getElementById('heroPreview').src=this.value; document.getElementById('heroPreview').style.display='block';">
                         <img id="heroPreview" class="file-upload-preview">
-                        <div class="file-upload-text">Натисніть щоб вибрати фото</div>
+                        <div class="file-upload-text">Вставте посилання на фото</div>
                     </div>
-                    <input type="hidden" id="set-hero">
                 </div>
             </div>
             <div class="mt-6 flex flex-col sm:flex-row justify-end pb-10">
@@ -241,13 +264,9 @@
                 </div>
                 
                 <div>
-                    <label class="text-[10px] uppercase text-gray-400 block mb-1">Фото товару</label>
-                    <div class="file-upload-wrapper">
-                        <input type="file" accept="image/*" onchange="handleImageUpload(event, 'prodPreview', 'prod-imgBase64')">
-                        <img id="prodPreview" class="file-upload-preview">
-                        <div class="file-upload-text">Завантажити фото (авто-стиснення)</div>
-                    </div>
-                    <input type="hidden" id="prod-imgBase64"> 
+                    <label class="text-[10px] uppercase text-gray-400 block mb-1">Фото товару (Вставте посилання URL)</label>
+                    <input type="text" id="prod-imgBase64" class="input-field mb-2" placeholder="https://..." oninput="document.getElementById('prodPreview').src=this.value; document.getElementById('prodPreview').style.display='block';">
+                    <img id="prodPreview" class="h-32 object-cover rounded border border-white/20 hidden">
                 </div>
                 
                 <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Опис</label><textarea id="prod-desc" class="input-field h-20 resize-none"></textarea></div>
@@ -291,17 +310,39 @@
         </div>
     </div>
 
+    <div id="bannerModal" class="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center hidden opacity-0 transition-opacity p-4">
+        <div class="glass-panel p-6 w-full max-w-lg">
+            <h3 class="text-lg font-semibold mb-4" id="bannerModalTitle">Налаштування банера</h3>
+            <form id="bannerForm" class="flex flex-col gap-4">
+                <input type="hidden" id="banner-id">
+                <div>
+                    <label class="text-[10px] uppercase text-gray-400 block mb-1">URL Зображення (1920x870px)</label>
+                    <input type="text" id="banner-img" class="input-field" placeholder="https://..." oninput="document.getElementById('bannerPreview').src=this.value; document.getElementById('bannerPreview').style.display='block';" required>
+                    <img id="bannerPreview" class="w-full aspect-[21/9] mt-2 object-cover rounded border border-white/20 hidden">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-gray-400 block mb-1">Посилання при кліку (напр. catalog.html#sale)</label>
+                    <input type="text" id="banner-link" class="input-field" placeholder="catalog.html#...">
+                </div>
+                <div class="flex gap-3 mt-2">
+                    <button type="button" onclick="closeBannerModal()" class="flex-1 border border-white/10 rounded-lg text-sm text-gray-300 py-2">Скасувати</button>
+                    <button type="submit" class="flex-1 btn-primary py-2 text-sm">Зберегти банер</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // --- ДАНІ ТА СТРУКТУРА ---
-        const defCats = [
-            { id: 'chains', name: 'Ланцюжки', subcategories: [{id: 'womens_chains', name: 'Жіночі'}, {id: 'mens_chains', name: 'Чоловічі'}] }, 
-            { id: 'rings', name: 'Каблучки', subcategories: [{id: 'engagement', name: 'Для заручин'}, {id: 'wedding_rings', name: 'Обручки'}] },
-            { id: 'earrings', name: 'Сережки', subcategories: [{id: 'studs', name: 'Пусети'}, {id: 'long', name: 'Довгі'}] }
-        ];
-
-        let categories = JSON.parse(localStorage.getItem('bv_categories_tree')) || defCats;
+        let categories = JSON.parse(localStorage.getItem('bv_categories_tree')) || [];
         let products = JSON.parse(localStorage.getItem('bv_products')) || [];
-        let siteSettings = JSON.parse(localStorage.getItem('bv_settings')) || { phone: '+380634540901', tgLink: '', instLink: '', addr1: '', map1: '', addr2: '', map2: '', heroBg: '' };
+        let banners = JSON.parse(localStorage.getItem('bv_banners')) || [];
+        let siteSettings = JSON.parse(localStorage.getItem('bv_settings')) || {};
+
+        // Пагінація
+        let currentPage = 1;
+        const itemsPerPage = 50;
+        let filteredProducts = [...products];
 
         // --- УТІЛІТИ ---
         function showNotification(msg) {
@@ -311,7 +352,7 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // --- ЛОГІКА АДМІНКИ ---
+        // --- АВТОРИЗАЦІЯ ТА ВКЛАДКИ ---
         if (sessionStorage.getItem('isAdminAuth') === 'true') {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('content-products').classList.remove('hidden-first');
@@ -344,9 +385,11 @@
         }
 
         function loadAllData() {
+            filteredProducts = [...products];
             renderCategoriesTree();
             populateCategorySelects();
             renderProducts();
+            renderBannersAdmin();
             populateSettings();
             
             const config = JSON.parse(localStorage.getItem('bv_collage_config'));
@@ -354,45 +397,7 @@
             renderCollageAdmin(); 
         }
 
-        // --- НОВИЙ МЕХАНІЗМ ЗАВАНТАЖЕННЯ ЗІ СТИСНЕННЯМ ---
-        function handleImageUpload(event, previewId, inputId) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; // Стискаємо до 800px по ширині для економії місця
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    // Конвертуємо в JPEG з якістю 70%
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                    
-                    document.getElementById(inputId).value = dataUrl;
-                    const preview = document.getElementById(previewId);
-                    preview.src = dataUrl;
-                    preview.style.display = 'block';
-                }
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // --- УПРАВЛІННЯ КАТЕГОРІЯМИ ---
+        // --- КАТЕГОРІЇ ---
         function renderCategoriesTree() {
             const container = document.getElementById('categoriesListContainer');
             container.innerHTML = '';
@@ -417,7 +422,7 @@
                             <div class="font-semibold text-[#c5a059]"><span class="text-xs text-gray-500 font-normal mr-2">${c.id}</span> ${c.name}</div>
                             <div class="flex gap-3">
                                 <button onclick="openSubCategoryModal('${c.id}')" class="text-green-400 text-xs">+ Підкатегорія</button>
-                                <button onclick="editCategory('${c.id}')" class="text-blue-400 text-xs">Ред</button>
+                                <button onclick="openCategoryModal('${c.id}')" class="text-blue-400 text-xs">Ред</button>
                                 <button onclick="deleteCategory('${c.id}')" class="text-red-500 text-xs">Видал</button>
                             </div>
                         </div>
@@ -456,15 +461,17 @@
                 if(categories.find(c => c.id === newId)) return alert('ID вже існує!');
                 categories.push({ id: newId, name: name, subcategories: [] });
             }
-            saveCategories(); 
+            localStorage.setItem('bv_categories_tree', JSON.stringify(categories));
+            loadAllData();
             closeCategoryModal();
             showNotification('Категорію збережено');
         };
 
         function deleteCategory(id) {
-            if(confirm('Видалити головну категорію? Усі її підкатегорії також зникнуть!')) {
+            if(confirm('Видалити головну категорію?')) {
                 categories = categories.filter(c => c.id !== id);
-                saveCategories();
+                localStorage.setItem('bv_categories_tree', JSON.stringify(categories));
+                loadAllData();
                 showNotification('Категорію видалено');
             }
         }
@@ -474,7 +481,6 @@
             document.getElementById('subcat-parent-id').value = parentId;
             document.getElementById('subcat-old-id').value = '';
             document.getElementById('subCatModalTitle').innerText = 'Додати підкатегорію';
-            
             if (subId) {
                 const parent = categories.find(c => c.id === parentId);
                 const sub = parent.subcategories.find(s => s.id === subId);
@@ -494,7 +500,6 @@
             const oldId = document.getElementById('subcat-old-id').value;
             const newId = document.getElementById('subcat-id').value.toLowerCase();
             const name = document.getElementById('subcat-name').value;
-
             const parent = categories.find(c => c.id === parentId);
             if(!parent.subcategories) parent.subcategories = [];
 
@@ -505,7 +510,8 @@
                 if(parent.subcategories.find(s => s.id === newId)) return alert('Такий ID вже є!');
                 parent.subcategories.push({ id: newId, name: name });
             }
-            saveCategories(); 
+            localStorage.setItem('bv_categories_tree', JSON.stringify(categories));
+            loadAllData();
             closeSubCategoryModal();
             showNotification('Підкатегорію збережено');
         };
@@ -514,17 +520,13 @@
             if(confirm('Видалити підкатегорію?')) {
                 const parent = categories.find(c => c.id === parentId);
                 parent.subcategories = parent.subcategories.filter(s => s.id !== subId);
-                saveCategories();
+                localStorage.setItem('bv_categories_tree', JSON.stringify(categories));
+                loadAllData();
                 showNotification('Підкатегорію видалено');
             }
         }
 
-        function saveCategories() {
-            localStorage.setItem('bv_categories_tree', JSON.stringify(categories));
-            loadAllData();
-        }
-
-        // --- УПРАВЛІННЯ ТОВАРАМИ ---
+        // --- УПРАВЛІННЯ ТОВАРАМИ ТА ПАГІНАЦІЯ ---
         function populateCategorySelects() {
             const catSelect = document.getElementById('prod-category');
             catSelect.innerHTML = '<option value="" disabled selected>Виберіть...</option>';
@@ -543,40 +545,61 @@
             }
         }
 
+        function searchProducts() {
+            const term = document.getElementById('prodSearch').value.toLowerCase();
+            filteredProducts = products.filter(p => p.name.toLowerCase().includes(term) || p.id.toLowerCase().includes(term));
+            currentPage = 1;
+            renderProducts();
+        }
+
+        function changePage(dir) {
+            currentPage += dir;
+            renderProducts();
+        }
+
         function renderProducts() {
             const tbody = document.getElementById('productsTableBody');
             tbody.innerHTML = '';
-            if(products.length === 0) return tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">Товарів ще немає.</td></tr>';
             
-            products.forEach(p => {
+            const total = filteredProducts.length;
+            const totalPages = Math.ceil(total / itemsPerPage) || 1;
+            if(currentPage < 1) currentPage = 1;
+            if(currentPage > totalPages) currentPage = totalPages;
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, total);
+            const currentBatch = filteredProducts.slice(startIndex, endIndex);
+
+            document.getElementById('pageInfo').innerText = `Показано ${startIndex + 1}-${endIndex} з ${total}`;
+            document.getElementById('btnPrevPage').disabled = currentPage === 1;
+            document.getElementById('btnNextPage').disabled = currentPage === totalPages || total === 0;
+            document.getElementById('btnPrevPage').style.opacity = currentPage === 1 ? '0.3' : '1';
+            document.getElementById('btnNextPage').style.opacity = (currentPage === totalPages || total === 0) ? '0.3' : '1';
+
+            if(total === 0) return tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">Товарів не знайдено.</td></tr>';
+            
+            currentBatch.forEach(p => {
                 const parentCat = categories.find(c => c.id === p.category);
                 const pName = parentCat ? parentCat.name : p.category;
-                let subName = '';
-                if(parentCat && parentCat.subcategories) {
-                    const sub = parentCat.subcategories.find(s => s.id === p.subcategory);
-                    if(sub) subName = ' > ' + sub.name;
-                }
-
                 let badgeHtml = '';
-                if(p.badge === 'new') badgeHtml = '<span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded ml-2">Новинка</span>';
-                if(p.badge === 'exclusive') badgeHtml = '<span class="text-[10px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded ml-2">Ексклюзив</span>';
-                if(p.badge === 'sale') badgeHtml = '<span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded ml-2">Sale</span>';
+                if(p.badge === 'new') badgeHtml = '<span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Новинка</span>';
+                if(p.badge === 'exclusive') badgeHtml = '<span class="text-[10px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded">Ексклюзив</span>';
+                if(p.badge === 'sale') badgeHtml = '<span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Sale</span>';
 
-                let statusColor = 'text-gray-400';
-                let statusText = 'Під замовлення';
+                let statusColor = 'text-gray-400'; let statusText = 'Під замовлення';
                 if(p.status === 'in-stock') { statusColor = 'text-green-500'; statusText = 'В наявності'; }
                 if(p.status === 'out-stock') { statusColor = 'text-red-500'; statusText = 'Немає'; }
                 
                 tbody.innerHTML += `
                     <tr class="hover:bg-white/5 transition border-b border-white/5">
                         <td class="p-3"><img src="${p.img}" class="w-10 h-10 object-cover rounded border border-white/10"></td>
-                        <td class="p-3 font-medium whitespace-normal min-w-[140px]">${p.name} <br><span class="text-[10px] text-gray-500">${p.variant}</span></td>
-                        <td class="p-3 text-gray-400 text-xs whitespace-normal">${pName}${subName}</td>
-                        <td class="p-3 text-[#c5a059]">${p.price} ₴ ${p.discount ? `<br><span class="text-[10px] text-red-400 line-through">${p.discount} ₴</span>` : ''}</td>
-                        <td class="p-3 text-xs"><span class="${statusColor}">${statusText}</span><br>${badgeHtml}</td>
+                        <td class="p-3 font-medium whitespace-normal min-w-[140px] text-xs"><span class="text-[10px] text-gray-500 block mb-1">ID: ${p.id}</span>${p.name}</td>
+                        <td class="p-3 text-gray-400 text-xs">${pName}</td>
+                        <td class="p-3 text-[#c5a059] text-xs font-semibold">${p.price} ₴ ${p.discount ? `<span class="text-[9px] text-red-400 line-through ml-1">${p.discount} ₴</span>` : ''}</td>
+                        <td class="p-3 text-xs"><span class="${statusColor} block mb-1">${statusText}</span>${badgeHtml}</td>
                         <td class="p-3">
-                            <button onclick="openProductModal('${p.id}')" class="text-blue-400 text-xs mr-3">Ред.</button>
-                            <button onclick="if(confirm('Видалити?')) { products = products.filter(prod => prod.id !== '${p.id}'); localStorage.setItem('bv_products', JSON.stringify(products)); renderProducts(); showNotification('Товар видалено'); }" class="text-red-500 text-xs">Видал.</button>
+                            <button onclick="openProductModal('${p.id}')" class="text-blue-400 text-xs mr-3 font-semibold">Ред</button>
+                            <button onclick="deleteProduct('${p.id}')" class="text-red-500 text-xs font-semibold">Видал</button>
                         </td>
                     </tr>
                 `;
@@ -587,9 +610,7 @@
             document.getElementById('productForm').reset(); 
             document.getElementById('prodPreview').style.display = 'none'; 
             document.getElementById('prod-id').value = '';
-            document.getElementById('prod-imgBase64').value = ''; 
             document.getElementById('prodModalTitle').innerText = 'Додати товар';
-            
             updateSubcatOptions(); 
             
             if(id) {
@@ -598,7 +619,6 @@
                 document.getElementById('prod-name').value = p.name; 
                 document.getElementById('prod-variant').value = p.variant;
                 document.getElementById('prod-category').value = p.category; 
-                
                 updateSubcatOptions(); 
                 setTimeout(() => document.getElementById('prod-subcategory').value = p.subcategory || 'none', 50);
                 
@@ -608,35 +628,21 @@
                 document.getElementById('prod-discount').value = p.discount || ''; 
                 document.getElementById('prod-featured').checked = p.featured || false;
                 document.getElementById('prod-imgBase64').value = p.img; 
-                
-                if(p.img) {
-                    document.getElementById('prodPreview').src = p.img; 
-                    document.getElementById('prodPreview').style.display = 'block';
-                }
-                
+                if(p.img) { document.getElementById('prodPreview').src = p.img; document.getElementById('prodPreview').style.display = 'block'; }
                 document.getElementById('prod-desc').value = p.desc || ''; 
                 document.getElementById('prodModalTitle').innerText = 'Редагувати товар';
             }
-            
             document.getElementById('productModal').classList.remove('hidden'); 
             setTimeout(() => document.getElementById('productModal').classList.remove('opacity-0'), 10);
         }
 
-        function closeProductModal() { 
-            document.getElementById('productModal').classList.add('opacity-0'); 
-            setTimeout(() => document.getElementById('productModal').classList.add('hidden'), 300); 
-        }
+        function closeProductModal() { document.getElementById('productModal').classList.add('opacity-0'); setTimeout(() => document.getElementById('productModal').classList.add('hidden'), 300); }
 
         document.getElementById('productForm').onsubmit = (e) => {
             e.preventDefault(); 
-            
             const idInput = document.getElementById('prod-id').value;
             const imgData = document.getElementById('prod-imgBase64').value;
-            
-            if(!imgData) {
-                alert('Будь ласка, завантажте фото товару!');
-                return;
-            }
+            if(!imgData) return alert('Будь ласка, вставте посилання на фото товару!');
 
             const prodData = {
                 id: idInput || 'prod_' + Date.now(),
@@ -646,8 +652,8 @@
                 subcategory: document.getElementById('prod-subcategory').value,
                 status: document.getElementById('prod-status').value,
                 badge: document.getElementById('prod-badge').value,
-                price: document.getElementById('prod-price').value,
-                discount: document.getElementById('prod-discount').value,
+                price: Number(document.getElementById('prod-price').value),
+                discount: document.getElementById('prod-discount').value ? Number(document.getElementById('prod-discount').value) : '',
                 featured: document.getElementById('prod-featured').checked,
                 img: imgData,
                 desc: document.getElementById('prod-desc').value
@@ -656,15 +662,91 @@
             if (idInput) { 
                 const i = products.findIndex(p => p.id === idInput); 
                 if(i !== -1) products[i] = prodData; 
-            } else { 
-                products.push(prodData); 
-            }
+            } else { products.unshift(prodData); }
 
             localStorage.setItem('bv_products', JSON.stringify(products)); 
+            filteredProducts = [...products];
             renderProducts(); 
             closeProductModal();
             showNotification('Товар успішно збережено!');
         };
+
+        function deleteProduct(id) {
+            if(confirm('Точно видалити цей товар?')) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('bv_products', JSON.stringify(products));
+                filteredProducts = [...products];
+                renderProducts();
+                showNotification('Товар видалено');
+            }
+        }
+
+        // --- БАНЕРИ (СЛАЙДЕР) ---
+        function renderBannersAdmin() {
+            const list = document.getElementById('bannersListContainer');
+            list.innerHTML = '';
+            banners.forEach((b, index) => {
+                list.innerHTML += `
+                    <div class="bg-white/5 p-4 rounded-lg border border-white/10 flex flex-col gap-3 relative group">
+                        <div class="absolute top-2 left-2 bg-black/80 px-2 py-1 rounded text-[10px] font-bold z-10 text-[#c5a059]">Порядок: ${index + 1}</div>
+                        <img src="${b.img}" class="w-full aspect-[21/9] object-cover rounded border border-white/20">
+                        <div class="text-xs text-gray-400 mt-2 truncate">Лінк: ${b.link || 'Немає'}</div>
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="openBannerModal(${b.id})" class="flex-1 btn-secondary text-xs py-1">Ред.</button>
+                            <button onclick="deleteBanner(${b.id})" class="flex-1 border border-red-500/50 text-red-500 rounded text-xs py-1 hover:bg-red-500/10">Видалити</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openBannerModal(id = null) {
+            document.getElementById('bannerForm').reset();
+            document.getElementById('bannerPreview').style.display = 'none';
+            document.getElementById('banner-id').value = '';
+            document.getElementById('bannerModalTitle').innerText = 'Додати Банер';
+            
+            if(id) {
+                const b = banners.find(ban => ban.id === id);
+                document.getElementById('banner-id').value = b.id;
+                document.getElementById('banner-img').value = b.img;
+                document.getElementById('banner-link').value = b.link || '';
+                document.getElementById('bannerPreview').src = b.img;
+                document.getElementById('bannerPreview').style.display = 'block';
+                document.getElementById('bannerModalTitle').innerText = 'Редагувати Банер';
+            }
+            document.getElementById('bannerModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('bannerModal').classList.remove('opacity-0'), 10);
+        }
+        function closeBannerModal() { document.getElementById('bannerModal').classList.add('opacity-0'); setTimeout(() => document.getElementById('bannerModal').classList.add('hidden'), 300); }
+
+        document.getElementById('bannerForm').onsubmit = (e) => {
+            e.preventDefault();
+            const idInput = document.getElementById('banner-id').value;
+            const bData = {
+                id: idInput ? parseInt(idInput) : Date.now(),
+                img: document.getElementById('banner-img').value,
+                link: document.getElementById('banner-link').value
+            };
+            if(idInput) {
+                const idx = banners.findIndex(b => b.id === parseInt(idInput));
+                if(idx !== -1) banners[idx] = bData;
+            } else { banners.push(bData); }
+            
+            localStorage.setItem('bv_banners', JSON.stringify(banners));
+            renderBannersAdmin();
+            closeBannerModal();
+            showNotification('Банер збережено!');
+        };
+
+        function deleteBanner(id) {
+            if(confirm('Видалити цей банер?')) {
+                banners = banners.filter(b => b.id !== id);
+                localStorage.setItem('bv_banners', JSON.stringify(banners));
+                renderBannersAdmin();
+                showNotification('Банер видалено');
+            }
+        }
 
         // --- ШАБЛОНИ КОЛАЖУ ---
         function renderCollageAdmin() {
@@ -674,7 +756,6 @@
             
             list.innerHTML = '';
             const config = JSON.parse(localStorage.getItem('bv_collage_config')) || { items: [] };
-            
             let catOptions = '<option value="">Виберіть категорію...</option>';
             categories.forEach(c => { catOptions += `<option value="${c.id}">${c.name}</option>`; });
 
@@ -683,11 +764,10 @@
                 list.innerHTML += `
                     <div class="bg-white/5 p-3 rounded-lg border border-white/10 flex flex-col gap-3">
                         <div class="relative w-full h-32 bg-black rounded flex items-center justify-center border border-white/20 overflow-hidden group">
-                            <input type="file" accept="image/*" class="absolute inset-0 opacity-0 z-10 cursor-pointer" onchange="handleImageUpload(event, 'ph-${i}', 'ih-${i}')">
+                            <input type="text" id="ih-${i}" value="${item.img}" class="input-field absolute inset-0 z-10 opacity-0 cursor-text" placeholder="URL картинки" oninput="document.getElementById('ph-${i}').src=this.value; document.getElementById('ph-${i}').style.display='block';">
                             <img id="ph-${i}" src="${item.img}" class="absolute inset-0 w-full h-full object-cover z-0 transition group-hover:scale-105" style="display:${item.img?'block':'none'}">
-                            <span class="text-[10px] text-gray-500 z-0">Натисніть щоб додати фото</span>
+                            <span class="text-[10px] text-gray-500 z-0">Вставте URL картинки</span>
                         </div>
-                        <input type="hidden" id="ih-${i}" value="${item.img}">
                         <input type="text" id="ititle-${i}" class="input-field" placeholder="Напис на плитці" value="${item.title}">
                         <select id="icat-${i}" class="input-field">${catOptions}</select>
                     </div>`;

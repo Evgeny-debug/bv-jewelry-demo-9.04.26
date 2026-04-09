@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk" data-theme="dark">
+<html lang="uk" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,9 +10,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="mobile-padding">
 
-    <div class="menu-overlay" id="overlay"></div>
+    <div id="authModal" class="fixed inset-0 bg-black/80 z-[6000] hidden opacity-0 transition-opacity flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="glass-panel p-8 w-full max-w-sm relative rounded-3xl shadow-2xl bg-[var(--bg-card)] border border-[var(--border)]">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-[var(--text-muted)] hover:text-[var(--danger)] text-3xl leading-none">&times;</button>
+            <h3 id="authTitle" class="text-2xl font-serif italic text-[var(--gold-muted)] mb-6 text-center">Вхід у кабінет</h3>
+            
+            <form id="authForm" class="flex flex-col gap-4">
+                <input type="text" id="authUser" placeholder="Логін" class="auth-input" required>
+                <input type="password" id="authPass" placeholder="Пароль" class="auth-input" required>
+                <button type="submit" class="btn-primary py-4 rounded-xl mt-2 w-full text-sm tracking-widest uppercase text-[var(--bg-body)]" id="authSubmitBtn">Увійти</button>
+                <div class="text-center text-xs text-[var(--text-muted)] mt-4">
+                    Немає акаунта? <a href="#" onclick="toggleAuthMode(event)" class="text-[var(--gold-muted)] font-bold" id="authToggleLink">Зареєструватися</a>
+                </div>
+            </form>
+
+            <div id="profileView" class="hidden flex-col gap-4">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 bg-[var(--gold-muted)] text-[var(--bg-body)] rounded-full flex items-center justify-center text-2xl font-bold uppercase" id="profAvatar">A</div>
+                </div>
+                <p class="text-center text-[var(--text-main)] mb-6">Вітаємо, <span id="profName" class="font-bold text-[var(--gold-muted)]"></span>!</p>
+                <button onclick="location.href='admin.html'" id="adminLinkBtn" class="btn-primary w-full py-4 rounded-xl hidden mb-2 uppercase tracking-widest text-xs text-[var(--bg-body)]">Увійти в Адмінку</button>
+                <button onclick="logoutUser()" class="w-full py-4 rounded-xl border border-red-500/50 text-red-500 hover:bg-red-500/10 transition uppercase tracking-widest text-xs font-bold">Вийти з акаунта</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="cart-drawer" id="cartDrawer">
@@ -24,9 +49,9 @@
         <div class="cart-footer">
             <div class="cart-subtotal">
                 <span data-i18n="cart_subtotal">Підсумок:</span>
-                <span class="cart-subtotal-val">0 ₴</span>
+                <span class="cart-subtotal-val text-[var(--gold-muted)] font-bold text-xl">0 ₴</span>
             </div>
-            <button class="btn-checkout" data-i18n="cart_checkout">Оформити замовлення</button>
+            <button class="btn-checkout w-full bg-[var(--text-main)] text-[var(--bg-body)] py-4 rounded-xl font-bold uppercase tracking-widest mt-4 hover:opacity-90 transition-opacity" data-i18n="cart_checkout">Оформити замовлення</button>
         </div>
     </div>
 
@@ -41,11 +66,11 @@
 
     <header id="header">
         <div class="header-left">
-            <div class="burger" id="burger"><span></span><span></span><span></span></div>
+            <div class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
             <nav class="nav-left desktop-only">
                 <a href="index.html" data-i18n="m1">Головна</a>
                 <div class="catalog-dropdown-wrapper group">
-                    <span class="catalog-toggle flex items-center gap-1" data-i18n="m2">
+                    <span class="catalog-toggle flex items-center gap-1 cursor-pointer" data-i18n="m2" onclick="location.href='catalog.html'">
                         Каталог 
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-180 transition-transform"><path d="M6 9l6 6 6-6"/></svg>
                     </span>
@@ -69,7 +94,7 @@
                 <a href="exclusive.html" class="btn-order" data-i18n="m_atelier">Замовити ексклюзив</a>
             </nav>
             <div class="search-box desktop-only">
-                <input type="text" class="search-input" data-i18n-placeholder="search_ph" placeholder="Пошук...">
+                <input type="text" class="search-input" data-i18n-placeholder="search_ph" placeholder="Пошук..." onkeypress="if(event.key==='Enter') window.executeSearch(this.value)">
                 <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
         </div>
@@ -77,21 +102,50 @@
         <a href="index.html" class="bv-logo"><span>BV</span><span>jewelry</span></a>
 
         <div class="header-right">
+            <div class="mobile-only mr-2 p-2 cursor-pointer" onclick="toggleMobileSearch()">
+                <svg viewBox="0 0 24 24" stroke="var(--gold-muted)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 active:scale-90 transition-transform"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+
             <a href="tel:+380634540901" class="header-phone-link desktop-only">
                 <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                 <span class="header-phone-text">+38 063 45 40 901</span>
             </a>
-            <div id="themeToggle" class="icon-btn desktop-only" onclick="toggleTheme()">
-                <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+            
+            <div id="themeToggle" class="icon-btn desktop-only" onclick="toggleTheme()"><svg id="themeIcon" viewBox="0 0 24 24"></svg></div>
+            
+            <div class="dropdown-wrapper lang-dropdown desktop-only">
+                <div class="lang-current"><img src="https://flagcdn.com/ua.svg" class="flag" id="currentFlag"><span id="currentLangLabel">UA</span></div>
+                <div class="dropdown-menu">
+                    <div class="dropdown-item" onclick="changeLang('uk')"><img src="https://flagcdn.com/ua.svg" class="w-5 rounded-[3px] shadow-sm"> UA</div>
+                    <div class="dropdown-item" onclick="changeLang('en')"><img src="https://flagcdn.com/gb.svg" class="w-5 rounded-[3px] shadow-sm"> EN</div>
+                    <div class="dropdown-item" onclick="changeLang('ru')"><img src="https://flagcdn.com/ru.svg" class="w-5 rounded-[3px] shadow-sm"> RU</div>
+                </div>
             </div>
-            <a href="#" onclick="event.preventDefault(); toggleFavDrawer();" class="icon-btn">
+
+            <div class="dropdown-wrapper desktop-only">
+                <div class="icon-btn" onclick="openAuthModal()">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+            </div>
+
+            <a href="#" onclick="event.preventDefault(); toggleFavDrawer();" class="icon-btn desktop-only">
                 <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                 <span class="cart-badge fav-badge" style="background: var(--danger);">0</span>
             </a>
-            <a href="#" onclick="event.preventDefault(); toggleCart();" class="icon-btn">
+
+            <a href="#" onclick="event.preventDefault(); toggleCart();" class="icon-btn desktop-only">
                 <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                 <span class="cart-badge">0</span>
             </a>
+        </div>
+
+        <div id="mobSearchContainer" class="absolute top-[100%] left-0 w-full p-4 bg-[var(--bg-card)] border-b border-[var(--border)] shadow-xl hidden z-[4000]">
+            <div class="flex items-center bg-black/5 dark:bg-white/5 border border-[var(--border)] rounded-2xl px-4 py-3">
+                <input type="text" id="mobSearchOverlayInput" placeholder="Пошукаємо прикрасу?..." class="w-full bg-transparent outline-none text-[var(--text-main)] text-sm font-['Inter']">
+                <button onclick="window.executeSearch(document.getElementById('mobSearchOverlayInput').value)" class="text-[var(--gold-muted)] ml-2">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -99,8 +153,8 @@
 
     <main class="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
         <div class="text-center mb-12">
-            <h1 class="font-['Playfair_Display'] text-4xl md:text-5xl mb-4 text-[var(--gold-muted)] italic">Каталог</h1>
-            <p class="text-[var(--text-muted)] text-sm max-w-lg mx-auto">Оберіть свій ідеальний виріб серед нашої колекції високого ювелірного мистецтва.</p>
+            <h1 class="font-['Playfair_Display'] text-4xl md:text-5xl mb-4 text-[var(--gold-muted)] italic" id="catalogMainTitle">Каталог</h1>
+            <p class="text-[var(--text-muted)] text-sm max-w-lg mx-auto" id="catalogSubTitle">Оберіть свій ідеальний виріб серед нашої колекції високого ювелірного мистецтва.</p>
         </div>
 
         <div class="flex flex-wrap justify-center gap-3 mb-12" id="filterContainer"></div>
@@ -108,8 +162,8 @@
         <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
 
         <div id="loadMoreContainer" class="flex justify-center mt-12 mb-8 hidden">
-            <button id="loadMoreBtn" class="px-8 py-3 border border-[var(--gold-muted)] text-[var(--gold-muted)] hover:bg-[var(--gold-muted)] hover:text-black transition-all duration-300 uppercase tracking-widest text-[10px] font-semibold">
-                Показати ще 100 товарів
+            <button id="loadMoreBtn" class="px-8 py-3 border border-[var(--gold-muted)] text-[var(--gold-muted)] hover:bg-[var(--gold-muted)] hover:text-[var(--bg-card)] transition-all duration-300 uppercase tracking-widest text-[10px] font-semibold rounded-full">
+                Показати ще товари
             </button>
         </div>
 
@@ -119,12 +173,65 @@
         </div>
     </main>
 
-    <button id="scrollToTop" class="fixed bottom-24 right-6 w-11 h-11 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--gold-muted)] rounded-full shadow-2xl flex items-center justify-center opacity-0 invisible transition-all duration-500 z-[90] hover:scale-110 active:scale-95">
+    <nav class="mobile-bottom-nav">
+        <a href="index.html" class="bottom-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span data-i18n="m1">Головна</span>
+        </a>
+        <a href="catalog.html" class="bottom-nav-item active">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span data-i18n="m2">Каталог</span>
+        </a>
+        <a href="#" onclick="event.preventDefault(); window.toggleCart();" class="bottom-nav-item">
+            <div class="relative">
+                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <span class="cart-badge">0</span>
+            </div>
+            <span data-i18n="cart_title">Кошик</span>
+        </a>
+        <a href="#" onclick="event.preventDefault(); window.toggleFavDrawer();" class="bottom-nav-item">
+            <div class="relative">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span class="cart-badge fav-badge" style="background: var(--danger);">0</span>
+            </div>
+            <span data-i18n="fav_title">Улюблене</span>
+        </a>
+        <a href="#" onclick="event.preventDefault(); window.openAuthModal();" class="bottom-nav-item">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span data-i18n="login">Профіль</span>
+        </a>
+    </nav>
+
+    <button id="scrollToTop" class="fixed bottom-[100px] md:bottom-10 right-6 w-11 h-11 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--gold-muted)] rounded-full shadow-2xl flex items-center justify-center opacity-0 invisible transition-all duration-500 z-[90] hover:scale-110 active:scale-95">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
     </button>
 
     <footer id="footer" class="py-12 md:py-20 px-6 bg-[var(--bg-card)] border-t border-[var(--border)]">
-        </footer>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center md:items-start gap-10">
+            <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                <div class="bv-logo mb-6 relative !static !transform-none !items-center md:!items-start !opacity-100">
+                    <span>BV</span><span>jewelry</span>
+                </div>
+                <p class="text-[11px] text-gray-500 max-w-xs font-light leading-relaxed" data-i18n="f_desc">
+                    BV Jewelry — Ми не просто створюємо прикраси - ми формуємо сімейні цінності у золоті.
+                </p>
+            </div>
+            
+            <div class="flex flex-col items-center md:items-end gap-5">
+                <div class="flex flex-col items-center md:items-end gap-3">
+                    <a href="#" target="_blank" class="addr-link-1 flex items-center gap-3 text-sm opacity-80 hover:opacity-100 transition-opacity"><svg class="w-4 h-4 fill-[var(--gold-muted)]" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="addr-text-1"></span></a>
+                    <a href="#" target="_blank" class="addr-link-2 flex items-center gap-3 text-sm opacity-80 hover:opacity-100 transition-opacity"><svg class="w-4 h-4 fill-[var(--gold-muted)]" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="addr-text-2"></span></a>
+                </div>
+                <a href="tel:+380634540901" class="header-phone-link mt-2 flex items-center gap-3 font-medium opacity-80 hover:opacity-100 transition-opacity">
+                    <svg class="w-4 h-4 fill-[var(--gold-muted)]" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                    <span class="header-phone-text">+38 063 45 40 901</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+    <div class="py-5 pb-24 md:pb-5 text-center text-xs bg-[var(--bg-card)] border-t border-[var(--border)] text-gray-500">
+        © <span id="currentYear"></span> BV-Jewelry. Designed by Evgeny.Sychov
+    </div>
 
     <script src="main.js"></script>
     
@@ -137,20 +244,23 @@
             const loadMoreContainer = document.getElementById('loadMoreContainer');
             const scrollToTop = document.getElementById('scrollToTop');
 
-            let filteredProducts = []; // Всі відфільтровані товари
-            let displayedCount = 0;    // Скільки вже на екрані
-            const step = 100;          // Крок завантаження
+            let filteredProducts = []; 
+            let displayedCount = 0;    
+            const step = 100;          
 
-            // 1. Функція рендеру фільтрів
             function renderFilters() {
                 if (typeof categoriesTree === 'undefined') return;
                 filterContainer.innerHTML = `<button class="filter-btn active" data-filter="all">Всі вироби</button>`;
+                // Додамо кнопки для маркетингових фільтрів
+                filterContainer.innerHTML += `<button class="filter-btn" data-filter="new">Новинки</button>`;
+                filterContainer.innerHTML += `<button class="filter-btn" data-filter="sale">Sale</button>`;
+                filterContainer.innerHTML += `<button class="filter-btn" data-filter="exclusive">Ексклюзив</button>`;
+                
                 categoriesTree.forEach(c => {
                     filterContainer.innerHTML += `<button class="filter-btn" data-filter="${c.id}">${c.name}</button>`;
                 });
             }
 
-            // 2. Функція порційного рендеру
             window.renderBatch = function(reset = false) {
                 if (reset) {
                     grid.innerHTML = '';
@@ -166,14 +276,12 @@
                     displayedCount += nextBatch.length;
                 }
 
-                // Керування кнопкою "Показати ще"
                 if (displayedCount < filteredProducts.length) {
                     loadMoreContainer.classList.remove('hidden');
                 } else {
                     loadMoreContainer.classList.add('hidden');
                 }
 
-                // Порожній стан
                 if (filteredProducts.length === 0) {
                     grid.classList.add('hidden');
                     emptyState.classList.remove('hidden');
@@ -183,53 +291,83 @@
                 }
             };
 
-            // 3. Глобальна функція для зміни фільтрів
             window.renderCatalogBatch = function(productsToRender) {
                 filteredProducts = productsToRender || (typeof products !== 'undefined' ? products : []);
                 window.renderBatch(true);
             };
 
-            // 4. Обробка кліків по кнопках-фільтрах
             filterContainer.addEventListener('click', (e) => {
                 if(e.target.tagName === 'BUTTON') {
                     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
                     
                     const filter = e.target.getAttribute('data-filter');
+                    
+                    // Очищаємо пошуковий запит з URL при кліку на фільтр
+                    const url = new URL(window.location);
+                    url.searchParams.delete('search');
                     if (filter === 'all') {
-                        history.pushState("", document.title, window.location.pathname + window.location.search);
+                        url.hash = '';
+                        window.history.pushState({}, '', url);
                         window.renderCatalogBatch(products);
+                        document.getElementById('catalogMainTitle').innerText = 'Каталог';
+                        document.getElementById('catalogSubTitle').innerText = "Оберіть свій ідеальний виріб серед нашої колекції високого ювелірного мистецтва.";
                     } else {
-                        window.location.hash = filter;
-                        window.renderCatalogBatch(products.filter(p => p.category === filter || p.subcategory === filter));
+                        url.hash = filter;
+                        window.history.pushState({}, '', url);
+                        applyHashFilter(); // Використовуємо ту саму логіку
                     }
                 }
             });
 
-            // 5. Логіка Hash (URL)
             window.addEventListener('hashchange', applyHashFilter);
 
             function applyHashFilter() {
-                const hash = window.location.hash.replace('#', '');
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                // Перевірка пошукового запиту
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchQuery = urlParams.get('search');
                 
                 let targetProducts = typeof products !== 'undefined' ? products : [];
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
 
-                if (hash) {
-                    const btn = document.querySelector(`.filter-btn[data-filter="${hash}"]`);
-                    if(btn) btn.classList.add('active');
-                    targetProducts = targetProducts.filter(p => p.category === hash || p.subcategory === hash);
+                if (searchQuery) {
+                    // Логіка пошуку
+                    const queryLower = searchQuery.toLowerCase();
+                    targetProducts = targetProducts.filter(p => p.name.toLowerCase().includes(queryLower) || p.category.toLowerCase().includes(queryLower) || p.variant.toLowerCase().includes(queryLower));
+                    
+                    document.getElementById('catalogMainTitle').innerText = `Результати пошуку: "${searchQuery}"`;
+                    document.getElementById('catalogSubTitle').innerText = `Знайдено товарів: ${targetProducts.length}`;
                 } else {
-                    const btnAll = document.querySelector('.filter-btn[data-filter="all"]');
-                    if (btnAll) btnAll.classList.add('active');
+                    // Логіка фільтрів (Hash)
+                    const hash = window.location.hash.replace('#', '');
+                    
+                    if (hash) {
+                        const btn = document.querySelector(`.filter-btn[data-filter="${hash}"]`);
+                        if(btn) btn.classList.add('active');
+                        
+                        // Перевіряємо чи це маркетенговий бейдж
+                        if(['new', 'sale', 'exclusive'].includes(hash)) {
+                            targetProducts = targetProducts.filter(p => p.badge === hash);
+                            document.getElementById('catalogMainTitle').innerText = btn ? btn.innerText : 'Каталог';
+                        } else {
+                            // Це категорія
+                            targetProducts = targetProducts.filter(p => p.category === hash || p.subcategory === hash);
+                            document.getElementById('catalogMainTitle').innerText = btn ? btn.innerText : 'Каталог';
+                        }
+                        document.getElementById('catalogSubTitle').innerText = `Знайдено товарів: ${targetProducts.length}`;
+                    } else {
+                        const btnAll = document.querySelector('.filter-btn[data-filter="all"]');
+                        if (btnAll) btnAll.classList.add('active');
+                        document.getElementById('catalogMainTitle').innerText = 'Каталог';
+                        document.getElementById('catalogSubTitle').innerText = "Оберіть свій ідеальний виріб серед нашої колекції високого ювелірного мистецтва.";
+                    }
                 }
+                
                 window.renderCatalogBatch(targetProducts);
             }
 
-            // 6. Логіка скролу та стрілки
             window.addEventListener('scroll', () => {
-                // З'являється після прокрутки 1000px ТА якщо на екрані вже понад 100 товарів
-                if (window.scrollY > 1000 && displayedCount > 100) {
+                if (window.scrollY > 1000 && displayedCount > 50) {
                     scrollToTop.classList.remove('opacity-0', 'invisible');
                     scrollToTop.classList.add('opacity-100', 'visible');
                 } else {
@@ -238,14 +376,9 @@
                 }
             });
 
-            scrollToTop.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            // 7. Кнопка "Показати ще"
+            scrollToTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
             loadMoreBtn.addEventListener('click', () => window.renderBatch(false));
 
-            // Запуск після завантаження даних з main.js
             setTimeout(() => {
                 renderFilters();
                 applyHashFilter();
