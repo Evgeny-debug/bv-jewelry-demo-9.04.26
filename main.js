@@ -26,7 +26,7 @@ const moonSVG = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>`;
 const formatterPrice = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH', maximumFractionDigits: 0 });
 
 // ==========================================
-// 3. ГЕНЕРАТОР ДЕМО-ДАНИХ (v5 - Нові товари)
+// 3. ГЕНЕРАТОР ДЕМО-ДАНИХ (v5)
 // ==========================================
 if (!API.get('bv_demo_installed_v5')) {
     const demoCats = [
@@ -53,25 +53,14 @@ if (!API.get('bv_demo_installed_v5')) {
     ];
 
     const demoProducts = [];
-    
     baseProducts.forEach((bp, index) => {
         for(let j=1; j<=3; j++) {
             let isSale = Math.random() > 0.7;
             demoProducts.push({
-                id: `${bp.id}_${j}`,
-                name: bp.name,
-                variant: bp.variant,
-                category: bp.category,
-                subcategory: '',
-                price: isSale ? Math.round(bp.price * 0.8) : bp.price, 
-                discount: isSale ? bp.price : '', 
-                status: Math.random() > 0.9 ? 'out-stock' : 'in-stock',
-                badge: isSale ? 'sale' : (Math.random() > 0.8 ? 'new' : 'none'),
-                isSpecial: Math.random() > 0.7, 
-                isWeekly: Math.random() > 0.7, 
-                featured: Math.random() > 0.5, 
-                img: bp.img,
-                desc: bp.desc
+                id: `${bp.id}_${j}`, name: bp.name, variant: bp.variant, category: bp.category, subcategory: '',
+                price: isSale ? Math.round(bp.price * 0.8) : bp.price, discount: isSale ? bp.price : '', 
+                status: Math.random() > 0.9 ? 'out-stock' : 'in-stock', badge: isSale ? 'sale' : (Math.random() > 0.8 ? 'new' : 'none'),
+                isSpecial: Math.random() > 0.7, isWeekly: Math.random() > 0.7, featured: Math.random() > 0.5, img: bp.img, desc: bp.desc
             });
         }
     });
@@ -119,6 +108,7 @@ if (!API.get('bv_demo_installed_v5')) {
 
 let categoriesTree = API.get('bv_categories_tree', []);
 let products = API.get('bv_products', []);
+let dbServices = API.get('bv_services_data', []);
 
 function getCategoryIconSVG(catId) {
     const id = catId.toLowerCase();
@@ -141,6 +131,9 @@ window.toggleMenu = function() {
     if(sideMenu) sideMenu.classList.toggle('active');
     if(overlay) overlay.classList.toggle('active');
     document.body.style.overflow = (sideMenu && sideMenu.classList.contains('active')) ? 'hidden' : 'auto';
+    
+    const searchBox = document.getElementById('mobSearchContainer');
+    if(searchBox && !searchBox.classList.contains('hidden')) window.toggleMobileSearch(true);
 };
 
 window.toggleAccordion = function(listId, arrowId) {
@@ -201,7 +194,7 @@ window.changeLang = function(lang) {
     window.renderFavDrawer();
     
     if(document.getElementById('specialGrid') && typeof renderHomeSections === 'function') renderHomeSections();
-    if (typeof window.renderCatalogBatch === 'function') window.renderCatalogBatch(); 
+    if(typeof window.renderCatalogBatch === 'function') window.renderCatalogBatch(); 
     if(document.getElementById('productContainer') && typeof renderProductPage === 'function') renderProductPage();
     
     const mobLangList = document.getElementById('mobLangList');
@@ -405,91 +398,6 @@ window.renderProductCard = function(prod) {
 };
 
 // ==========================================
-// 7. СТОРІНКА ТОВАРУ (product.html)
-// ==========================================
-window.renderProductPage = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-    
-    if(!productId) { window.location.href = 'index.html'; return; }
-
-    const allProducts = API.get('bv_products', []);
-    const product = allProducts.find(p => p.id === productId);
-    
-    if(!product) {
-        const container = document.getElementById('productContainer');
-        if(container) container.innerHTML = `<div class="text-center py-32 text-2xl font-serif text-[var(--gold-muted)]">Товар не знайдено</div><div class="text-center mt-6"><a href="index.html" class="btn-order">На головну</a></div>`;
-        return;
-    }
-
-    document.title = `${product.name} | BV Jewelry`;
-    const lang = API.get('bv_lang', 'uk');
-
-    const imgEl = document.getElementById('pd-img');
-    const badgeEl = document.getElementById('pd-badges');
-    const titleEl = document.getElementById('pd-title');
-    const variantEl = document.getElementById('pd-variant');
-    const priceEl = document.getElementById('pd-price');
-    const statusEl = document.getElementById('pd-status');
-    const descEl = document.getElementById('pd-desc');
-    const addBtn = document.getElementById('pd-add-btn');
-    const favBtn = document.getElementById('pd-fav-btn');
-
-    if(imgEl) imgEl.src = product.img;
-    if(titleEl) titleEl.innerText = product.name;
-    if(variantEl) variantEl.innerText = product.variant;
-    if(descEl) descEl.innerText = product.desc || "Опис відсутній.";
-    
-    if(priceEl) {
-        if (product.discount && Number(product.discount) > 0) {
-            priceEl.innerHTML = `<span class="text-3xl font-bold text-[var(--success)]">${formatterPrice.format(product.price)}</span> <span class="text-lg text-[var(--text-muted)] line-through ml-3">${formatterPrice.format(product.discount)}</span>`;
-        } else {
-            priceEl.innerHTML = `<span class="text-3xl font-bold text-[var(--gold-muted)]">${formatterPrice.format(product.price)}</span>`;
-        }
-    }
-
-    if(statusEl) {
-        if(product.status === 'out-stock') {
-            statusEl.innerHTML = `<span class="text-red-500 font-bold uppercase tracking-widest text-xs border border-red-500 px-3 py-1 rounded inline-block">${i18n[lang].out_stock}</span>`;
-            if(addBtn) { addBtn.style.opacity = '0.5'; addBtn.style.cursor = 'not-allowed'; addBtn.onclick = (e) => e.preventDefault(); addBtn.querySelector('span').innerText = 'Немає в наявності'; }
-        } else if (product.status === 'pre-order') {
-            statusEl.innerHTML = `<span class="text-gray-400 font-bold uppercase tracking-widest text-xs border border-gray-400 px-3 py-1 rounded inline-block">${i18n[lang].pre_order}</span>`;
-            if(addBtn) setupAddToCartBtn(addBtn, product, lang);
-        } else {
-            statusEl.innerHTML = `<span class="text-green-500 font-bold uppercase tracking-widest text-xs border border-green-500 px-3 py-1 rounded inline-block">${i18n[lang].in_stock}</span>`;
-            if(addBtn) setupAddToCartBtn(addBtn, product, lang);
-        }
-    }
-
-    if(badgeEl && product.badge !== 'none') {
-        let text = product.badge === 'new' ? 'Новинка' : (product.badge === 'sale' ? 'Sale' : 'Ексклюзив');
-        let bgClass = product.badge === 'new' ? 'bg-blue-500' : (product.badge === 'sale' ? 'bg-red-500' : 'bg-purple-500');
-        badgeEl.innerHTML = `<div class="${bgClass} text-white text-[10px] px-3 py-1 rounded uppercase tracking-widest font-bold inline-block">${text}</div>`;
-    }
-
-    if(favBtn) {
-        favBtn.setAttribute('data-id', product.id);
-        favBtn.classList.add('fav-btn-inline');
-        if(API.get('bv_favs', []).includes(product.id)) {
-            favBtn.classList.add('text-red-500', 'border-red-500'); favBtn.classList.remove('text-gray-400', 'border-white/20'); favBtn.querySelector('svg').setAttribute('fill', 'currentColor');
-        }
-        favBtn.onclick = () => toggleFav(product.id);
-    }
-
-    const similarGrid = document.getElementById('similarGrid');
-    if(similarGrid) {
-        const similar = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 6);
-        if(similar.length > 0) { similarGrid.innerHTML = similar.map(renderProductCard).join(''); } 
-        else { document.getElementById('similarSection').style.display = 'none'; }
-    }
-};
-
-function setupAddToCartBtn(btn, product, lang) {
-    btn.onclick = () => addToCart(product.id, product.name, product.variant, product.price, product.img);
-    btn.querySelector('span').innerText = i18n[lang].btn_buy;
-}
-
-// ==========================================
 // 8. ДИНАМІЧНА ГЕНЕРАЦІЯ МЕНЮ 
 // ==========================================
 function generateMenus() {
@@ -578,22 +486,23 @@ function generateMenus() {
         sideMenu.innerHTML = `
             <a href="index.html" data-i18n="m1" class="mob-menu-title" onclick="window.toggleMenu()">Головна</a>
             <a href="exclusive.html" class="mob-atelier-link" onclick="window.toggleMenu()"><span data-i18n="m_atelier">Замовити ексклюзив</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            
+            <a href="services.html" class="mob-menu-title" onclick="window.toggleMenu()"><span>Прайс-лист</span></a>
+
             <div>
                 <div class="mob-menu-title" onclick="window.toggleAccordion('mobCatList', 'mobCatArrow')"><span data-i18n="m2">Каталог</span><svg id="mobCatArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg></div>
                 <div class="mob-accordion-list" id="mobCatList" style="gap: 0; padding-left: 0;">${mobCatHtml}</div>
             </div>
             <div>
-                <div class="mob-menu-title" onclick="window.toggleAccordion('mobInfoList', 'mobInfoArrow')"><span>Інфо</span><svg id="mobInfoArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg></div>
+                <div class="mob-menu-title" onclick="window.toggleAccordion('mobInfoList', 'mobInfoArrow')"><span>Про нас</span><svg id="mobInfoArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg></div>
                 <div class="mob-accordion-list" id="mobInfoList" style="gap: 5px; padding-left: 20px;">
-                    <a href="info.html?p=services" class="sub-cat-link py-2" onclick="window.toggleMenu()">Послуги та Прайс</a>
-                    <a href="info.html?p=about" class="sub-cat-link py-2" onclick="window.toggleMenu()">Про нас</a>
+                    <a href="info.html?p=about" class="sub-cat-link py-2" onclick="window.toggleMenu()">Історія Atelier</a>
                     <a href="info.html?p=warranty" class="sub-cat-link py-2" onclick="window.toggleMenu()">Гарантія</a>
                     <a href="info.html?p=terms" class="sub-cat-link py-2" onclick="window.toggleMenu()">Умови</a>
                     <a href="info.html?p=reviews" class="sub-cat-link py-2" onclick="window.toggleMenu()">Відгуки</a>
                 </div>
             </div>
             
-            <a href="#login" class="mob-menu-title" onclick="window.toggleMenu()"><span data-i18n="login">Увійти (Профіль)</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
             <a href="#footer" data-i18n="m4" class="mob-menu-title" onclick="window.toggleMenu()">Контакти</a>
             <div class="menu-divider"></div>
             <div class="mobile-settings-group">
@@ -605,7 +514,7 @@ function generateMenus() {
                     <div class="mob-accordion-list" id="mobLangList" style="margin-top: 10px;">
                         <div class="dropdown-item" onclick="window.changeLang('uk')"><img src="https://flagcdn.com/ua.svg" class="flag"> UA</div>
                         <div class="dropdown-item" onclick="window.changeLang('en')"><img src="https://flagcdn.com/gb.svg" class="flag"> EN</div>
-                        <div class="dropdown-item" onclick="window.changeLang('ru')"><img src="https://flagcdn.com/ru.svg" class="flag"> RU</div>
+                        <div class="dropdown-item" onclick="changeLang('ru')"><img src="https://flagcdn.com/ru.svg" class="flag"> RU</div>
                     </div>
                 </div>
                 <div id="themeToggleMob" class="mobile-theme-toggle" onclick="window.toggleTheme()" style="font-size: 15px;">
@@ -620,40 +529,112 @@ function generateMenus() {
 }
 
 // ==========================================
-// 9. БЕЗКІНЧЕННА БІГУЧА СТРОКА (МАШИНКА)
+// 9. БЕЗКІНЧЕННА БІГУЧА СТРОКА ТА КАРУСЕЛІ (ІНЕРЦІЯ)
 // ==========================================
-window.initMarquee = function() {
-    const track = document.getElementById('marqueeTrack');
-    const wrapper = document.querySelector('.marquee-wrapper');
-    if (!track || !wrapper) return;
+function createInertiaScroll(containerSelector, trackSelector, speedAuto = 0) {
+    const container = document.querySelector(containerSelector);
+    const track = document.querySelector(trackSelector);
+    if (!container || !track) return;
 
-    track.innerHTML = categoriesTree.map(c => `<a href="catalog.html#${c.id}" class="marquee-item">${c.name}</a>`).join('').repeat(15);
+    let isDown = false;
+    let startX;
+    let startY; 
+    let currentX = 0;
+    let velocity = 0;
+    let rafId;
+    let isHorizontalSwipe = false; 
 
-    let currentX = 0, isHovered = false;
-    const speed = 0.5;
+    track.innerHTML += track.innerHTML;
+
+    function getTrackWidth() { return track.scrollWidth / 2; }
 
     function animate() {
-        if (!isHovered) {
-            currentX -= speed;
-            if (Math.abs(currentX) >= track.scrollWidth / 2) {
-                currentX = 0;
+        if (!isDown) {
+            currentX += velocity;
+            velocity *= 0.95; 
+            if (Math.abs(velocity) < 0.1 && speedAuto !== 0) {
+                currentX += speedAuto;
             }
-            track.style.transform = `translateX(${currentX}px)`;
         }
-        requestAnimationFrame(animate);
+        const halfWidth = getTrackWidth();
+        if (currentX <= -halfWidth) currentX += halfWidth;
+        if (currentX > 0) currentX -= halfWidth;
+
+        track.style.transform = `translateX(${currentX}px)`;
+        rafId = requestAnimationFrame(animate);
     }
-    animate();
 
-    wrapper.addEventListener('wheel', (e) => {
-        e.preventDefault(); 
-        wrapper.scrollLeft += e.deltaY; 
-    }, { passive: false });
+    container.addEventListener('mousedown', (e) => {
+        isDown = true;
+        container.classList.add('active');
+        startX = e.pageX - currentX;
+        velocity = 0;
+        cancelAnimationFrame(rafId);
+    });
 
-    wrapper.addEventListener('mouseenter', () => { isHovered = true; document.body.classList.add('no-scroll'); });
-    wrapper.addEventListener('mouseleave', () => { isHovered = false; document.body.classList.remove('no-scroll'); });
-    wrapper.addEventListener('touchstart', () => document.body.classList.add('no-scroll'), {passive: true});
-    wrapper.addEventListener('touchend', () => document.body.classList.remove('no-scroll'));
+    container.addEventListener('mouseleave', () => { isDown = false; container.classList.remove('active'); rafId = requestAnimationFrame(animate); });
+    container.addEventListener('mouseup', () => { isDown = false; container.classList.remove('active'); rafId = requestAnimationFrame(animate); });
+
+    container.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX;
+        const newX = x - startX;
+        velocity = newX - currentX; 
+        currentX = newX;
+        track.style.transform = `translateX(${currentX}px)`;
+    });
+
+    container.addEventListener('touchstart', (e) => {
+        isDown = true;
+        isHorizontalSwipe = false; 
+        container.classList.add('active');
+        startX = e.touches[0].pageX - currentX;
+        startY = e.touches[0].pageY; 
+        velocity = 0;
+        cancelAnimationFrame(rafId);
+    }, {passive: true});
+
+    container.addEventListener('touchend', () => {
+        isDown = false;
+        container.classList.remove('active');
+        rafId = requestAnimationFrame(animate);
+    });
+
+    container.addEventListener('touchmove', (e) => {
+        if (!isDown) return;
+        const x = e.touches[0].pageX;
+        const y = e.touches[0].pageY;
+
+        if (!isHorizontalSwipe) {
+            if (Math.abs(y - startY) > Math.abs(x - (startX + currentX))) {
+                isDown = false; 
+                return;
+            }
+            isHorizontalSwipe = true; 
+        }
+
+        const newX = x - startX;
+        velocity = newX - currentX;
+        currentX = newX;
+        track.style.transform = `translateX(${currentX}px)`;
+    }, {passive: true});
+
+    container.addEventListener('wheel', (e) => { e.preventDefault(); velocity = -e.deltaY * 0.5; }, { passive: false });
+
+    rafId = requestAnimationFrame(animate);
+}
+
+window.initMarqueeSim = function() {
+    const track = document.getElementById('marqueeTrack');
+    if (!track) return;
+    const categoriesHtml = categoriesTree.map(c => `<a href="catalog.html#${c.id}" class="marquee-item">${c.name}</a>`).join('');
+    track.innerHTML = Array(15).fill(categoriesHtml).join('');
+    createInertiaScroll('.marquee-wrapper', '#marqueeTrack', -0.5); 
 };
+
+window.initPromoCarouselSim = function() { createInertiaScroll('#promoCarouselContainer', '#specialGrid', 0); };
+window.initWeeklyCarouselSim = function() { createInertiaScroll('#weeklyCarouselContainer', '#weeklyGrid', 0); };
 
 // ==========================================
 // 10. СЛАЙДЕР БАНЕРІВ
@@ -698,21 +679,18 @@ window.goToBanner = function(index) {
     const track = document.getElementById('bannerTrack');
     const dots = document.querySelectorAll('.banner-dot');
     if(!track) return;
-    
     window.currentBanner = index;
     track.style.transform = `translateX(-${index * 100}%)`;
-    
     dots.forEach(d => d.classList.remove('active'));
     if(dots[index]) dots[index].classList.add('active');
 };
 
 // ==========================================
-// 11. КОЛАЖ І ГОЛОВНА
+// 11. КОЛАЖ І ГОЛОВНА ТА СЕРВІСИ
 // ==========================================
 window.renderHomeCollage = function() {
     const collage = document.getElementById('art-collage');
     if (!collage) return;
-    
     const config = API.get('bv_collage_config', { template: 'grid-6', items: [] });
     collage.innerHTML = '';
     collage.className = 'art-collage ' + config.template;
@@ -732,8 +710,8 @@ window.renderHomeCollage = function() {
 };
 
 window.renderHomeSections = function() {
-    if(document.getElementById('specialGrid')) document.getElementById('specialGrid').innerHTML = products.filter(p => p.isSpecial).slice(0, 12).map(window.renderProductCard).join('');
-    if(document.getElementById('weeklyGrid')) document.getElementById('weeklyGrid').innerHTML = products.filter(p => p.isWeekly).slice(0, 12).map(window.renderProductCard).join('');
+    if(document.getElementById('specialGrid')) document.getElementById('specialGrid').innerHTML = products.filter(p => p.isSpecial).slice(0, 8).map(window.renderProductCard).join('');
+    if(document.getElementById('weeklyGrid')) document.getElementById('weeklyGrid').innerHTML = products.filter(p => p.isWeekly).slice(0, 8).map(window.renderProductCard).join('');
 };
 
 window.applyAdminSettings = function() {
@@ -753,90 +731,84 @@ window.applyAdminSettings = function() {
         if(settings.addr2) { const txt = document.querySelector('.addr-text-2'); if(txt) txt.innerText = settings.addr2; }
     }
 };
+
+window.renderServicesTable = function() {
+    const tbody = document.getElementById('servicesPriceBody');
+    if (!tbody) return;
+    if (dbServices.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="2" class="text-center py-10 text-[var(--text-muted)]">Прайс порожній або завантажується з Адмін-панелі.</td></tr>`;
+        return;
+    }
+    const html = dbServices.map(s => `
+        <tr class="border-b border-[var(--border)] text-[var(--text-main)] hover:bg-[var(--gold-muted)] hover:bg-opacity-10 transition-colors">
+            <td class="py-4 px-2 md:px-4 font-medium">${s.service_name}</td>
+            <td class="py-4 px-2 md:px-4 text-right font-semibold text-[var(--gold-muted)]">${s.service_price.toLocaleString('uk-UA')} ₴</td>
+        </tr>
+    `).join('');
+    tbody.innerHTML = html;
+};
+
 // ==========================================
 // 11.5 СИСТЕМА КОРИСТУВАЧІВ ТА ПОШУК
 // ==========================================
 
-// Глобальний Пошук
 window.executeSearch = function(query) {
-    if (!query.trim()) return;
+    if (!query || !query.trim()) return;
     window.location.href = `catalog.html?search=${encodeURIComponent(query.trim())}`;
+};
+
+window.toggleMobileSearch = function(forceClose = null) {
+    const searchBox = document.getElementById('mobSearchContainer');
+    if (!searchBox) return;
+    if (forceClose === true) { searchBox.classList.add('hidden'); return; }
+    if (forceClose === false) { searchBox.classList.remove('hidden'); }
+    else { searchBox.classList.toggle('hidden'); }
+    
+    if (!searchBox.classList.contains('hidden')) {
+        setTimeout(() => { const inp = document.getElementById('mobSearchOverlayInput'); if (inp) inp.focus(); }, 100);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     const deskSearch = document.querySelector('.search-input.desktop-only .search-input') || document.querySelector('.desktop-only .search-input');
-    if (deskSearch) {
-        deskSearch.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') window.executeSearch(e.target.value);
-        });
-    }
-    const mobSearch = document.querySelector('.mob-search-input');
-    if (mobSearch) {
-        mobSearch.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') window.executeSearch(e.target.value);
-        });
-    }
+    if (deskSearch) { deskSearch.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.executeSearch(e.target.value); }); }
+
+    const overlayInput = document.getElementById('mobSearchOverlayInput');
+    if (overlayInput) { overlayInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.executeSearch(e.target.value); }); }
 });
 
-// Система Реєстрації / Входу
 let isRegisterMode = false;
 
 window.openAuthModal = function() {
-    // Закриваємо мобільне меню якщо відкрите
-    if(document.getElementById('sideMenu') && document.getElementById('sideMenu').classList.contains('active')){
-        window.toggleMenu();
-    }
+    if(document.getElementById('sideMenu') && document.getElementById('sideMenu').classList.contains('active')){ window.toggleMenu(); }
 
     const currentUser = API.get('bv_current_user', null);
-    
-    // ПЕРЕВІРКА: Якщо користувач вже увійшов — одразу перекидаємо його
     if (currentUser) {
-        if (currentUser.role === 'admin') {
-            sessionStorage.setItem('isAdminAuth', 'true'); // Підтверджуємо сесію
-            window.location.href = 'admin.html'; // Адмін йде в панель
-        } else {
-            window.location.href = 'profile.html'; // Клієнт йде в особистий кабінет
-        }
-        return; // Зупиняємо функцію, модалку не відкриваємо
+        if (currentUser.role === 'admin') { sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; 
+        } else { window.location.href = 'profile.html'; }
+        return; 
     }
 
-    // Якщо не авторизований — відкриваємо модалку
     const modal = document.getElementById('authModal');
     if(!modal) return;
-    
-    modal.classList.remove('hidden');
-    setTimeout(() => modal.classList.remove('opacity-0'), 10);
-    
+    modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10);
     document.getElementById('authForm').classList.remove('hidden');
-    isRegisterMode = false;
-    updateAuthView();
+    isRegisterMode = false; updateAuthView();
 };
 
 window.closeAuthModal = function() {
     const modal = document.getElementById('authModal');
-    if(modal) {
-        modal.classList.add('opacity-0');
-        setTimeout(() => modal.classList.add('hidden'), 300);
-    }
+    if(modal) { modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 300); }
 };
 
 window.toggleAuthMode = function(e) {
-    e.preventDefault();
-    isRegisterMode = !isRegisterMode;
-    updateAuthView();
+    e.preventDefault(); isRegisterMode = !isRegisterMode; updateAuthView();
 };
 
 function updateAuthView() {
     document.getElementById('authTitle').innerText = isRegisterMode ? 'Створення акаунта' : 'Вхід у кабінет';
     document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'Зареєструватися' : 'Увійти';
     document.getElementById('authToggleLink').innerText = isRegisterMode ? 'Вже є акаунт? Увійти' : 'Зареєструватися';
-}
-
-// Створення бази користувачів
-let dbUsers = API.get('bv_users', []);
-if(dbUsers.length === 0) {
-    dbUsers.push({ username: 'admin', password: '123', role: 'admin', favs: [] });
-    API.set('bv_users', dbUsers);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -846,123 +818,78 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const user = document.getElementById('authUser').value.trim();
             const pass = document.getElementById('authPass').value.trim();
-            
             let users = API.get('bv_users', []);
             
             if (isRegisterMode) {
-                // Реєстрація нового клієнта
-                if(users.find(u => u.username.toLowerCase() === user.toLowerCase())) {
-                    alert('Користувач з таким логіном вже існує!');
-                    return;
-                }
+                if(users.find(u => u.username.toLowerCase() === user.toLowerCase())) { alert('Користувач з таким логіном вже існує!'); return; }
                 const newUser = { username: user, password: pass, role: 'user', favs: [] };
-                users.push(newUser);
-                API.set('bv_users', users);
-                
-                API.set('bv_current_user', newUser);
-                API.set('bv_favs', []); // Пусте обране для нового юзера
-                
-                // Після реєстрації відправляємо в профіль
+                users.push(newUser); API.set('bv_users', users); API.set('bv_current_user', newUser); API.set('bv_favs', []); 
                 window.location.href = 'profile.html';
-                
             } else {
-                // Логін існуючого користувача
                 const found = users.find(u => u.username.toLowerCase() === user.toLowerCase() && u.password === pass);
                 if (found) {
-                    API.set('bv_current_user', found);
-                    API.set('bv_favs', found.favs || []); // Відновлюємо збережене обране
-                    
-                    if(found.role === 'admin') {
-                        sessionStorage.setItem('isAdminAuth', 'true');
-                        window.location.href = 'admin.html'; // Адмін йде в панель
-                    } else {
-                        window.location.href = 'profile.html'; // Клієнт йде у свій кабінет
-                    }
-                } else {
-                    alert('Невірний логін або пароль!');
-                }
+                    API.set('bv_current_user', found); API.set('bv_favs', found.favs || []); 
+                    if(found.role === 'admin') { sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; } 
+                    else { window.location.href = 'profile.html'; }
+                } else { alert('Невірний логін або пароль!'); }
             }
         });
     }
 });
 
-// Функція логауту (перенесемо її в profile.html та admin.html пізніше, але логіка залишається тут)
 window.logoutUser = function() {
     const currentUser = API.get('bv_current_user');
     if(currentUser) {
         let users = API.get('bv_users', []);
         const idx = users.findIndex(u => u.username === currentUser.username);
-        if(idx !== -1) {
-            users[idx].favs = API.get('bv_favs', []);
-            API.set('bv_users', users);
-        }
+        if(idx !== -1) { users[idx].favs = API.get('bv_favs', []); API.set('bv_users', users); }
     }
-    API.set('bv_current_user', null);
-    API.set('bv_favs', []); 
+    API.set('bv_current_user', null); API.set('bv_favs', []); 
     sessionStorage.removeItem('isAdminAuth');
-    window.location.href = 'index.html'; // Після виходу завжди на головну
-};// ==========================================
+    window.location.href = 'index.html'; 
+};
+
+// ==========================================
 // 12. ІНІЦІАЛІЗАЦІЯ ПРИ ЗАВАНТАЖЕННІ
 // ==========================================
 window.onload = () => { 
-    // Запуск основних компонентів UI
     if(typeof generateMenus === 'function') generateMenus();
-    if(typeof initMarquee === 'function') initMarquee();
     if(typeof initBannerSlider === 'function') initBannerSlider();
     if(typeof renderHomeCollage === 'function') renderHomeCollage();
     
-    // Рендер сіток товарів на головній
-    if(typeof renderHomeSections === 'function') renderHomeSections();
-
-    // Якщо ми на сторінці конкретного товару
-    if(document.getElementById('productContainer') && typeof renderProductPage === 'function') {
-        renderProductPage();
+    if(document.getElementById('marqueeTrack') && typeof initMarqueeSim === 'function') initMarqueeSim();
+    if(document.getElementById('specialGrid') && typeof initPromoCarouselSim === 'function') {
+        renderHomeSections(); 
+        setTimeout(initPromoCarouselSim, 100);
     }
+    if(document.getElementById('weeklyGrid') && typeof initWeeklyCarouselSim === 'function') setTimeout(initWeeklyCarouselSim, 100);
 
-    // Завантаження збереженої мови
+    if(document.getElementById('productContainer') && typeof renderProductPage === 'function') { renderProductPage(); }
+
     const savedLang = API.get('bv_lang', 'uk');
     if(typeof window.changeLang === 'function') window.changeLang(savedLang);
 
-    // СВІТЛА ТЕМА ЗА ЗАМОВЧУВАННЯМ (Тренд)
     const savedTheme = API.get('bv_theme', 'light');
     document.documentElement.setAttribute('data-theme', savedTheme);
     const icon = document.getElementById('themeIcon');
     if(icon) icon.innerHTML = savedTheme === 'light' ? sunSVG : moonSVG;
 
-    // Встановлення поточного року у футері
     const yearEl = document.getElementById('currentYear');
     if(yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // Відновлення кошика та улюбленого з пам'яті
     if(typeof window.renderCart === 'function') window.renderCart(); 
     if(typeof window.renderFavDrawer === 'function') window.renderFavDrawer();
-    
-    // Застосування налаштувань адмінки (банери, контакти)
     if(typeof window.applyAdminSettings === 'function') window.applyAdminSettings(); 
 
-    // Обробник для бургер-меню
     const burgerBtn = document.getElementById('burger');
-    if(burgerBtn) {
-        burgerBtn.onclick = function(e) { 
-            e.stopPropagation(); 
-            if(typeof window.toggleMenu === 'function') window.toggleMenu(); 
-        };
-    }
+    if(burgerBtn) { burgerBtn.onclick = function(e) { e.stopPropagation(); if(typeof window.toggleMenu === 'function') window.toggleMenu(); }; }
 };
 
-// ==========================================
-// 13. ГЛОБАЛЬНІ ОБРОБНИКИ ПОДІЙ
-// ==========================================
-
-// Ефект "Скляної шапки" при скролі сторінки
 window.onscroll = () => {
     const header = document.getElementById('header');
-    if(header) {
-        header.classList.toggle('scrolled', window.pageYOffset > 50);
-    }
+    if(header) header.classList.toggle('scrolled', window.pageYOffset > 50);
 };
 
-// Закриття бокових панелей при кліку на затемнений фон (overlay)
 const overlay = document.getElementById('overlay');
 const cartOverlay = document.getElementById('cartOverlay');
 const favOverlay = document.getElementById('favOverlay');

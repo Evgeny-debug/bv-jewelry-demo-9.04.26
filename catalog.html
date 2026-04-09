@@ -79,18 +79,23 @@
                         <div class="mega-col-3" id="megaCol3"></div>
                     </div>
                 </div>
+
+                <a href="services.html" class="flex items-center gap-1 text-[12px] font-medium uppercase tracking-[1px] text-[var(--text-main)] opacity-80 transition hover:opacity-100 hover:text-[var(--gold-muted)]">
+                    Прайс-лист
+                </a>
+
                 <div class="dropdown-wrapper group" style="padding: 20px 0; margin: -20px 0;">
                     <span class="flex items-center gap-1 text-[12px] font-medium uppercase tracking-[1px] text-[var(--text-main)] opacity-80 transition hover:opacity-100 hover:text-[var(--gold-muted)] cursor-pointer">
-                        Інфо <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:rotate-180 transition-transform"><path d="M6 9l6 6 6-6"/></svg>
+                        Про нас <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:rotate-180 transition-transform"><path d="M6 9l6 6 6-6"/></svg>
                     </span>
                     <div class="dropdown-menu">
-                        <a href="info.html?p=services" class="dropdown-item">Послуги та Прайс</a>
-                        <a href="info.html?p=about" class="dropdown-item">Про нас</a>
+                        <a href="info.html?p=about" class="dropdown-item">Історія Atelier</a>
                         <a href="info.html?p=warranty" class="dropdown-item">Гарантія</a>
                         <a href="info.html?p=terms" class="dropdown-item">Умови</a>
                         <a href="info.html?p=reviews" class="dropdown-item">Відгуки</a>
                     </div>
                 </div>
+
                 <a href="exclusive.html" class="btn-order" data-i18n="m_atelier">Замовити ексклюзив</a>
             </nav>
             <div class="search-box desktop-only">
@@ -102,7 +107,7 @@
         <a href="index.html" class="bv-logo"><span>BV</span><span>jewelry</span></a>
 
         <div class="header-right">
-            <div class="mobile-only mr-2 p-2 cursor-pointer" onclick="toggleMobileSearch()">
+            <div class="mobile-only mr-2 p-2 cursor-pointer relative z-50 flex items-center justify-center" onclick="window.toggleMobileSearch()">
                 <svg viewBox="0 0 24 24" stroke="var(--gold-muted)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 active:scale-90 transition-transform"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
 

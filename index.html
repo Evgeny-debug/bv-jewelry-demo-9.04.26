@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 </head>
 <body class="mobile-padding">
 
@@ -25,10 +26,19 @@
                     Немає акаунта? <a href="#" onclick="toggleAuthMode(event)" class="text-[var(--gold-muted)] font-bold" id="authToggleLink">Зареєструватися</a>
                 </div>
             </form>
+
+            <div id="profileView" class="hidden flex-col gap-4">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 bg-[var(--gold-muted)] text-[var(--bg-body)] rounded-full flex items-center justify-center text-2xl font-bold uppercase" id="profAvatar">A</div>
+                </div>
+                <p class="text-center text-[var(--text-main)] mb-6">Вітаємо, <span id="profName" class="font-bold text-[var(--gold-muted)]"></span>!</p>
+                <button onclick="location.href='admin.html'" id="adminLinkBtn" class="btn-primary w-full py-4 rounded-xl hidden mb-2 uppercase tracking-widest text-xs text-[var(--bg-body)]">Увійти в Адмінку</button>
+                <button onclick="logoutUser()" class="w-full py-4 rounded-xl border border-red-500/50 text-red-500 hover:bg-red-500/10 transition uppercase tracking-widest text-xs font-bold">Вийти з акаунта</button>
+            </div>
         </div>
     </div>
 
-    <div class="menu-overlay" id="overlay"></div>
+    <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="cart-drawer" id="cartDrawer">
@@ -70,18 +80,23 @@
                         <div class="mega-col-3" id="megaCol3"></div>
                     </div>
                 </div>
+
+                <a href="services.html" class="flex items-center gap-1 text-[12px] font-medium uppercase tracking-[1px] text-[var(--text-main)] opacity-80 transition hover:opacity-100 hover:text-[var(--gold-muted)]">
+                    Прайс-лист
+                </a>
+
                 <div class="dropdown-wrapper group" style="padding: 20px 0; margin: -20px 0;">
                     <span class="flex items-center gap-1 text-[12px] font-medium uppercase tracking-[1px] text-[var(--text-main)] opacity-80 transition hover:opacity-100 hover:text-[var(--gold-muted)] cursor-pointer">
-                        Інфо <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:rotate-180 transition-transform"><path d="M6 9l6 6 6-6"/></svg>
+                        Про нас <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-hover:rotate-180 transition-transform"><path d="M6 9l6 6 6-6"/></svg>
                     </span>
                     <div class="dropdown-menu">
-                        <a href="info.html?p=services" class="dropdown-item">Послуги та Прайс</a>
-                        <a href="info.html?p=about" class="dropdown-item">Про нас</a>
+                        <a href="info.html?p=about" class="dropdown-item">Історія Atelier</a>
                         <a href="info.html?p=warranty" class="dropdown-item">Гарантія</a>
                         <a href="info.html?p=terms" class="dropdown-item">Умови</a>
                         <a href="info.html?p=reviews" class="dropdown-item">Відгуки</a>
                     </div>
                 </div>
+
                 <a href="exclusive.html" class="btn-order" data-i18n="m_atelier">Замовити ексклюзив</a>
             </nav>
             <div class="search-box desktop-only">
@@ -93,7 +108,7 @@
         <a href="index.html" class="bv-logo"><span>BV</span><span>jewelry</span></a>
 
         <div class="header-right">
-            <div class="mobile-only mr-2 p-2 cursor-pointer" onclick="toggleMobileSearch()">
+            <div class="mobile-only mr-2 p-2 cursor-pointer relative z-50 flex items-center justify-center" onclick="window.toggleMobileSearch()">
                 <svg viewBox="0 0 24 24" stroke="var(--gold-muted)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 active:scale-90 transition-transform"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
 
@@ -148,7 +163,7 @@
             <h1 class="hero-title">BV Jewelry</h1>
         </section>
 
-        <div class="marquee-wrapper">
+        <div class="marquee-wrapper physics-marquee">
             <div class="marquee-track" id="marqueeTrack"></div>
         </div>
 
@@ -158,12 +173,16 @@
 
         <section class="max-w-[1920px] mx-auto px-4 md:px-8 py-10 md:py-20" id="special-section">
             <h2 class="text-2xl md:text-4xl font-serif italic text-[var(--gold-muted)] mb-6 md:mb-14 text-left md:text-center uppercase tracking-widest px-1">Пропозиції місяця</h2>
-            <div id="specialGrid" class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-8"></div>
+            <div class="promo-carousel-container" id="promoCarouselContainer">
+                <div id="specialGrid" class="promo-track"></div>
+            </div>
         </section>
 
         <section class="max-w-[1920px] mx-auto px-4 md:px-8 py-10 md:py-20" id="weekly-section">
             <h2 class="text-2xl md:text-4xl font-serif italic text-[var(--gold-muted)] mb-6 md:mb-14 text-left md:text-center px-1">Прикраси тижня</h2>
-            <div id="weeklyGrid" class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-8"></div>
+            <div class="weekly-carousel-container" id="weeklyCarouselContainer">
+                <div id="weeklyGrid" class="weekly-track"></div>
+            </div>
         </section>
         
         <section class="py-10 md:py-20" id="categories-section">
@@ -183,8 +202,8 @@
             <span data-i18n="m1">Головна</span>
         </a>
         <a href="catalog.html" class="bottom-nav-item">
-    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-    <span data-i18n="m2">Каталог</span>
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span data-i18n="m2">Каталог</span>
         </a>
         <a href="#" onclick="event.preventDefault(); window.toggleCart();" class="bottom-nav-item">
             <div class="relative">
@@ -233,5 +252,18 @@
     </div>
 
     <script src="main.js"></script>
+    <script>
+        // Ініціалізація фізики та каруселей після завантаження даних
+        document.addEventListener('DOMContentLoaded', () => {
+            // Маркер, що ми на головній
+            sessionStorage.setItem('is_home_page', 'true');
+            // Перевіримо чи дані завантажилися ( setTimeout для гарантії)
+            setTimeout(() => {
+                if(typeof window.initMarqueeSim === 'function') window.initMarqueeSim();
+                if(typeof window.initPromoCarouselSim === 'function') window.initPromoCarouselSim();
+                if(typeof window.initWeeklyCarouselSim === 'function') window.initWeeklyCarouselSim();
+            }, 300);
+        });
+    </script>
 </body>
 </html>

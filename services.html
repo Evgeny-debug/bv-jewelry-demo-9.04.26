@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Прайс-лист Послуг | BV Jewelry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="mobile-padding">
+
+    <header id="header">
+        </header>
+    <main class="pt-24 md:pt-32 pb-20 px-4 md:px-6 max-w-7xl mx-auto min-h-screen">
+        <div class="text-center mb-12">
+            <h1 class="font-['Playfair_Display'] text-3xl md:text-5xl mb-4 text-[var(--gold-muted)] italic">Прайс-лист на послуги</h1>
+            <p class="text-[var(--text-muted)] text-sm max-w-2xl mx-auto">Нижче наведено базові ціни на наші Atelier послуги з ремонту, реставрації та створення прикрас. Остаточна вартість залежить від складності та матеріалів.</p>
+        </div>
+
+        <div class="bg-[var(--bg-card)] p-4 md:p-8 rounded-2xl border border-[var(--border)] shadow-xl overflow-hidden">
+            <table class="w-full text-sm md:text-base">
+                <thead class="border-b border-[var(--border)]">
+                    <tr class="text-[var(--text-muted)] text-[10px] md:text-xs uppercase tracking-widest text-left">
+                        <th class="py-4 px-2 md:px-4">Назва послуги</th>
+                        <th class="py-4 px-2 md:px-4 text-right">Базова ціна</th>
+                    </tr>
+                </thead>
+                <tbody id="servicesPriceBody">
+                    <tr><td colspan="2" class="text-center py-20 text-[var(--text-muted)]">Завантаження даних...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Маркер, що ми на прайсі
+            sessionStorage.setItem('on_price_page', 'true');
+            
+            // Гарантія завантаження даних
+            setTimeout(() => {
+                if(typeof window.renderServicesTable === 'function') window.renderServicesTable();
+            }, 300);
+        });
+    </script>
+</body>
+</html>

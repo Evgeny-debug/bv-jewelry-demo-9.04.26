@@ -174,12 +174,14 @@ header.scrolled {
 .menu-overlay.active { opacity: 1; visibility: visible; }
 
 /* ==========================================
-   КОШИК ТА УЛЮБЛЕНЕ
+   КОШИК ТА УЛЮБЛЕНЕ (ФІКС ТІНІ)
    ========================================== */
 .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 5500; opacity: 0; visibility: hidden; transition: 0.4s ease; backdrop-filter: blur(5px); }
 .cart-overlay.active { opacity: 1; visibility: visible; }
 
+/* Прибрали box-shadow з базового класу */
 .cart-drawer { position: fixed; top: 0; right: -100%; width: 100%; max-width: 440px; height: 100vh; background: var(--glass-bg); backdrop-filter: blur(30px); z-index: 5501; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; border-left: 1px solid var(--border); }
+/* Тінь додається тільки коли клас active */
 .cart-drawer.active { right: 0; box-shadow: -20px 0 60px rgba(0,0,0,0.5); }
 .cart-header { display: flex; justify-content: space-between; padding: 30px 40px; border-bottom: 1px solid var(--border); }
 .cart-header h2 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin: 0;}
@@ -200,7 +202,7 @@ header.scrolled {
 .btn-checkout:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
 /* ==========================================
-   ГОЛОВНА: MARQUEE & BANNER SLIDER
+   ГОЛОВНА: ФІЗИЧНА БІГУЧА СТРОКА ТА СЛАЙДЕРИ
    ========================================== */
 .h-screen-hero { height: 85vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
 .hero-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0.4; }
@@ -208,20 +210,22 @@ header.scrolled {
 @media (min-width: 768px) { .hero-title { font-size: 7rem; } }
 @media (min-width: 1024px) { .hero-title { font-size: 9rem; } }
 
+/* Physics Marquee */
 .marquee-wrapper { 
     background: var(--glass-bg); backdrop-filter: blur(10px);
     border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); 
     padding: 24px 0; overflow: hidden; position: relative; white-space: nowrap; cursor: grab;
 }
 .marquee-wrapper.active { cursor: grabbing; }
-.marquee-track { display: inline-block; will-change: transform; }
+.marquee-track, #marqueeTrack { display: flex; gap: 40px; width: max-content; will-change: transform; align-items: center;}
 .marquee-item { 
     font-family: 'Playfair Display', serif; font-size: 18px; font-style: italic; 
-    margin: 0 40px; color: var(--gold-muted); text-transform: uppercase; letter-spacing: 2px; 
+    color: var(--gold-muted); text-transform: uppercase; letter-spacing: 2px; 
     display: inline-block; transition: 0.3s; text-decoration: none;
 }
 .marquee-item:hover { color: var(--text-main); transform: scale(1.05); }
 
+/* Banner Slider */
 .banner-slider-container { position: relative; width: 100%; aspect-ratio: 21/9; border-radius: 16px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
 @media (min-width: 768px) { .banner-slider-container { aspect-ratio: 3/1; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); } }
 
@@ -241,6 +245,42 @@ header.scrolled {
 .banner-dot:hover { background: rgba(255,255,255,0.8); }
 .banner-dot.active { background: var(--gold-muted); box-shadow: 0 0 10px var(--gold-muted); transform: scale(1.3); }
 
+/* Physics Marquee */
+.marquee-wrapper { 
+    background: var(--glass-bg); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); 
+    padding: 24px 0; overflow: hidden; position: relative; white-space: nowrap; cursor: grab;
+    touch-action: pan-y; /* ДОДАНО: Дозволяє вертикальний скрол */
+}
+/* ==========================================
+   НЕСКІНЧЕННІ КАРУСЕЛІ ТОВАРІВ (З ІНЕРЦІЄЮ)
+   ========================================== */
+.promo-carousel-container, .weekly-carousel-container { 
+    position: relative; width: 100%; overflow: hidden; padding: 10px 0; 
+    cursor: grab;
+    /* Додаємо плавне розчинення справа (натяк на скрол) */
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+.promo-carousel-container.active, .weekly-carousel-container.active { cursor: grabbing; }
+
+.promo-track, .weekly-track { 
+    display: flex; gap: 12px; width: max-content; will-change: transform;
+    padding-right: 15vw; /* Запас місця, щоб остання картка не обрізалась маскою */
+}
+@media (min-width: 1024px) { .promo-track, .weekly-track { gap: 20px; padding-right: 5vw;} }
+
+/* Менші картки, щоб наступна явно "виглядала" з-за краю */
+.promo-track .product-card, .weekly-track .product-card { 
+    width: calc(40vw - 10px); /* ~2.5 картки на мобільному екрані */
+    flex-shrink: 0; 
+}
+@media (min-width: 768px) { .promo-track .product-card, .weekly-track .product-card { width: calc(28vw - 15px); } } 
+@media (min-width: 1280px) { 
+    .promo-track .product-card, .weekly-track .product-card { width: calc(16.666vw - 20px); } 
+    /* На великих екранах прибираємо маску розчинення */
+    .promo-carousel-container, .weekly-carousel-container { -webkit-mask-image: none; mask-image: none; }
+}
 /* ==========================================
    КОЛАЖ КАТАЛОГУ
    ========================================== */
@@ -345,7 +385,7 @@ header.scrolled {
     .burger { display: flex !important; }
     .mobile-only { display: flex; align-items: center;}
     .mobile-bottom-nav { display: flex; }
-    body.mobile-padding { padding-bottom: 90px; } /* Відступ для нижнього плаваючого меню */
+    body.mobile-padding { padding-bottom: 90px; } 
     
     header { height: 60px; padding: 0 4%; }
     header.scrolled { height: 55px; top: 10px; width: 94%; border-radius: 20px; padding: 0 15px; }
