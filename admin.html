@@ -12,6 +12,7 @@
         
         .input-field { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 14px; color: white; outline: none; transition: border-color 0.3s; font-size: 14px; }
         .input-field:focus { border-color: #c5a059; }
+        .file-input { padding: 8px; font-size: 12px; cursor: pointer; }
         
         select.input-field option { background-color: #1c1c1e; color: #f5f5f7; }
         
@@ -19,6 +20,8 @@
         .btn-primary:hover { opacity: 0.9; }
         .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: 0.3s; cursor: pointer; text-align: center; font-size: 13px;}
         .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: 0.3s; cursor: pointer; text-align: center; font-size: 13px;}
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
         
         .admin-sidebar { position: fixed; inset-y: 0; left: -100%; z-index: 50; transition: 0.4s; width: 280px; }
         .admin-sidebar.open { left: 0; }
@@ -30,12 +33,6 @@
             .sidebar-overlay { display: none !important; }
             .mobile-header { display: none !important; }
         }
-
-        .file-upload-wrapper { position: relative; width: 100%; height: 120px; border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; transition: 0.3s; }
-        .file-upload-wrapper:hover { border-color: #c5a059; }
-        .file-upload-wrapper input[type="file"], .file-upload-wrapper input[type="text"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 10; }
-        .file-upload-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; display: none; }
-        .file-upload-text { color: gray; font-size: 12px; z-index: 1; pointer-events: none; text-align: center; padding: 0 10px; }
         
         .table-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
         th, td { white-space: nowrap; }
@@ -87,6 +84,7 @@
             <button onclick="switchTab('categories-list')" id="tab-categories-list" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">🗂 Структура Категорій</button>
             <button onclick="switchTab('categories-home')" id="tab-categories-home" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">🖼 Фото на Головній</button>
             <button onclick="switchTab('banners')" id="tab-banners" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">📺 Банери Слайдера</button>
+            <button onclick="switchTab('exclusive')" id="tab-exclusive" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">💎 Сторінка "Ексклюзив"</button>
             <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition text-gray-400 text-sm">⚙️ Налаштування сайту</button>
         </nav>
         <div class="p-4 border-t border-white/10 space-y-2">
@@ -153,7 +151,7 @@
                     <option value="grid-3">Шаблон 3 (3 вертикальні плитки)</option>
                 </select>
                 
-                <p class="text-xs text-gray-400 mb-4">Налаштуйте кожну плитку (вставте URL або завантажте):</p>
+                <p class="text-xs text-gray-400 mb-4">Налаштуйте кожну плитку. Завантажте фото (до 1MB, формат 1:1 або 4:3 залежно від блоку):</p>
                 <div id="homeCategoriesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 <button onclick="saveHomeCategories()" class="btn-primary w-full sm:w-auto mt-6">Зберегти Колаж</button>
             </div>
@@ -165,8 +163,34 @@
                 <button onclick="openBannerModal()" class="btn-primary w-full sm:w-auto">+ Додати Банер</button>
             </div>
             <div class="glass-panel p-6">
-                <p class="text-xs text-gray-400 mb-6 leading-relaxed">Банери, що будуть перегортатися у слайдері на головній. Порядок можна змінити.</p>
+                <p class="text-xs text-gray-400 mb-6 leading-relaxed">Банери, що будуть перегортатися у слайдері на головній. Рекомендований розмір: 1920x870px.</p>
                 <div id="bannersListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <section id="content-exclusive" class="tab-content hidden h-full pb-20">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <h2 class="text-2xl font-semibold">Сторінка "Ексклюзив"</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass-panel p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-semibold uppercase tracking-widest text-[#c5a059]">Етапи створення</h3>
+                        <button onclick="openProcessModal()" class="text-xs text-blue-400 hover:text-white transition">+ Додати етап</button>
+                    </div>
+                    <p class="text-xs text-gray-400 mb-4">Фотографії (співвідношення 4:3) та описи кроків.</p>
+                    <div id="exclusiveProcessList" class="flex flex-col gap-4"></div>
+                </div>
+
+                <div class="glass-panel p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-semibold uppercase tracking-widest text-[#c5a059]">Кнопки "Матеріали"</h3>
+                        <button onclick="openMaterialModal()" class="text-xs text-blue-400 hover:text-white transition">+ Додати кнопку</button>
+                    </div>
+                    <p class="text-xs text-gray-400 mb-4">Опції матеріалів у формі замовлення.</p>
+                    <div id="exclusiveMaterialsList" class="flex flex-col gap-2"></div>
+                </div>
             </div>
         </section>
 
@@ -192,15 +216,6 @@
                         <div><label class="text-[10px] uppercase text-gray-400 mb-1 block">Google Maps (Адреса 2)</label><input type="text" id="set-map2" class="input-field"></div>
                     </div>
                 </div>
-
-                <div class="glass-panel p-6">
-                    <h3 class="text-sm font-semibold uppercase tracking-widest text-[#c5a059] mb-4">Фон сторінки "Ексклюзив"</h3>
-                    <div class="file-upload-wrapper" id="heroUploadWrapper">
-                        <input type="text" id="set-hero" class="input-field opacity-0 z-0 h-full w-full absolute inset-0 cursor-text text-center text-transparent" placeholder="Вставте URL картинки" oninput="document.getElementById('heroPreview').src=this.value; document.getElementById('heroPreview').style.display='block';">
-                        <img id="heroPreview" class="file-upload-preview">
-                        <div class="file-upload-text">Вставте посилання на фото</div>
-                    </div>
-                </div>
             </div>
             <div class="mt-6 flex flex-col sm:flex-row justify-end pb-10">
                 <button onclick="saveSiteSettings()" class="btn-primary w-full sm:w-auto">Зберегти налаштування</button>
@@ -217,8 +232,7 @@
             </div>
             <form id="productForm" class="flex flex-col gap-4">
                 <input type="hidden" id="prod-id">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" id="prod-imgBase64"> <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Назва</label><input type="text" id="prod-name" class="input-field" required></div>
                     <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Артикул / Метал</label><input type="text" id="prod-variant" class="input-field" required></div>
                 </div>
@@ -263,10 +277,11 @@
                     </div>
                 </div>
                 
-                <div>
-                    <label class="text-[10px] uppercase text-gray-400 block mb-1">Фото товару (Вставте посилання URL)</label>
-                    <input type="text" id="prod-imgBase64" class="input-field mb-2" placeholder="https://..." oninput="document.getElementById('prodPreview').src=this.value; document.getElementById('prodPreview').style.display='block';">
-                    <img id="prodPreview" class="h-32 object-cover rounded border border-white/20 hidden">
+                <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                    <label class="text-[10px] font-bold uppercase text-[#c5a059] block mb-1">Фото товару</label>
+                    <p class="text-[9px] text-gray-400 mb-3 uppercase tracking-widest">Формати: JPG, PNG. Розмір: 1:1 (Квадрат). Макс: 1MB.</p>
+                    <input type="file" id="prod-img-file" accept="image/png, image/jpeg, image/webp" class="input-field file-input bg-transparent border-dashed mb-3" onchange="handleImageUpload(event, 'prodPreview', 'prod-imgBase64', 1)">
+                    <img id="prodPreview" class="h-32 w-32 object-cover rounded border border-white/20 hidden mx-auto">
                 </div>
                 
                 <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Опис</label><textarea id="prod-desc" class="input-field h-20 resize-none"></textarea></div>
@@ -315,11 +330,13 @@
             <h3 class="text-lg font-semibold mb-4" id="bannerModalTitle">Налаштування банера</h3>
             <form id="bannerForm" class="flex flex-col gap-4">
                 <input type="hidden" id="banner-id">
-                <div>
-                    <label class="text-[10px] uppercase text-gray-400 block mb-1">URL Зображення (1920x870px)</label>
-                    <input type="text" id="banner-img" class="input-field" placeholder="https://..." oninput="document.getElementById('bannerPreview').src=this.value; document.getElementById('bannerPreview').style.display='block';" required>
-                    <img id="bannerPreview" class="w-full aspect-[21/9] mt-2 object-cover rounded border border-white/20 hidden">
+                <input type="hidden" id="banner-img"> <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                    <label class="text-[10px] font-bold uppercase text-[#c5a059] block mb-1">Фото Банера</label>
+                    <p class="text-[9px] text-gray-400 mb-3 uppercase tracking-widest">Формати: JPG, PNG. Розмір: 1920x870px. Макс: 2MB.</p>
+                    <input type="file" id="banner-img-file" accept="image/png, image/jpeg, image/webp" class="input-field file-input bg-transparent border-dashed mb-3" onchange="handleImageUpload(event, 'bannerPreview', 'banner-img', 2)">
+                    <img id="bannerPreview" class="w-full aspect-[21/9] object-cover rounded border border-white/20 hidden mx-auto">
                 </div>
+
                 <div>
                     <label class="text-[10px] uppercase text-gray-400 block mb-1">Посилання при кліку (напр. catalog.html#sale)</label>
                     <input type="text" id="banner-link" class="input-field" placeholder="catalog.html#...">
@@ -332,14 +349,70 @@
         </div>
     </div>
 
+    <div id="processModal" class="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center hidden opacity-0 transition-opacity p-4">
+        <div class="glass-panel p-6 w-full max-w-lg">
+            <h3 class="text-lg font-semibold mb-4" id="processModalTitle">Етап створення</h3>
+            <form id="processForm" class="flex flex-col gap-4" onsubmit="event.preventDefault(); saveProcessStep();">
+                <input type="hidden" id="process-id">
+                <input type="hidden" id="process-img"> <div>
+                    <label class="text-[10px] uppercase text-gray-400 block mb-1">Назва кроку (напр. "3D Модель")</label>
+                    <input type="text" id="process-title" class="input-field" required>
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-gray-400 block mb-1">Опис</label>
+                    <textarea id="process-desc" class="input-field h-24 resize-none" required></textarea>
+                </div>
+                
+                <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                    <label class="text-[10px] font-bold uppercase text-[#c5a059] block mb-1">Фото етапу</label>
+                    <p class="text-[9px] text-gray-400 mb-3 uppercase tracking-widest">Формати: JPG, PNG. Розмір: 800x600px (4:3). Макс: 1MB.</p>
+                    <input type="file" id="process-img-file" accept="image/png, image/jpeg, image/webp" class="input-field file-input bg-transparent border-dashed mb-3" onchange="handleImageUpload(event, 'processPreview', 'process-img', 1)">
+                    <img id="processPreview" class="w-full aspect-[4/3] object-cover rounded border border-white/20 hidden mx-auto">
+                </div>
+
+                <div class="flex gap-3 mt-2">
+                    <button type="button" onclick="closeProcessModal()" class="flex-1 border border-white/10 rounded-lg text-sm text-gray-300 py-2">Скасувати</button>
+                    <button type="submit" class="flex-1 btn-primary py-2 text-sm">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="materialModal" class="fixed inset-0 bg-black/90 z-[60] flex items-center justify-center hidden opacity-0 transition-opacity p-4">
+        <div class="glass-panel p-6 w-full max-w-sm">
+            <h3 class="text-lg font-semibold mb-4" id="materialModalTitle">Кнопка матеріалу</h3>
+            <form id="materialForm" class="flex flex-col gap-4" onsubmit="event.preventDefault(); saveMaterialOption();">
+                <input type="hidden" id="material-old-id">
+                <div>
+                    <label class="text-[10px] uppercase text-gray-400 block mb-1">ID (Англ, без пробілів)</label>
+                    <input type="text" id="material-id" class="input-field" placeholder="gold_own" required pattern="[a-zA-Z0-9_-]+">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-gray-400 block mb-1">Текст на кнопці</label>
+                    <input type="text" id="material-label" class="input-field" placeholder="Є своє золото" required>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                    <input type="checkbox" id="material-selected" class="w-4 h-4 accent-[#c5a059]">
+                    <label for="material-selected" class="text-[11px] text-gray-300 cursor-pointer">Вибрана за замовчуванням</label>
+                </div>
+                <div class="flex gap-3 mt-2">
+                    <button type="button" onclick="closeMaterialModal()" class="flex-1 border border-white/10 rounded-lg text-sm text-gray-300 py-2">Скасувати</button>
+                    <button type="submit" class="flex-1 btn-primary py-2 text-sm">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <script>
         // --- ДАНІ ТА СТРУКТУРА ---
         let categories = JSON.parse(localStorage.getItem('bv_categories_tree')) || [];
         let products = JSON.parse(localStorage.getItem('bv_products')) || [];
         let banners = JSON.parse(localStorage.getItem('bv_banners')) || [];
         let siteSettings = JSON.parse(localStorage.getItem('bv_settings')) || {};
+        let exclusiveProcess = JSON.parse(localStorage.getItem('bv_exclusive_process')) || [];
+        let exclusiveMaterials = JSON.parse(localStorage.getItem('bv_exclusive_materials')) || [];
 
-        // Пагінація
         let currentPage = 1;
         const itemsPerPage = 50;
         let filteredProducts = [...products];
@@ -350,6 +423,28 @@
             toast.innerText = msg;
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // --- ОБРОБКА ЗАВАНТАЖЕННЯ ФАЙЛІВ У BASE64 ---
+        function handleImageUpload(event, previewId, hiddenInputId, maxMb) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const maxSize = maxMb * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert(`Файл занадто великий! Обмеження: ${maxMb}MB. У стиснутому вигляді браузер не збереже більше.`);
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Str = e.target.result;
+                document.getElementById(previewId).src = base64Str;
+                document.getElementById(previewId).style.display = 'block';
+                document.getElementById(hiddenInputId).value = base64Str;
+            };
+            reader.readAsDataURL(file);
         }
 
         // --- АВТОРИЗАЦІЯ ТА ВКЛАДКИ ---
@@ -366,7 +461,7 @@
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('content-products').classList.remove('hidden-first');
                 loadAllData();
-            } else alert('Невірні дані (Спробуйте admin / admin)');
+            } else alert('Невірні дані (Логін: admin / Пароль: admin)');
         });
 
         function toggleAdminMenu() {
@@ -390,6 +485,8 @@
             populateCategorySelects();
             renderProducts();
             renderBannersAdmin();
+            renderExclusiveProcessAdmin();
+            renderExclusiveMaterialsAdmin();
             populateSettings();
             
             const config = JSON.parse(localStorage.getItem('bv_collage_config'));
@@ -397,7 +494,7 @@
             renderCollageAdmin(); 
         }
 
-        // --- КАТЕГОРІЇ ---
+        // --- КАТЕГОРІЇ (Без змін) ---
         function renderCategoriesTree() {
             const container = document.getElementById('categoriesListContainer');
             container.innerHTML = '';
@@ -526,7 +623,7 @@
             }
         }
 
-        // --- УПРАВЛІННЯ ТОВАРАМИ ТА ПАГІНАЦІЯ ---
+        // --- УПРАВЛІННЯ ТОВАРАМИ ---
         function populateCategorySelects() {
             const catSelect = document.getElementById('prod-category');
             catSelect.innerHTML = '<option value="" disabled selected>Виберіть...</option>';
@@ -610,6 +707,7 @@
             document.getElementById('productForm').reset(); 
             document.getElementById('prodPreview').style.display = 'none'; 
             document.getElementById('prod-id').value = '';
+            document.getElementById('prod-imgBase64').value = ''; // Очищаємо Base64
             document.getElementById('prodModalTitle').innerText = 'Додати товар';
             updateSubcatOptions(); 
             
@@ -642,7 +740,8 @@
             e.preventDefault(); 
             const idInput = document.getElementById('prod-id').value;
             const imgData = document.getElementById('prod-imgBase64').value;
-            if(!imgData) return alert('Будь ласка, вставте посилання на фото товару!');
+            
+            if(!imgData) return alert('Будь ласка, завантажте фото товару!');
 
             const prodData = {
                 id: idInput || 'prod_' + Date.now(),
@@ -664,11 +763,15 @@
                 if(i !== -1) products[i] = prodData; 
             } else { products.unshift(prodData); }
 
-            localStorage.setItem('bv_products', JSON.stringify(products)); 
-            filteredProducts = [...products];
-            renderProducts(); 
-            closeProductModal();
-            showNotification('Товар успішно збережено!');
+            try {
+                localStorage.setItem('bv_products', JSON.stringify(products)); 
+                filteredProducts = [...products];
+                renderProducts(); 
+                closeProductModal();
+                showNotification('Товар успішно збережено!');
+            } catch (error) {
+                alert("Помилка збереження! Пам'ять браузера (localStorage) переповнена. Завантажуйте фото меншого розміру.");
+            }
         };
 
         function deleteProduct(id) {
@@ -704,6 +807,7 @@
             document.getElementById('bannerForm').reset();
             document.getElementById('bannerPreview').style.display = 'none';
             document.getElementById('banner-id').value = '';
+            document.getElementById('banner-img').value = '';
             document.getElementById('bannerModalTitle').innerText = 'Додати Банер';
             
             if(id) {
@@ -723,9 +827,13 @@
         document.getElementById('bannerForm').onsubmit = (e) => {
             e.preventDefault();
             const idInput = document.getElementById('banner-id').value;
+            const imgData = document.getElementById('banner-img').value;
+            
+            if(!imgData) return alert('Будь ласка, завантажте фото банера!');
+
             const bData = {
                 id: idInput ? parseInt(idInput) : Date.now(),
-                img: document.getElementById('banner-img').value,
+                img: imgData,
                 link: document.getElementById('banner-link').value
             };
             if(idInput) {
@@ -733,10 +841,14 @@
                 if(idx !== -1) banners[idx] = bData;
             } else { banners.push(bData); }
             
-            localStorage.setItem('bv_banners', JSON.stringify(banners));
-            renderBannersAdmin();
-            closeBannerModal();
-            showNotification('Банер збережено!');
+            try {
+                localStorage.setItem('bv_banners', JSON.stringify(banners));
+                renderBannersAdmin();
+                closeBannerModal();
+                showNotification('Банер збережено!');
+            } catch(e) {
+                alert("Пам'ять переповнена! Використовуйте фото меншого розміру.");
+            }
         };
 
         function deleteBanner(id) {
@@ -764,9 +876,13 @@
                 list.innerHTML += `
                     <div class="bg-white/5 p-3 rounded-lg border border-white/10 flex flex-col gap-3">
                         <div class="relative w-full h-32 bg-black rounded flex items-center justify-center border border-white/20 overflow-hidden group">
-                            <input type="text" id="ih-${i}" value="${item.img}" class="input-field absolute inset-0 z-10 opacity-0 cursor-text" placeholder="URL картинки" oninput="document.getElementById('ph-${i}').src=this.value; document.getElementById('ph-${i}').style.display='block';">
+                            <input type="file" accept="image/*" class="input-field absolute inset-0 z-10 opacity-0 cursor-pointer" onchange="handleImageUpload(event, 'ph-${i}', 'ih-${i}', 1)">
+                            <input type="hidden" id="ih-${i}" value="${item.img}">
                             <img id="ph-${i}" src="${item.img}" class="absolute inset-0 w-full h-full object-cover z-0 transition group-hover:scale-105" style="display:${item.img?'block':'none'}">
-                            <span class="text-[10px] text-gray-500 z-0">Вставте URL картинки</span>
+                            <div class="flex flex-col items-center z-0 pointer-events-none">
+                                <span class="text-[10px] text-gray-500 text-center font-bold">Натисніть щоб завантажити</span>
+                                <span class="text-[8px] text-gray-600 uppercase tracking-widest mt-1">До 1MB (800x800px)</span>
+                            </div>
                         </div>
                         <input type="text" id="ititle-${i}" class="input-field" placeholder="Напис на плитці" value="${item.title}">
                         <select id="icat-${i}" class="input-field">${catOptions}</select>
@@ -786,8 +902,188 @@
                     catId: document.getElementById(`icat-${i}`).value
                 });
             }
-            localStorage.setItem('bv_collage_config', JSON.stringify({ template, items }));
-            showNotification('Колаж збережено! Оновіть головну.');
+            try {
+                localStorage.setItem('bv_collage_config', JSON.stringify({ template, items }));
+                showNotification('Колаж збережено!');
+            } catch(e) {
+                alert("Пам'ять переповнена! Стисніть фотографії перед завантаженням.");
+            }
+        }
+
+        // --- ЛОГІКА ДЛЯ ЕКСКЛЮЗИВУ ---
+        function renderExclusiveProcessAdmin() {
+            const list = document.getElementById('exclusiveProcessList');
+            list.innerHTML = '';
+            exclusiveProcess.forEach((step, index) => {
+                list.innerHTML += `
+                    <div class="bg-white/5 p-4 rounded-lg border border-white/10 flex flex-col md:flex-row gap-4 items-center relative">
+                        <div class="absolute top-2 left-2 bg-black/80 px-2 py-1 rounded text-[10px] font-bold z-10 text-[#c5a059]">Крок ${index + 1}</div>
+                        <img src="${step.img}" class="w-full md:w-32 aspect-[4/3] object-cover rounded border border-white/20">
+                        <div class="flex-grow w-full">
+                            <h4 class="font-serif text-lg mb-1">${step.title}</h4>
+                            <p class="text-xs text-gray-400 line-clamp-2">${step.desc}</p>
+                        </div>
+                        <div class="flex flex-row md:flex-col gap-2 w-full md:w-auto mt-2 md:mt-0">
+                            <button onclick="openProcessModal(${step.id})" class="flex-1 btn-secondary text-xs py-2 px-4">Ред</button>
+                            <button onclick="deleteProcessStep(${step.id})" class="flex-1 btn-danger text-xs py-2 px-4">Видалити</button>
+                        </div>
+                        <div class="absolute top-2 right-2 flex flex-col gap-1">
+                            ${index > 0 ? `<button onclick="moveProcessStep(${index}, -1)" class="text-gray-500 hover:text-white" title="Вгору">▲</button>` : ''}
+                            ${index < exclusiveProcess.length - 1 ? `<button onclick="moveProcessStep(${index}, 1)" class="text-gray-500 hover:text-white" title="Вниз">▼</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function moveProcessStep(index, dir) {
+            const temp = exclusiveProcess[index];
+            exclusiveProcess[index] = exclusiveProcess[index + dir];
+            exclusiveProcess[index + dir] = temp;
+            localStorage.setItem('bv_exclusive_process', JSON.stringify(exclusiveProcess));
+            renderExclusiveProcessAdmin();
+        }
+
+        function openProcessModal(id = null) {
+            document.getElementById('processForm').reset();
+            document.getElementById('processPreview').style.display = 'none';
+            document.getElementById('process-id').value = '';
+            document.getElementById('process-img').value = '';
+            document.getElementById('processModalTitle').innerText = 'Додати етап';
+            
+            if(id) {
+                const step = exclusiveProcess.find(s => s.id === id);
+                document.getElementById('process-id').value = step.id;
+                document.getElementById('process-title').value = step.title;
+                document.getElementById('process-desc').value = step.desc;
+                document.getElementById('process-img').value = step.img;
+                document.getElementById('processPreview').src = step.img;
+                document.getElementById('processPreview').style.display = 'block';
+                document.getElementById('processModalTitle').innerText = 'Редагувати етап';
+            }
+            document.getElementById('processModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('processModal').classList.remove('opacity-0'), 10);
+        }
+
+        function closeProcessModal() { 
+            document.getElementById('processModal').classList.add('opacity-0'); 
+            setTimeout(() => document.getElementById('processModal').classList.add('hidden'), 300); 
+        }
+
+        function saveProcessStep() {
+            const idInput = document.getElementById('process-id').value;
+            const imgData = document.getElementById('process-img').value;
+            
+            if(!imgData) return alert('Завантажте фото етапу!');
+
+            const stepData = {
+                id: idInput ? parseInt(idInput) : Date.now(),
+                title: document.getElementById('process-title').value,
+                desc: document.getElementById('process-desc').value,
+                img: imgData
+            };
+            
+            if(idInput) {
+                const idx = exclusiveProcess.findIndex(s => s.id === parseInt(idInput));
+                if(idx !== -1) exclusiveProcess[idx] = stepData;
+            } else { 
+                exclusiveProcess.push(stepData); 
+            }
+            
+            try {
+                localStorage.setItem('bv_exclusive_process', JSON.stringify(exclusiveProcess));
+                renderExclusiveProcessAdmin();
+                closeProcessModal();
+                showNotification('Етап збережено!');
+            } catch(e) {
+                alert("Помилка! Перевищено ліміт пам'яті браузера.");
+            }
+        }
+
+        function deleteProcessStep(id) {
+            if(confirm('Видалити цей етап?')) {
+                exclusiveProcess = exclusiveProcess.filter(s => s.id !== id);
+                localStorage.setItem('bv_exclusive_process', JSON.stringify(exclusiveProcess));
+                renderExclusiveProcessAdmin();
+                showNotification('Етап видалено');
+            }
+        }
+
+        function renderExclusiveMaterialsAdmin() {
+            const list = document.getElementById('exclusiveMaterialsList');
+            list.innerHTML = '';
+            exclusiveMaterials.forEach((mat) => {
+                list.innerHTML += `
+                    <div class="bg-white/5 p-3 rounded-lg border ${mat.selected ? 'border-[#c5a059]' : 'border-white/10'} flex justify-between items-center relative">
+                        <div>
+                            <span class="text-sm font-medium ${mat.selected ? 'text-[#c5a059]' : 'text-white'}">${mat.label}</span>
+                            <span class="text-[10px] text-gray-500 ml-2">ID: ${mat.id}</span>
+                            ${mat.selected ? '<span class="text-[9px] bg-[#c5a059]/20 text-[#c5a059] px-2 py-0.5 rounded ml-2 uppercase tracking-wider">За замовчуванням</span>' : ''}
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="openMaterialModal('${mat.id}')" class="text-blue-400 text-xs px-2 hover:underline">Ред</button>
+                            <button onclick="deleteMaterialOption('${mat.id}')" class="text-red-500 text-xs px-2 hover:underline">Видал</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openMaterialModal(id = null) {
+            document.getElementById('materialForm').reset();
+            document.getElementById('material-old-id').value = '';
+            document.getElementById('materialModalTitle').innerText = 'Додати матеріал';
+            
+            if(id) {
+                const mat = exclusiveMaterials.find(m => m.id === id);
+                document.getElementById('material-old-id').value = mat.id;
+                document.getElementById('material-id').value = mat.id;
+                document.getElementById('material-label').value = mat.label;
+                document.getElementById('material-selected').checked = mat.selected;
+                document.getElementById('materialModalTitle').innerText = 'Редагувати матеріал';
+            }
+            document.getElementById('materialModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('materialModal').classList.remove('opacity-0'), 10);
+        }
+
+        function closeMaterialModal() { 
+            document.getElementById('materialModal').classList.add('opacity-0'); 
+            setTimeout(() => document.getElementById('materialModal').classList.add('hidden'), 300); 
+        }
+
+        function saveMaterialOption() {
+            const oldId = document.getElementById('material-old-id').value;
+            const newId = document.getElementById('material-id').value.toLowerCase();
+            const isSelected = document.getElementById('material-selected').checked;
+            
+            if(isSelected) exclusiveMaterials.forEach(m => m.selected = false);
+
+            const matData = { id: newId, label: document.getElementById('material-label').value, selected: isSelected };
+            
+            if (oldId) {
+                const idx = exclusiveMaterials.findIndex(m => m.id === oldId);
+                if(idx !== -1) exclusiveMaterials[idx] = matData;
+            } else {
+                if(exclusiveMaterials.find(m => m.id === newId)) return alert('Такий ID вже існує!');
+                exclusiveMaterials.push(matData);
+            }
+            
+            if(!exclusiveMaterials.find(m => m.selected) && exclusiveMaterials.length > 0) { exclusiveMaterials[0].selected = true; }
+
+            localStorage.setItem('bv_exclusive_materials', JSON.stringify(exclusiveMaterials));
+            renderExclusiveMaterialsAdmin();
+            closeMaterialModal();
+            showNotification('Кнопку збережено!');
+        }
+
+        function deleteMaterialOption(id) {
+            if(confirm('Видалити цю кнопку з форми?')) {
+                exclusiveMaterials = exclusiveMaterials.filter(m => m.id !== id);
+                if(!exclusiveMaterials.find(m => m.selected) && exclusiveMaterials.length > 0) { exclusiveMaterials[0].selected = true; }
+                localStorage.setItem('bv_exclusive_materials', JSON.stringify(exclusiveMaterials));
+                renderExclusiveMaterialsAdmin();
+                showNotification('Кнопку видалено');
+            }
         }
 
         // --- НАЛАШТУВАННЯ ---
@@ -796,11 +1092,6 @@
                 const mapKey = k==='tg'?'tgLink':(k==='inst'?'instLink':k);
                 if(document.getElementById(`set-${k}`)) document.getElementById(`set-${k}`).value = siteSettings[mapKey] || '';
             });
-            if(siteSettings.heroBg) {
-                document.getElementById('set-hero').value = siteSettings.heroBg;
-                document.getElementById('heroPreview').src = siteSettings.heroBg;
-                document.getElementById('heroPreview').style.display = 'block';
-            }
         }
 
         function saveSiteSettings() {
@@ -808,7 +1099,7 @@
                 phone: document.getElementById('set-phone').value, tgLink: document.getElementById('set-tg').value,
                 instLink: document.getElementById('set-inst').value, addr1: document.getElementById('set-addr1').value,
                 map1: document.getElementById('set-map1').value, addr2: document.getElementById('set-addr2').value,
-                map2: document.getElementById('set-map2').value, heroBg: document.getElementById('set-hero').value
+                map2: document.getElementById('set-map2').value
             };
             localStorage.setItem('bv_settings', JSON.stringify(siteSettings));
             showNotification('Налаштування сайту збережено');
