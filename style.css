@@ -15,6 +15,7 @@ img, svg { display: block; max-width: 100%; height: auto; }
 a { text-decoration: inherit; color: inherit; outline: none; }
 button, input, select, textarea { font-family: inherit; font-size: 100%; line-height: inherit; margin: 0; padding: 0; border: none; background: transparent; outline: none; }
 button { cursor: pointer; }
+a, button, [role="button"], .dropdown-item, .bottom-nav-item, .icon-btn, .btn-order { transition: all 0.3s ease; }
 
 :focus-visible { outline: 2px solid var(--gold-muted); outline-offset: 2px; border-radius: 4px; }
 
@@ -24,6 +25,7 @@ button { cursor: pointer; }
 :root {
      --bg-body: #121212; 
      --bg-card: #1e1e20; 
+     --bg-elevated: #252528;
      --text-main: #ffffff;
      --text-muted: #9ca3af; 
      --gold-gradient: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
@@ -33,16 +35,20 @@ button { cursor: pointer; }
      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
      --danger: #ef4444; 
      --success: #22c55e; 
+     --status-new: #3b82f6;
+     --status-exclusive: #8b5cf6;
+     --status-sale: #e11d48;
 }
 [data-theme="light"] {
-     --bg-body: #e8d7d7;
-     --bg-card: #f3e8e8;
-     --text-main: #2a2020; 
-     --text-muted: #8a7878; 
-     --gold-muted: #b07d35; 
-     --border: rgba(60, 40, 40, 0.08); 
-     --glass-bg: rgba(243, 232, 232, 0.75); 
-     --glass-shadow: 0 8px 32px rgba(60, 40, 40, 0.06); 
+     --bg-body: #F5F0E6;      /* Базовый бежевый */
+     --bg-card: #EFE9DB;      /* Более глубокий бежевый для карточек */
+     --bg-elevated: #F9F5ED;  /* Светлый молочный вместо чистого белого */
+     --text-main: #2C2825; 
+     --text-muted: #8C857B; 
+     --gold-muted: #B89B72; 
+     --border: rgba(44, 40, 37, 0.1); 
+     --glass-bg: rgba(245, 240, 230, 0.85); 
+     --glass-shadow: 0 8px 32px rgba(44, 40, 37, 0.08); 
 }
 select option { background-color: var(--bg-card); color: var(--text-main); }
 .hidden-el { display: none !important; }
@@ -125,6 +131,7 @@ header.scrolled {
      font-weight: 600; 
      background: var(--gold-gradient);
      background-size: 200% auto;
+    background-clip: text;
      -webkit-background-clip: text; 
      -webkit-text-fill-color: transparent; 
      letter-spacing: 2px; line-height: 0.9;
@@ -373,6 +380,7 @@ header.scrolled {
 .cart-subtotal-val { color: var(--gold-muted); font-size: 24px; font-weight: 600; }
 .btn-checkout { background: var(--text-main); color: var(--bg-body); padding: 20px; width: 100%; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; border-radius: 16px; transition: 0.3s; border: none; cursor: pointer;}
 .btn-checkout:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+.btn-checkout:active { transform: scale(0.97); }
 
 /* ==========================================
    ГОЛОВНА: ФІЗИЧНА БІГУЧА СТРОКА ТА СЛАЙДЕРИ
@@ -388,31 +396,53 @@ header.scrolled {
 /* ==========================================
    ПРЕМІАЛЬНИЙ ЗАГОЛОВОК (БЛАГОРОДНЕ ЗОЛОТО)
    ========================================== */
-.hero-title { 
-    font-family: 'Playfair Display', serif; 
-    font-size: clamp(3.5rem, 8vw, 9rem); 
-    font-weight: 600;
-    text-transform: uppercase; 
-    letter-spacing: 0.15em; 
+/* ==========================================
+   HERO СЕКЦІЯ (ULTRA MODERN LUXURY)
+   ========================================== */
+.h-screen-hero { 
+    height: 85vh; 
     position: relative; 
-    z-index: 10; 
-    text-align: center; 
+}
+.hero-bg { 
+    background-size: cover; 
+    background-position: center; 
+}
+
+.hero-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(10px, 2vw, 12px);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: var(--gold-muted);
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+
+.hero-title { 
+    font-family: 'Montserrat', sans-serif; 
+    font-size: clamp(2.5rem, 8vw, 7rem); /* Трохи зменшуємо базовий розмір, гротеск вимагає більше повітря */
+    font-weight: 200; /* Дуже тонке, елегантне накреслення (Extra Light) */
+    text-transform: uppercase; 
+    letter-spacing: 0.2em; /* Широкий трекінг для люксового вигляду */
+    line-height: 1.1;
     margin: 0;
-    
-    /* Спокійний, глибокий градієнт з одним м'яким відблиском */
-    background: linear-gradient(
-        135deg, 
-        #b68d40 0%,    /* Глибоке темне золото */
-        #d4af37 35%,   /* Основний фірмовий колір */
-        #f9ecd3 50%,   /* ОДИН акуратний м'який відблиск по центру */
-        #c5a059 65%,   /* Повернення до матового золота */
-        #8a5a19 100%   /* Легка бронзова тінь на нижньому краї */
-    );
-    -webkit-background-clip: text; 
-    -webkit-text-fill-color: transparent; 
-    
-    /* Трохи м'якша тінь, щоб текст виглядав природно */
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+    color: #ffffff; 
+    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.5)); /* Тінь трохи розсіяна, щоб тонкий шрифт не губився на фото */
+    opacity: 0;
+    animation: fadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+}
+
+@keyframes fadeUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 /* Physics Marquee */
 .marquee-wrapper { 
@@ -504,7 +534,7 @@ header.scrolled {
 .filter-btn:hover { opacity: 1; border-color: var(--gold-muted); color: var(--gold-muted);}
 .filter-btn.active { background: rgba(197, 160, 89, 0.1); border-color: var(--gold-muted); color: var(--gold-muted); opacity: 1; }
 
-.product-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; position: relative; }
+.product-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; position: relative; box-shadow: 0 12px 30px rgba(0,0,0,0.18); }
 .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.2); border-color: rgba(197, 160, 89, 0.4); }
 [data-theme="light"] .product-card:hover { box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
 .product-img-wrap { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; background: #000; }
@@ -704,12 +734,435 @@ header.scrolled {
     }
 }
 
+/* ==========================================
+   PREMIUM DESIGN REFRESH v2
+   ========================================== */
+:root {
+    --gold-muted: #c7a46a;
+    --radius-xs: 10px;
+    --radius-sm: 14px;
+    --radius-md: 18px;
+    --radius-lg: 26px;
+    --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.18);
+    --shadow-mid: 0 18px 44px rgba(0, 0, 0, 0.24);
+    --shadow-strong: 0 26px 70px rgba(0, 0, 0, 0.3);
+}
 
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: 0.01em;
+    background:
+        radial-gradient(1100px 500px at 12% -10%, rgba(212, 175, 55, 0.07), transparent 58%),
+        radial-gradient(1000px 500px at 92% 4%, rgba(255, 255, 255, 0.05), transparent 50%),
+        var(--bg-body);
+}
 
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
 
+.product-img,
+.preview-img-wrap img,
+.banner-slide img {
+    pointer-events: none;
+}
 
+h1, h2, h3, .hero-title, .bv-logo span:first-child {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.03em;
+}
 
+header {
+    border-bottom: 1px solid transparent;
+}
 
+header.scrolled {
+    background: color-mix(in srgb, var(--bg-card) 70%, transparent);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-mid);
+}
 
+.bv-logo span:first-child {
+    animation: none;
+    font-weight: 600;
+    font-size: clamp(24px, 3.2vw, 38px);
+}
 
+.bv-logo span:last-child {
+    letter-spacing: 0.45em;
+    font-size: 9px;
+}
 
+.nav-left > a,
+.catalog-toggle,
+.dropdown-wrapper > button {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.search-box {
+    background: color-mix(in srgb, var(--bg-card) 52%, transparent);
+    border: 1px solid var(--border);
+    box-shadow: inset 0 0 0 1px transparent;
+}
+
+.search-box:focus-within {
+    border-color: color-mix(in srgb, var(--gold-muted) 45%, var(--border));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold-muted) 30%, transparent);
+}
+
+.search-input {
+    width: 120px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+}
+
+.search-input:focus {
+    width: 220px;
+}
+
+.mega-menu,
+.dropdown-menu,
+.side-menu,
+.cart-drawer {
+    background: color-mix(in srgb, var(--bg-card) 78%, transparent);
+    border-color: var(--border);
+    box-shadow: var(--shadow-strong);
+}
+
+.hero-title {
+    letter-spacing: 0.12em;
+    filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.45));
+}
+
+.banner-slider-container {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-mid);
+}
+
+.banner-arrow {
+    backdrop-filter: blur(16px);
+    border-color: var(--border);
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.banner-arrow:hover {
+    transform: translateY(-50%) scale(1.05);
+}
+
+.product-card {
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--bg-card) 92%, white 8%) 0%,
+        var(--bg-card) 100%
+    );
+    box-shadow: var(--shadow-soft);
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-mid);
+}
+
+.icon-btn svg,
+.bottom-nav-item svg,
+.cart-item-remove svg,
+.banner-arrow svg {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icon-btn,
+.bottom-nav-item,
+.btn-checkout,
+.btn-order,
+.fav-btn-inline,
+.cart-item-remove {
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-img-wrap {
+    background: color-mix(in srgb, var(--bg-card) 60%, #000);
+}
+
+.add-to-cart-btn {
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+}
+
+.cart-item {
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    border-color: color-mix(in srgb, var(--gold-muted) 35%, var(--border));
+    transform: translateY(-2px);
+}
+
+.cart-header h2 {
+    letter-spacing: 0.06em;
+}
+
+.btn-checkout {
+    border-radius: var(--radius-sm);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.btn-checkout:hover {
+    transform: translateY(-3px);
+}
+
+.auth-input {
+    border-radius: var(--radius-xs);
+    background: color-mix(in srgb, var(--bg-card) 80%, transparent);
+}
+
+.mobile-bottom-nav {
+    height: 68px;
+    border-radius: 22px;
+    box-shadow: var(--shadow-mid);
+}
+
+.bottom-nav-item {
+    gap: 3px;
+}
+
+.bottom-nav-item span {
+    letter-spacing: 0.04em;
+}
+
+.floating-contact-btn,
+#scrollToTopBtn {
+    box-shadow: var(--shadow-mid);
+}
+
+#scrollToTopBtn {
+    border-radius: 999px;
+}
+
+#footer {
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--bg-card) 92%, transparent) 0%,
+            var(--bg-card) 100%
+        );
+}
+
+@media (max-width: 1024px) {
+    header {
+        backdrop-filter: blur(14px);
+    }
+
+    .hero-title {
+        font-size: clamp(2.6rem, 13vw, 4.8rem);
+        letter-spacing: 0.1em;
+    }
+
+    .search-input:focus {
+        width: 170px;
+    }
+}
+
+/* --- ВИПРАВЛЕННЯ ОБРІЗАННЯ ТІНЕЙ У КАРУСЕЛІ --- */
+.promo-carousel-container, .weekly-carousel-container { 
+    /* Додаємо вертикальні відступи, щоб тінь мала місце для рендеру */
+    padding-top: 24px; 
+    padding-bottom: 32px; 
+    margin-top: -24px; 
+    margin-bottom: -32px;
+}
+
+.promo-track, .weekly-track { 
+    display: flex; gap: 16px; width: max-content; will-change: transform;
+    padding: 10px 0; /* Додаткове місце для тіні самої картки */
+    padding-right: 15vw; 
+}
+
+/* --- ІДЕАЛЬНІ ТІНІ ТА ПОВЕДІНКА КАРТКИ --- */
+.product-card { 
+    background: var(--bg-card); 
+    border: 1px solid var(--border); 
+    border-radius: 16px; 
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04); /* Дуже м'яка базова тінь */
+    transform: translateY(0);
+}
+[data-theme="dark"] .product-card {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.product-card:hover { 
+    transform: translateY(-6px); /* Картка піднімається вгору */
+    box-shadow: 0 16px 32px rgba(44, 40, 37, 0.08); /* Красива тінь, що не обрізається */
+    border-color: rgba(184, 155, 114, 0.3); /* Легкий золотий контур при наведенні */
+}
+[data-theme="dark"] .product-card:hover {
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4); 
+    border-color: rgba(212, 175, 55, 0.4);
+}
+
+/* --- ПРЕМІАЛЬНІ КОЛЬОРОВІ БЕЙДЖИ --- */
+.prod-badge {
+    font-size: 8px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    width: max-content;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+/* Hero секция с умным затемнением */
+.hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    /* Убедись, что высота задана, например: */
+    min-height: 80vh; 
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Комбинированный градиент: 
+       сверху и снизу чуть темнее, в центре мягкое затемнение */
+    background: linear-gradient(
+        180deg, 
+        rgba(44, 40, 37, 0.4) 0%, 
+        rgba(44, 40, 37, 0.2) 50%, 
+        rgba(44, 40, 37, 0.5) 100%
+    );
+    /* Если хочешь просто равномерное затемнение, используй: 
+       background: rgba(0, 0, 0, 0.4); */
+    z-index: 1;
+}
+
+/* Контент внутри Hero должен быть поверх затемнения */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    /* Дополнительно добавим мягкую тень тексту для 100% читаемости */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* --- PREMIUM EXCLUSIVE BUTTON --- */
+.exclusive-btn-premium {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 1, 0.2, 1);
+    padding: 10px;
+}
+
+/* Верхняя мелкая подпись */
+.exclusive-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-muted);
+    margin-bottom: 8px;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+/* Основной заголовок */
+.exclusive-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 100;
+    letter-spacing: 0.15em;
+    color: var(--text-main);
+    transition: letter-spacing 0.5s ease;
+}
+
+/* Элегантная линия под заголовком */
+.exclusive-line {
+    width: 40px;
+    height: 1px;
+    background: var(--gold-muted);
+    margin: 15px 0;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.6;
+}
+
+/* Нижняя подпись */
+.exclusive-footer {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text-muted);
+    text-transform: lowercase;
+    font-style: italic;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+}
+
+/* Эффекты при наведении (Hover) */
+.exclusive-btn-premium:hover .exclusive-title {
+    letter-spacing: 0.25em; /* Текст слегка "раздвигается" */
+}
+
+.exclusive-btn-premium:hover .exclusive-line {
+    width: 120px; /* Линия плавно удлиняется */
+    opacity: 1;
+}
+
+.exclusive-btn-premium:hover .exclusive-footer {
+    opacity: 1;
+    transform: translateY(0); /* Проявляется нижняя подпись */
+}
+
+/* Убираем любые системные выделения при клике на мобилках */
+.exclusive-btn-premium {
+    -webkit-tap-highlight-color: transparent;
+}
+/* --- СТИЛІ ЯРЛИКІВ ДЛЯ ФУТЕРА --- */
+.prod-badge {
+    /* Робимо ярлики меншими для футера */
+    font-size: 7px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+/* Кольорова схема залишається незмінною для впізнаваності */
+.badge-sold-out { background-color: #9CA3AF; color: #FFFFFF; }
+.badge-pre-order { background-color: #4B5563; color: #FFFFFF; }
+.badge-new { background-color: #2C2825; color: var(--bg-body); }
+[data-theme="dark"] .badge-new { background-color: #FFFFFF; color: #121212; }
+.badge-exclusive { background-color: var(--gold-muted); color: #FFFFFF; }
+.badge-sale { background-color: #E11D48; color: #FFFFFF; }
+
+/* Адаптив для маленьких екранів, щоб ярлики не наповзали на кнопку */
+@media (max-width: 400px) {
+    .prod-badge {
+        font-size: 6px;
+        padding: 2px 4px;
+    }
+}
+.badge-sold-out { background-color: #9CA3AF; color: #FFFFFF; } /* Спокійний сірий */
+.badge-pre-order { background-color: #4B5563; color: #FFFFFF; } /* Темно-сірий */
+.badge-new { background-color: #2C2825; color: #FFFFFF; } /* Майже чорний */
+[data-theme="dark"] .badge-new { background-color: #FFFFFF; color: #121212; }
+.badge-exclusive { background-color: var(--gold-muted); color: #FFFFFF; } /* Фірмове золото */
+.badge-sale { background-color: #E11D48; color: #FFFFFF; } /* Благородний червоний */

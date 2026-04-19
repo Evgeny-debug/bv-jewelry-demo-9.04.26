@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="uk" data-theme="light">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#f3e8e8" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
     
+    <script>
+        (function initThemeBeforePaint() {
+            try {
+                const savedTheme = JSON.parse(localStorage.getItem('bv_theme'));
+                const theme = savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
     <title>BV Jewelry | Atelier since 1984</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -142,9 +155,12 @@
     <nav class="side-menu" id="sideMenu" aria-label="Мобильная навигация"></nav>
 
     <main id="home">
-        <section class="h-screen-hero relative">
-            <div class="hero-bg hero-img-bg bg-black/20 mix-blend-overlay"></div>
-            <h1 class="hero-title drop-shadow-2xl">BV Jewelry</h1>
+        <section class="h-screen-hero relative flex items-center justify-center overflow-hidden">
+            <div class="hero-bg hero-img-bg bg-black/40 absolute inset-0 z-0"></div>
+            <div class="relative z-10 flex flex-col items-center text-center px-4">
+                <span class="hero-subtitle">Atelier since 1984</span>
+                <h1 class="hero-title">BV Jewelry</h1>
+            </div>
         </section>
 
         <div class="marquee-wrapper physics-marquee select-none" aria-hidden="true">
@@ -156,16 +172,29 @@
                 <div class="w-full h-full bg-gray-200/10 animate-pulse"></div>
             </div>
         </section>
-
+        <div class="exclusive-entry-wrap flex flex-col items-center gap-6 py-20">
+    <a href="exclusive.html" class="exclusive-btn-premium group">
+        <span class="exclusive-label">Individual Order</span>
+        <h2 class="exclusive-title">ЕКСКЛЮЗИВ</h2>
+        <div class="exclusive-line"></div>
+        <span class="exclusive-footer">Відкрити ательє</span>
+    </a>
+</div>
         <section class="max-w-[1920px] mx-auto px-4 md:px-8 py-10 md:py-20" id="special-section">
-            <h2 class="text-2xl md:text-4xl font-serif italic text-[var(--gold-muted)] mb-6 md:mb-14 text-left md:text-center uppercase tracking-widest px-1">Пропозиції місяця</h2>
+            <div class="mb-8 md:mb-12 px-2 flex flex-col items-start">
+                <span class="text-[10px] md:text-xs uppercase tracking-[0.3em] text-[var(--gold-muted)] font-semibold block mb-2">Лімітована колекція</span>
+                <h2 class="text-3xl md:text-5xl font-serif font-light text-[var(--text-main)] tracking-wide m-0">Пропозиції місяця</h2>
+            </div>
             <div class="promo-carousel-container select-none" id="promoCarouselContainer">
                 <div id="specialGrid" class="promo-track min-h-[300px]"></div>
             </div>
         </section>
 
         <section class="max-w-[1920px] mx-auto px-4 md:px-8 py-10 md:py-20" id="weekly-section">
-            <h2 class="text-2xl md:text-4xl font-serif italic text-[var(--gold-muted)] mb-6 md:mb-14 text-left md:text-center px-1">Прикраси тижня</h2>
+            <div class="mb-8 md:mb-12 px-2 flex flex-col items-start">
+                <span class="text-[10px] md:text-xs uppercase tracking-[0.3em] text-[var(--gold-muted)] font-semibold block mb-2">Вибір Atelier</span>
+                <h2 class="text-3xl md:text-5xl font-serif font-light text-[var(--text-main)] tracking-wide m-0">Прикраси тижня</h2>
+            </div>
             <div class="weekly-carousel-container select-none" id="weeklyCarouselContainer">
                 <div id="weeklyGrid" class="weekly-track min-h-[300px]"></div>
             </div>
