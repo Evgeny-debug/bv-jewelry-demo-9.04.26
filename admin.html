@@ -196,6 +196,20 @@
 
         <section id="content-settings" class="tab-content hidden h-full">
             <h2 class="text-2xl font-semibold mb-6">Налаштування сайту</h2>
+            
+            <div class="glass-panel p-6 mb-6">
+                <h3 class="text-sm font-semibold uppercase tracking-widest text-[#c5a059] mb-4">Фінансові налаштування</h3>
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                    <div class="w-full sm:w-1/3">
+                        <label class="text-[10px] uppercase text-gray-400 mb-1 block">Курс золота (за 1 грам, ГРН)</label>
+                        <input type="number" id="set-gold-rate" class="input-field text-lg font-bold text-[#c5a059]" placeholder="Наприклад: 3500">
+                    </div>
+                    <p class="text-xs text-gray-500 w-full sm:w-2/3 mt-2 sm:mt-0">
+                        При зміні цього курсу та збереженні налаштувань, ціни всіх товарів із типом "Авто-розрахунок" будуть миттєво перераховані за формулою: <br><b>(Вага * Курс) + Вартість роботи</b>.
+                    </p>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="glass-panel p-6">
                     <h3 class="text-sm font-semibold uppercase tracking-widest text-[#c5a059] mb-4">Контакти та Соцмережі</h3>
@@ -232,7 +246,8 @@
             </div>
             <form id="productForm" class="flex flex-col gap-4">
                 <input type="hidden" id="prod-id">
-                <input type="hidden" id="prod-imgBase64"> <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" id="prod-imgBase64"> 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Назва</label><input type="text" id="prod-name" class="input-field" required></div>
                     <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Артикул / Метал</label><input type="text" id="prod-variant" class="input-field" required></div>
                 </div>
@@ -248,9 +263,32 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Ціна (ГРН)</label><input type="number" id="prod-price" class="input-field" required></div>
-                    <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Знижка (якщо є)</label><input type="number" id="prod-discount" class="input-field"></div>
+                <div class="bg-white/5 p-4 rounded-lg border border-white/10 mb-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 border-b border-white/10 pb-4">
+                        <div>
+                            <label class="text-[10px] uppercase font-bold text-[#c5a059] block mb-1">Тип ціноутворення</label>
+                            <select id="prod-price-type" class="input-field font-semibold bg-[#1a1a1a]" onchange="togglePriceMode()">
+                                <option value="manual">Фіксована ціна (Срібло / Ручне)</option>
+                                <option value="auto">Авто-розрахунок (За курсом золота)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-400 block mb-1">Знижка (Акційна ціна, ГРН)</label>
+                            <input type="number" id="prod-discount" class="input-field" placeholder="Залишити пустим якщо немає">
+                        </div>
+                    </div>
+
+                    <div id="price-mode-manual" class="grid grid-cols-1 gap-4">
+                        <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Ціна (ГРН)</label><input type="number" id="prod-price" class="input-field" placeholder="Введіть повну суму"></div>
+                    </div>
+
+                    <div id="price-mode-auto" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
+                        <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Вага металу (Грам)</label><input type="number" step="0.01" id="prod-weight" class="input-field" oninput="previewAutoPrice()" placeholder="Наприклад: 2.45"></div>
+                        <div><label class="text-[10px] uppercase text-gray-400 block mb-1">Вартість роботи / Каменів (ГРН)</label><input type="number" id="prod-work-cost" class="input-field" oninput="previewAutoPrice()" placeholder="Наприклад: 3000"></div>
+                        <div class="md:col-span-2 text-right text-xs text-gray-400 mt-1">
+                            Поточний розрахунок: <span id="auto-price-preview" class="font-bold text-[#c5a059] text-sm ml-2">0 ₴</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -330,13 +368,13 @@
             <h3 class="text-lg font-semibold mb-4" id="bannerModalTitle">Налаштування банера</h3>
             <form id="bannerForm" class="flex flex-col gap-4">
                 <input type="hidden" id="banner-id">
-                <input type="hidden" id="banner-img"> <div class="bg-white/5 p-4 rounded-lg border border-white/10">
+                <input type="hidden" id="banner-img"> 
+                <div class="bg-white/5 p-4 rounded-lg border border-white/10">
                     <label class="text-[10px] font-bold uppercase text-[#c5a059] block mb-1">Фото Банера</label>
                     <p class="text-[9px] text-gray-400 mb-3 uppercase tracking-widest">Формати: JPG, PNG. Розмір: 1920x870px. Макс: 2MB.</p>
                     <input type="file" id="banner-img-file" accept="image/png, image/jpeg, image/webp" class="input-field file-input bg-transparent border-dashed mb-3" onchange="handleImageUpload(event, 'bannerPreview', 'banner-img', 2)">
                     <img id="bannerPreview" class="w-full aspect-[21/9] object-cover rounded border border-white/20 hidden mx-auto">
                 </div>
-
                 <div>
                     <label class="text-[10px] uppercase text-gray-400 block mb-1">Посилання при кліку (напр. catalog.html#sale)</label>
                     <input type="text" id="banner-link" class="input-field" placeholder="catalog.html#...">
@@ -354,7 +392,8 @@
             <h3 class="text-lg font-semibold mb-4" id="processModalTitle">Етап створення</h3>
             <form id="processForm" class="flex flex-col gap-4" onsubmit="event.preventDefault(); saveProcessStep();">
                 <input type="hidden" id="process-id">
-                <input type="hidden" id="process-img"> <div>
+                <input type="hidden" id="process-img"> 
+                <div>
                     <label class="text-[10px] uppercase text-gray-400 block mb-1">Назва кроку (напр. "3D Модель")</label>
                     <input type="text" id="process-title" class="input-field" required>
                 </div>
@@ -494,7 +533,7 @@
             renderCollageAdmin(); 
         }
 
-        // --- КАТЕГОРІЇ (Без змін) ---
+        // --- КАТЕГОРІЇ ---
         function renderCategoriesTree() {
             const container = document.getElementById('categoriesListContainer');
             container.innerHTML = '';
@@ -679,21 +718,24 @@
                 const parentCat = categories.find(c => c.id === p.category);
                 const pName = parentCat ? parentCat.name : p.category;
                 let badgeHtml = '';
-                if(p.badge === 'new') badgeHtml = '<span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Новинка</span>';
-                if(p.badge === 'exclusive') badgeHtml = '<span class="text-[10px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded">Ексклюзив</span>';
-                if(p.badge === 'sale') badgeHtml = '<span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded">Sale</span>';
+                if(p.badge === 'new') badgeHtml = '<span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded mt-1 inline-block">Новинка</span>';
+                if(p.badge === 'exclusive') badgeHtml = '<span class="text-[10px] bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded mt-1 inline-block">Ексклюзив</span>';
+                if(p.badge === 'sale') badgeHtml = '<span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded mt-1 inline-block">Sale</span>';
 
                 let statusColor = 'text-gray-400'; let statusText = 'Під замовлення';
                 if(p.status === 'in-stock') { statusColor = 'text-green-500'; statusText = 'В наявності'; }
                 if(p.status === 'out-stock') { statusColor = 'text-red-500'; statusText = 'Немає'; }
                 
+                // Додаємо мітку якщо ціна авто
+                let priceTypeHtml = p.priceType === 'auto' ? '<span class="text-[9px] text-[#c5a059] block uppercase">Авто-ціна</span>' : '';
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-white/5 transition border-b border-white/5">
                         <td class="p-3"><img src="${p.img}" class="w-10 h-10 object-cover rounded border border-white/10"></td>
                         <td class="p-3 font-medium whitespace-normal min-w-[140px] text-xs"><span class="text-[10px] text-gray-500 block mb-1">ID: ${p.id}</span>${p.name}</td>
                         <td class="p-3 text-gray-400 text-xs">${pName}</td>
-                        <td class="p-3 text-[#c5a059] text-xs font-semibold">${p.price} ₴ ${p.discount ? `<span class="text-[9px] text-red-400 line-through ml-1">${p.discount} ₴</span>` : ''}</td>
-                        <td class="p-3 text-xs"><span class="${statusColor} block mb-1">${statusText}</span>${badgeHtml}</td>
+                        <td class="p-3 text-[#c5a059] text-xs font-semibold">${priceTypeHtml}${p.price} ₴ ${p.discount ? `<span class="text-[9px] text-red-400 line-through ml-1">${p.discount} ₴</span>` : ''}</td>
+                        <td class="p-3 text-xs"><span class="${statusColor} block">${statusText}</span>${badgeHtml}</td>
                         <td class="p-3">
                             <button onclick="openProductModal('${p.id}')" class="text-blue-400 text-xs mr-3 font-semibold">Ред</button>
                             <button onclick="deleteProduct('${p.id}')" class="text-red-500 text-xs font-semibold">Видал</button>
@@ -703,12 +745,43 @@
             });
         }
 
+        // НОВІ ФУНКЦІЇ ДЛЯ РОЗРАХУНКУ ЦІНИ ЗОЛОТА
+        function getGlobalGoldRate() {
+            return siteSettings.goldRate ? Number(siteSettings.goldRate) : 0;
+        }
+
+        function togglePriceMode() {
+            const type = document.getElementById('prod-price-type').value;
+            const manualBlock = document.getElementById('price-mode-manual');
+            const autoBlock = document.getElementById('price-mode-auto');
+
+            if (type === 'auto') {
+                manualBlock.classList.add('hidden');
+                autoBlock.classList.remove('hidden');
+                previewAutoPrice();
+            } else {
+                autoBlock.classList.add('hidden');
+                manualBlock.classList.remove('hidden');
+            }
+        }
+
+        function previewAutoPrice() {
+            const weight = parseFloat(document.getElementById('prod-weight').value) || 0;
+            const work = parseFloat(document.getElementById('prod-work-cost').value) || 0;
+            const rate = getGlobalGoldRate();
+            const total = Math.round((weight * rate) + work);
+            document.getElementById('auto-price-preview').innerText = total.toLocaleString('uk-UA') + ' ₴';
+        }
+
+        // ОНОВЛЕНЕ ВІДКРИТТЯ МОДАЛКИ (З підтримкою priceType)
         function openProductModal(id = null) {
             document.getElementById('productForm').reset(); 
             document.getElementById('prodPreview').style.display = 'none'; 
             document.getElementById('prod-id').value = '';
-            document.getElementById('prod-imgBase64').value = ''; // Очищаємо Base64
+            document.getElementById('prod-imgBase64').value = '';
             document.getElementById('prodModalTitle').innerText = 'Додати товар';
+            document.getElementById('prod-price-type').value = 'manual';
+            togglePriceMode();
             updateSubcatOptions(); 
             
             if(id) {
@@ -722,7 +795,14 @@
                 
                 document.getElementById('prod-status').value = p.status || 'in-stock'; 
                 document.getElementById('prod-badge').value = p.badge || 'none'; 
-                document.getElementById('prod-price').value = p.price;
+                
+                // Відновлюємо поля ціни
+                document.getElementById('prod-price-type').value = p.priceType || 'manual';
+                document.getElementById('prod-price').value = p.price || '';
+                document.getElementById('prod-weight').value = p.weight || '';
+                document.getElementById('prod-work-cost').value = p.workCost || '';
+                togglePriceMode();
+
                 document.getElementById('prod-discount').value = p.discount || ''; 
                 document.getElementById('prod-featured').checked = p.featured || false;
                 document.getElementById('prod-imgBase64').value = p.img; 
@@ -736,12 +816,25 @@
 
         function closeProductModal() { document.getElementById('productModal').classList.add('opacity-0'); setTimeout(() => document.getElementById('productModal').classList.add('hidden'), 300); }
 
+        // ОНОВЛЕНЕ ЗБЕРЕЖЕННЯ ТОВАРУ (Автоматичний перерахунок)
         document.getElementById('productForm').onsubmit = (e) => {
             e.preventDefault(); 
             const idInput = document.getElementById('prod-id').value;
             const imgData = document.getElementById('prod-imgBase64').value;
             
             if(!imgData) return alert('Будь ласка, завантажте фото товару!');
+
+            const priceType = document.getElementById('prod-price-type').value;
+            const weight = Number(document.getElementById('prod-weight').value) || 0;
+            const workCost = Number(document.getElementById('prod-work-cost').value) || 0;
+            
+            let finalPrice = 0;
+            if (priceType === 'auto') {
+                if (getGlobalGoldRate() === 0) return alert('В налаштуваннях сайту не задано курс золота!');
+                finalPrice = Math.round((weight * getGlobalGoldRate()) + workCost);
+            } else {
+                finalPrice = Number(document.getElementById('prod-price').value) || 0;
+            }
 
             const prodData = {
                 id: idInput || 'prod_' + Date.now(),
@@ -751,7 +844,12 @@
                 subcategory: document.getElementById('prod-subcategory').value,
                 status: document.getElementById('prod-status').value,
                 badge: document.getElementById('prod-badge').value,
-                price: Number(document.getElementById('prod-price').value),
+                
+                priceType: priceType,
+                weight: weight,
+                workCost: workCost,
+                price: finalPrice,
+                
                 discount: document.getElementById('prod-discount').value ? Number(document.getElementById('prod-discount').value) : '',
                 featured: document.getElementById('prod-featured').checked,
                 img: imgData,
@@ -770,7 +868,7 @@
                 closeProductModal();
                 showNotification('Товар успішно збережено!');
             } catch (error) {
-                alert("Помилка збереження! Пам'ять браузера (localStorage) переповнена. Завантажуйте фото меншого розміру.");
+                alert("Помилка збереження! Пам'ять браузера (localStorage) переповнена.");
             }
         };
 
@@ -1086,22 +1184,49 @@
             }
         }
 
-        // --- НАЛАШТУВАННЯ ---
+        // --- НАЛАШТУВАННЯ ТА ПЕРЕРАХУНОК ---
         function populateSettings() {
-            ['phone','tg','inst','addr1','map1','addr2','map2'].forEach(k => {
-                const mapKey = k==='tg'?'tgLink':(k==='inst'?'instLink':k);
+            ['phone','tg','inst','addr1','map1','addr2','map2', 'gold-rate'].forEach(k => {
+                const mapKey = k==='tg'?'tgLink':(k==='inst'?'instLink':(k==='gold-rate'?'goldRate':k));
                 if(document.getElementById(`set-${k}`)) document.getElementById(`set-${k}`).value = siteSettings[mapKey] || '';
             });
         }
 
         function saveSiteSettings() {
+            const oldRate = siteSettings.goldRate;
+            const newRate = document.getElementById('set-gold-rate').value;
+
             siteSettings = {
-                phone: document.getElementById('set-phone').value, tgLink: document.getElementById('set-tg').value,
-                instLink: document.getElementById('set-inst').value, addr1: document.getElementById('set-addr1').value,
-                map1: document.getElementById('set-map1').value, addr2: document.getElementById('set-addr2').value,
-                map2: document.getElementById('set-map2').value
+                phone: document.getElementById('set-phone').value, 
+                tgLink: document.getElementById('set-tg').value,
+                instLink: document.getElementById('set-inst').value, 
+                addr1: document.getElementById('set-addr1').value,
+                map1: document.getElementById('set-map1').value, 
+                addr2: document.getElementById('set-addr2').value,
+                map2: document.getElementById('set-map2').value,
+                goldRate: newRate
             };
+            
             localStorage.setItem('bv_settings', JSON.stringify(siteSettings));
+            
+            // ПЕРЕРАХУНОК ЦІН ЗОЛОТА ПРИ ЗМІНІ КУРСУ
+            if (oldRate !== newRate && newRate > 0) {
+                let updatedCount = 0;
+                products.forEach(p => {
+                    if (p.priceType === 'auto') {
+                        p.price = Math.round((Number(p.weight) * Number(newRate)) + Number(p.workCost));
+                        updatedCount++;
+                    }
+                });
+                if (updatedCount > 0) {
+                    localStorage.setItem('bv_products', JSON.stringify(products));
+                    filteredProducts = [...products];
+                    renderProducts();
+                    showNotification(`Збережено! Авто-перераховано цін: ${updatedCount}`);
+                    return;
+                }
+            }
+            
             showNotification('Налаштування сайту збережено');
         }
 

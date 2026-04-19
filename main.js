@@ -1114,9 +1114,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let users = API.get('bv_users', []);
             
             if (isRegisterMode) {
-                if(users.find(u => u.username.toLowerCase() === user.toLowerCase())) { alert('Користувач з таким логіном вже існує!'); return; }
+                // Блокируем регистрацию с логином admin
+                if (user.toLowerCase() === 'admin') { alert('Цей логін зарезервовано системою!'); return; }
+                if (users.find(u => u.username.toLowerCase() === user.toLowerCase())) { alert('Користувач з таким логіном вже існує!'); return; }
                 if (user.length < 3) { alert('Логін має містити мінімум 3 символи.'); return; }
                 if (pass.length < 4) { alert('Пароль має містити мінімум 4 символи.'); return; }
+                
                 const newUser = { username: user, password: pass, role: 'user', favs: [] };
                 users.push(newUser);
                 API.set('bv_users', users);
@@ -1127,6 +1130,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 API.set('bv_cart', []);
                 window.location.href = 'profile.html';
             } else {
+                // --- ХАРДКОД ПРОПУСК ДЛЯ АДМИНА ---
+                if (user.toLowerCase() === 'admin' && pass === 'admin') {
+                    sessionStorage.setItem('isAdminAuth', 'true');
+                    window.location.href = 'admin.html';
+                    return;
+                }
+
+                // Обычный вход для пользователей
                 const found = users.find(u => u.username.toLowerCase() === user.toLowerCase() && u.password === pass);
                 if (found) {
                     API.set('bv_current_user', found);
@@ -1135,9 +1146,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     API.set(getScopedStorageKey('bv_favs'), userFavs);
                     API.set('bv_favs', userFavs);
                     API.set('bv_cart', API.get(getScopedStorageKey('bv_cart'), []));
-                    if(found.role === 'admin') { sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; } 
-                    else { window.location.href = 'profile.html'; }
-                } else { alert('Невірний логін або пароль!'); }
+                    
+                    if(found.role === 'admin') { 
+                        sessionStorage.setItem('isAdminAuth', 'true'); 
+                        window.location.href = 'admin.html'; 
+                    } else { 
+                        window.location.href = 'profile.html'; 
+                    }
+                } else { 
+                    alert('Невірний логін або пароль!'); 
+                }
             }
         });
     }
@@ -1231,3 +1249,169 @@ const favOverlay = document.getElementById('favOverlay');
 if(overlay) overlay.onclick = () => { if(typeof window.toggleMenu === 'function') window.toggleMenu(); };
 if(cartOverlay) cartOverlay.onclick = () => { if(typeof window.toggleCart === 'function') window.toggleCart(); };
 if(favOverlay) favOverlay.onclick = () => { if(typeof window.toggleFavDrawer === 'function') window.toggleFavDrawer(); };
+// Отримуємо глобальний курс
+function getGlobalGoldRate() {
+    return siteSettings.goldRate ? Number(siteSettings.goldRate) : 0;
+}
+
+// Перемикач в модалці товару
+function togglePriceMode() {
+    const type = document.getElementById('prod-price-type').value;
+    if (type === 'auto') {
+        document.getElementById('price-mode-manual').classList.add('hidden');
+        document.getElementById('price-mode-auto').classList.remove('hidden');
+        previewAutoPrice();
+    } else {
+        document.getElementById('price-mode-auto').classList.add('hidden');
+        document.getElementById('price-mode-manual').classList.remove('hidden');
+    }
+}
+
+// Прев'ю ціни при вводі
+function previewAutoPrice() {
+    const weight = Number(document.getElementById('prod-weight').value) || 0;
+    const work = Number(document.getElementById('prod-work-cost').value) || 0;
+    const rate = getGlobalGoldRate();
+    const total = Math.round((weight * rate) + work);
+    document.getElementById('auto-price-preview').innerText = total + ' ₴';
+}
+
+// ОНОВИТИ ФУНКЦІЮ openProductModal
+function openProductModal(id = null) {
+    document.getElementById('productForm').reset(); 
+    document.getElementById('prodPreview').style.display = 'none'; 
+    document.getElementById('prod-id').value = '';
+    document.getElementById('prod-imgBase64').value = '';
+    document.getElementById('prodModalTitle').innerText = 'Додати товар';
+    document.getElementById('prod-price-type').value = 'manual';
+    togglePriceMode();
+    updateSubcatOptions(); 
+    
+    if(id) {
+        const p = products.find(prod => prod.id === id);
+        document.getElementById('prod-id').value = p.id; 
+        document.getElementById('prod-name').value = p.name; 
+        document.getElementById('prod-variant').value = p.variant;
+        document.getElementById('prod-category').value = p.category; 
+        updateSubcatOptions(); 
+        setTimeout(() => document.getElementById('prod-subcategory').value = p.subcategory || 'none', 50);
+        
+        document.getElementById('prod-status').value = p.status || 'in-stock'; 
+        document.getElementById('prod-badge').value = p.badge || 'none'; 
+        
+        // Відновлюємо тип ціни
+        document.getElementById('prod-price-type').value = p.priceType || 'manual';
+        document.getElementById('prod-price').value = p.price || '';
+        document.getElementById('prod-weight').value = p.weight || '';
+        document.getElementById('prod-work-cost').value = p.workCost || '';
+        togglePriceMode();
+
+        document.getElementById('prod-discount').value = p.discount || ''; 
+        document.getElementById('prod-featured').checked = p.featured || false;
+        document.getElementById('prod-imgBase64').value = p.img; 
+        if(p.img) { document.getElementById('prodPreview').src = p.img; document.getElementById('prodPreview').style.display = 'block'; }
+        document.getElementById('prod-desc').value = p.desc || ''; 
+        document.getElementById('prodModalTitle').innerText = 'Редагувати товар';
+    }
+    document.getElementById('productModal').classList.remove('hidden'); 
+    setTimeout(() => document.getElementById('productModal').classList.remove('opacity-0'), 10);
+}
+
+// ОНОВИТИ ФУНКЦІЮ productForm.onsubmit
+document.getElementById('productForm').onsubmit = (e) => {
+    e.preventDefault(); 
+    const idInput = document.getElementById('prod-id').value;
+    const imgData = document.getElementById('prod-imgBase64').value;
+    if(!imgData) return alert('Будь ласка, завантажте фото товару!');
+
+    const priceType = document.getElementById('prod-price-type').value;
+    const weight = Number(document.getElementById('prod-weight').value) || 0;
+    const workCost = Number(document.getElementById('prod-work-cost').value) || 0;
+    
+    // Розраховуємо фінальну ціну перед збереженням
+    let finalPrice = 0;
+    if (priceType === 'auto') {
+        if (getGlobalGoldRate() === 0) return alert('В налаштуваннях сайту не задано курс золота!');
+        finalPrice = Math.round((weight * getGlobalGoldRate()) + workCost);
+    } else {
+        finalPrice = Number(document.getElementById('prod-price').value) || 0;
+    }
+
+    const prodData = {
+        id: idInput || 'prod_' + Date.now(),
+        name: document.getElementById('prod-name').value,
+        variant: document.getElementById('prod-variant').value,
+        category: document.getElementById('prod-category').value,
+        subcategory: document.getElementById('prod-subcategory').value,
+        status: document.getElementById('prod-status').value,
+        badge: document.getElementById('prod-badge').value,
+        
+        // Нові поля
+        priceType: priceType,
+        weight: weight,
+        workCost: workCost,
+        price: finalPrice,
+        
+        discount: document.getElementById('prod-discount').value ? Number(document.getElementById('prod-discount').value) : '',
+        featured: document.getElementById('prod-featured').checked,
+        img: imgData,
+        desc: document.getElementById('prod-desc').value
+    };
+
+    if (idInput) { 
+        const i = products.findIndex(p => p.id === idInput); 
+        if(i !== -1) products[i] = prodData; 
+    } else { products.unshift(prodData); }
+
+    try {
+        localStorage.setItem('bv_products', JSON.stringify(products)); 
+        filteredProducts = [...products];
+        renderProducts(); 
+        closeProductModal();
+        showNotification('Товар успішно збережено!');
+    } catch (error) {
+        alert("Помилка збереження! Пам'ять переповнена.");
+    }
+};
+
+// ОНОВИТИ populateSettings ТА saveSiteSettings
+function populateSettings() {
+    ['phone','tg','inst','addr1','map1','addr2','map2', 'gold-rate'].forEach(k => {
+        const mapKey = k==='tg'?'tgLink':(k==='inst'?'instLink':(k==='gold-rate'?'goldRate':k));
+        if(document.getElementById(`set-${k}`)) document.getElementById(`set-${k}`).value = siteSettings[mapKey] || '';
+    });
+}
+
+function saveSiteSettings() {
+    const oldRate = siteSettings.goldRate;
+    const newRate = document.getElementById('set-gold-rate').value;
+
+    siteSettings = {
+        phone: document.getElementById('set-phone').value, tgLink: document.getElementById('set-tg').value,
+        instLink: document.getElementById('set-inst').value, addr1: document.getElementById('set-addr1').value,
+        map1: document.getElementById('set-map1').value, addr2: document.getElementById('set-addr2').value,
+        map2: document.getElementById('set-map2').value,
+        goldRate: newRate
+    };
+    localStorage.setItem('bv_settings', JSON.stringify(siteSettings));
+    
+    // ПЕРЕРАХУНОК ЦІН ЯКЩО КУРС ЗМІНИВСЯ
+    if (oldRate !== newRate && newRate > 0) {
+        let updatedCount = 0;
+        products.forEach(p => {
+            if (p.priceType === 'auto') {
+                p.price = Math.round((Number(p.weight) * Number(newRate)) + Number(p.workCost));
+                updatedCount++;
+            }
+        });
+        if (updatedCount > 0) {
+            localStorage.setItem('bv_products', JSON.stringify(products));
+            filteredProducts = [...products];
+            renderProducts();
+            showNotification(`Налаштування збережено. Авто-перераховано цін: ${updatedCount}`);
+            return;
+        }
+    }
+    
+    showNotification('Налаштування сайту збережено');
+}
