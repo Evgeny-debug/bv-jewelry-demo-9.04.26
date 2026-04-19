@@ -114,7 +114,7 @@ if (!API.get('bv_demo_installed_v8')) {
         template: 'grid-6',
         items: [
             { catId: 'gold', title: 'Золото', img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800' },
-            { catId: 'silver', title: 'Срібло', img: 'https://images.unsplash.com/photo-1635767798638-3e25273a8236?q=80&w=800' },
+            { catId: 'silver', title: 'Срібло', img: 'https://images.unsplash.com/photo-1630019058244-4712054b147c?q=80&w=800' },
             { catId: 'gold_rings', title: 'Каблучки', img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800' },
             { catId: 'gold_earrings', title: 'Сережки', img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800' },
             { catId: 'gold_chains', title: 'Ланцюжки', img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800' },
@@ -123,7 +123,7 @@ if (!API.get('bv_demo_installed_v8')) {
     };
 
     const demoSettings = {
-        heroBg: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800',
+        heroBg: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1920',
         phone: '+38 063 45 40 901', 
         tgLink: 'https://t.me/bv_jewelry_izmail', 
         instLink: 'https://instagram.com/bv_jewelry',
