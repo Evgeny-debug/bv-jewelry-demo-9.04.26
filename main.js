@@ -1,16 +1,21 @@
 // ==========================================
 // 0. ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ (SUPABASE)
 // ==========================================
-// ⚠️ Прибрали /rest/v1/ з кінця посилання
-const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co'; 
-// ⚠️ Встав сюди ПОВНИЙ ключ, а не обрізаний з крапками!
+const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co'; // Без слэша в конце!
 const supabaseKey = 'sb_publishable_6XVu2-OGKP-8dVlLW18U5w_ZfWCSpIO'; 
 
-// ⚠️ Змінили назву змінної на _supabase, щоб уникнути помилки
-const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+let _supabase;
 
-console.log("BV Jewelry: Підключення до бази встановлено.", _supabase);
-
+try {
+    if (typeof supabase !== 'undefined') {
+        _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        console.log("BV Jewelry: Supabase підключено успішно!");
+    } else {
+        console.error("Ошибка: Библиотека Supabase не загрузилась. Проверь интернет или ссылку в index.html");
+    }
+} catch (err) {
+    console.error("Критична помилка ініціалізації:", err);
+}
 // ==========================================
 // 1. API ФАСАД
 // ==========================================
