@@ -1,16 +1,18 @@
 // ==========================================
 // 0. ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ (SUPABASE)
 // ==========================================
-const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co/rest/v1/'; // Взяли из раздела Data API
-const supabaseKey = 'sb_publishable_6XVu2-0GKP...'; // Взяли с твоего скриншота
+// ⚠️ Прибрали /rest/v1/ з кінця посилання
+const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co'; 
+// ⚠️ Встав сюди ПОВНИЙ ключ, а не обрізаний з крапками!
+const supabaseKey = 'sb_publishable_6XVu2-0GKP...'; 
 
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+// ⚠️ Змінили назву змінної на _supabase, щоб уникнути помилки
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-// Тестова перевірка підключення
-console.log("Supabase підключено!", supabase);
+console.log("BV Jewelry: Підключення до бази встановлено.", _supabase);
 
 // ==========================================
-// 1. API ФАСАД (Готовий до переходу на бекенд)
+// 1. API ФАСАД
 // ==========================================
 const API = {
     get: (key, def) => {
@@ -77,14 +79,12 @@ if (!API.get('bv_demo_installed_v16')) {
     ];
 
     const baseProducts = [
-        // ЗОЛОТО
         { id: 'g-r-1', name: 'Каблучка "Grace" з діамантом', variant: 'Золото 585', category: 'gold', subcategory: 'gold_rings', priceType: 'auto', weight: 2.5, workCost: 4500, price: 13250, img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800', desc: 'Елегантна золота каблучка з центральним діамантом.' },
-        { id: 'g-e-1', name: 'Сережки "Golden Drop"', variant: 'Золото 585', category: 'gold', subcategory: 'gold_earrings', priceType: 'auto', weight: 3.2, workCost: 3500, price: 14700, img: 'https://images.unsplash.com/photo-1629224316810-9d8805b95e76?q=80&w=800', desc: 'Вишукані золоті сережки, які ідеально підкреслюють лінію шиї.' },
-        { id: 'g-c-1', name: 'Ланцюжок "Anchor" 50см', variant: 'Золото 585', category: 'gold', subcategory: 'gold_chains', priceType: 'auto', weight: 8.5, workCost: 2000, price: 31750, img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800', desc: 'Міцне якірне плетіння. Ручна робота майстрів Atelier.' },
-        { id: 'g-b-1', name: 'Браслет "Royal Unity"', variant: 'Золото 585', category: 'gold', subcategory: 'gold_bracelets', priceType: 'auto', weight: 12.0, workCost: 5000, price: 47000, img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800', desc: 'Масивний золотий браслет з неймовірним плетінням та інкрустацією.' },
-        // СРІБЛО
-        { id: 's-r-1', name: 'Каблучка "Platinum Dream"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_rings', priceType: 'manual', weight: 0, workCost: 0, price: 2400, img: 'https://images.unsplash.com/photo-1603561591411-071c4f75393c?q=80&w=800', desc: 'Срібна каблучка з родієвим покриттям та масивним каменем.' },
-        { id: 's-e-1', name: 'Сережки "Crystal Leaf"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_earrings', priceType: 'manual', weight: 0, workCost: 0, price: 1850, img: 'https://images.unsplash.com/photo-1635767798638-3e25273a8236?q=80&w=800', desc: 'Легкі та витончені срібні сережки у формі пелюсток.' },
+        { id: 'g-e-1', name: 'Сережки "Golden Drop"', variant: 'Золото 585', category: 'gold', subcategory: 'gold_earrings', priceType: 'auto', weight: 3.2, workCost: 3500, price: 14700, img: 'https://images.unsplash.com/photo-1629224316810-9d8805b95e76?q=80&w=800', desc: 'Вишукані золоті сережки.' },
+        { id: 'g-c-1', name: 'Ланцюжок "Anchor" 50см', variant: 'Золото 585', category: 'gold', subcategory: 'gold_chains', priceType: 'auto', weight: 8.5, workCost: 2000, price: 31750, img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800', desc: 'Міцне якірне плетіння.' },
+        { id: 'g-b-1', name: 'Браслет "Royal Unity"', variant: 'Золото 585', category: 'gold', subcategory: 'gold_bracelets', priceType: 'auto', weight: 12.0, workCost: 5000, price: 47000, img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800', desc: 'Масивний золотий браслет.' },
+        { id: 's-r-1', name: 'Каблучка "Platinum Dream"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_rings', priceType: 'manual', weight: 0, workCost: 0, price: 2400, img: 'https://images.unsplash.com/photo-1603561591411-071c4f75393c?q=80&w=800', desc: 'Срібна каблучка з родієвим покриттям.' },
+        { id: 's-e-1', name: 'Сережки "Crystal Leaf"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_earrings', priceType: 'manual', weight: 0, workCost: 0, price: 1850, img: 'https://images.unsplash.com/photo-1635767798638-3e25273a8236?q=80&w=800', desc: 'Легкі та витончені срібні сережки.' },
         { id: 's-c-1', name: 'Кольє "Silver Tear"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_chains', priceType: 'manual', weight: 0, workCost: 0, price: 3100, img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800', desc: 'Стильне кольє з краплеподібним кулоном.' },
         { id: 's-b-1', name: 'Браслет "Infinity"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_bracelets', priceType: 'manual', weight: 0, workCost: 0, price: 2150, img: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800', desc: 'Тонкий браслет із символом нескінченності.' }
     ];
@@ -351,13 +351,11 @@ window.renderCart = function() {
         if(subtotalVal) subtotalVal.innerText = formatterPrice.format(0);
         cartBadges.forEach(b => b.innerText = '0');
         
-        // Прячем кнопку очистки, если корзина пуста
         const clearBtn = document.getElementById('clearCartBtn');
         if(clearBtn) clearBtn.style.display = 'none';
         return;
     }
 
-    // Показываем кнопку очистки
     const clearBtn = document.getElementById('clearCartBtn');
     if(clearBtn) clearBtn.style.display = 'flex';
 
@@ -476,9 +474,8 @@ window.renderProductCard = function(prod) {
         priceHtml = `<span class="text-[14px] md:text-[16px] font-bold text-[var(--success)]">${formatterPrice.format(prod.price)}</span><span class="text-[10px] md:text-[12px] text-[var(--text-muted)] line-through ml-2 opacity-70">${formatterPrice.format(prod.discount)}</span>`;
     }
 
-    // ЕКРАНУЄМО ЛАПКИ ДЛЯ АТРИБУТІВ ФУНКЦІЇ!
     const safeId = escapeHtml(prod.id);
-    const safeName = escapeHtml(prod.name).replace(/'/g, "\\'"); // Додатково екрануємо одинарні лапки для JS
+    const safeName = escapeHtml(prod.name).replace(/'/g, "\\'"); 
     const safeVariant = escapeHtml(prod.variant).replace(/'/g, "\\'");
     const safeImg = escapeHtml(prod.img);
 
@@ -763,31 +760,28 @@ window.initBannerSlider = function() {
         clearInterval(window.bannerInterval); 
         window.bannerInterval = setInterval(() => moveBanner(1), 5000); 
 
-        // --- ДОДАНО: РОЗУМНИЙ СВАЙП ДЛЯ МОБІЛЬНИХ ---
+        // --- РОЗУМНИЙ СВАЙП ДЛЯ МОБІЛЬНИХ ---
         let touchStartX = 0;
         let touchEndX = 0;
         
-        // Коли палець торкається екрану
         container.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
-            clearInterval(window.bannerInterval); // Пауза автопрокрутки під час дотику
+            clearInterval(window.bannerInterval); 
         }, {passive: true});
 
-        // Коли палець відривається
         container.addEventListener('touchend', e => {
             touchEndX = e.changedTouches[0].screenX;
             handleSwipe();
-            window.bannerInterval = setInterval(() => moveBanner(1), 5000); // Відновлюємо автопрокрутку
+            window.bannerInterval = setInterval(() => moveBanner(1), 5000); 
         }, {passive: true});
 
-        // Логіка визначення напрямку
         function handleSwipe() {
-            const swipeThreshold = 50; // Мінімальна довжина свайпу в пікселях
+            const swipeThreshold = 50; 
             if (touchStartX - touchEndX > swipeThreshold) {
-                moveBanner(1); // Свайпнули вліво -> наступний слайд
+                moveBanner(1); 
             }
             if (touchEndX - touchStartX > swipeThreshold) {
-                moveBanner(-1); // Свайпнули вправо -> попередній слайд
+                moveBanner(-1); 
             }
         }
     }
@@ -841,7 +835,6 @@ window.renderHomeCollage = function() {
     if (!collage) return;
     const config = API.get('bv_collage_config', { template: 'grid-6', items: [] });
     
-    // В index.html у нас теперь <div class="grid-perfect-collage">, поэтому просто добавляем в него
     const perfectCollage = document.querySelector('.grid-perfect-collage');
     
     if (perfectCollage && config.items.length > 0) {
@@ -960,50 +953,75 @@ function updateAuthView() {
 document.addEventListener('DOMContentLoaded', () => {
     const authForm = document.getElementById('authForm');
     if(authForm) {
-        authForm.addEventListener('submit', (e) => {
+        // ДОДАНА ІНТЕГРАЦІЯ З SUPABASE АВТОРИЗАЦІЄЮ
+        authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const user = document.getElementById('authUser').value.trim();
+            
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Зачекайте...';
+            submitBtn.disabled = true;
+
+            const email = document.getElementById('authUser').value.trim();
             const pass = document.getElementById('authPass').value.trim();
-            let users = API.get('bv_users', []);
             
             if (isRegisterMode) {
-                if (user.toLowerCase() === 'admin') { alert('Цей логін зарезервовано системою!'); return; }
-                if (users.find(u => u.username.toLowerCase() === user.toLowerCase())) { alert('Користувач з таким логіном вже існує!'); return; }
-                if (user.length < 3) { alert('Логін має містити мінімум 3 символи.'); return; }
-                if (pass.length < 4) { alert('Пароль має містити мінімум 4 символи.'); return; }
-                const newUser = { username: user, password: pass, role: 'user', favs: [] };
-                users.push(newUser);
-                API.set('bv_users', users); API.set('bv_current_user', newUser);
-                API.set(getScopedStorageKey('bv_favs'), []); API.set(getScopedStorageKey('bv_cart'), []);
-                API.set('bv_favs', []); API.set('bv_cart', []);
-                window.location.href = 'profile.html';
-            } else {
-                if (user.toLowerCase() === 'admin' && pass === 'admin') {
-                    sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; return;
+                if (pass.length < 6) { 
+                    alert('Пароль має містити мінімум 6 символів.'); 
+                    submitBtn.innerText = originalText; submitBtn.disabled = false;
+                    return; 
                 }
-                const found = users.find(u => u.username.toLowerCase() === user.toLowerCase() && u.password === pass);
-                if (found) {
-                    API.set('bv_current_user', found); migrateScopedState();
-                    const userFavs = Array.isArray(found.favs) ? found.favs : API.get(getScopedStorageKey('bv_favs'), []);
-                    API.set(getScopedStorageKey('bv_favs'), userFavs); API.set('bv_favs', userFavs);
-                    API.set('bv_cart', API.get(getScopedStorageKey('bv_cart'), []));
-                    if(found.role === 'admin') { sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; } 
-                    else { window.location.href = 'profile.html'; }
-                } else { alert('Невірний логін або пароль!'); }
+                
+                const { data, error } = await _supabase.auth.signUp({
+                    email: email,
+                    password: pass,
+                });
+
+                if (error) {
+                    alert('Помилка реєстрації: ' + error.message);
+                } else {
+                    alert('Реєстрація успішна! Тепер ви можете увійти.');
+                    isRegisterMode = false;
+                    updateAuthView();
+                }
+            } else {
+                // ТИМЧАСОВИЙ ПРОПУСК АДМІНА ДЛЯ РОЗРОБКИ
+                if (email.toLowerCase() === 'admin' || email.toLowerCase() === 'admin@bv.com') {
+                    if (pass === 'admin') {
+                        sessionStorage.setItem('isAdminAuth', 'true'); 
+                        window.location.href = 'admin.html'; 
+                        submitBtn.innerText = originalText; submitBtn.disabled = false;
+                        return;
+                    }
+                }
+
+                const { data, error } = await _supabase.auth.signInWithPassword({
+                    email: email,
+                    password: pass,
+                });
+
+                if (error) {
+                    alert('Невірний логін або пароль!');
+                } else {
+                    // Успішний вхід
+                    API.set('bv_current_user', { username: data.user.email, role: 'client' });
+                    window.location.href = 'profile.html';
+                }
             }
+            
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
         });
     }
 });
 
-window.logoutUser = function() {
-    const currentUser = API.get('bv_current_user');
-    if(currentUser) {
-        let users = API.get('bv_users', []);
-        const idx = users.findIndex(u => u.username === currentUser.username);
-        if(idx !== -1) { users[idx].favs = getFavs(); API.set('bv_users', users); }
-    }
-    API.set('bv_current_user', null); API.set('bv_favs', []); API.set('bv_cart', []);
-    sessionStorage.removeItem('isAdminAuth'); window.location.href = 'index.html'; 
+window.logoutUser = async function() {
+    await _supabase.auth.signOut(); // Вихід з Supabase
+    API.set('bv_current_user', null); 
+    API.set('bv_favs', []); 
+    API.set('bv_cart', []);
+    sessionStorage.removeItem('isAdminAuth'); 
+    window.location.href = 'index.html'; 
 };
 
 // ==========================================
