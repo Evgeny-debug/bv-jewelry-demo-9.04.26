@@ -4,7 +4,7 @@
 // ⚠️ Прибрали /rest/v1/ з кінця посилання
 const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co'; 
 // ⚠️ Встав сюди ПОВНИЙ ключ, а не обрізаний з крапками!
-const supabaseKey = 'sb_publishable_6XVu2-0GKP...'; 
+const supabaseKey = 'sb_publishable_6XVu2-OGKP-8dVlLW18U5w_ZfWCSpIO'; 
 
 // ⚠️ Змінили назву змінної на _supabase, щоб уникнути помилки
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
