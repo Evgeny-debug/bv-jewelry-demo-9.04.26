@@ -1,4 +1,14 @@
 // ==========================================
+// 0. ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ (SUPABASE)
+// ==========================================
+const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co/rest/v1/';
+const supabaseKey = 'sb_publishable_6XVu2-OGKP-8dVlLW18U5w_ZfWCSpIO';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// Тестова перевірка підключення
+console.log("Supabase підключено!", supabase);
+
+// ==========================================
 // 1. API ФАСАД (Готовий до переходу на бекенд)
 // ==========================================
 const API = {
