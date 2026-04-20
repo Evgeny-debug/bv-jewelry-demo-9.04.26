@@ -27,14 +27,13 @@ const moonSVG = `<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>`;
 const formatterPrice = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH', maximumFractionDigits: 0 });
 
 // ==========================================
-// 3. ГЕНЕРАТОР ДЕМО-ДАНИХ (v5)
+// 3. ГЕНЕРАТОР ДЕМО-ДАНИХ (v16 - PREMIUM)
 // ==========================================
-
-// --- ДАНІ ДЛЯ СТОРІНКИ "ЕКСКЛЮЗИВ" ---
+if (!API.get('bv_demo_installed_v16')) {
     const demoExclusiveProcess = [
-        { id: 1, title: 'Ескіз', img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800', desc: 'Створення унікального дизайну на папері.' },
-        { id: 2, title: '3D Модель', img: 'https://images.unsplash.com/photo-1603561591411-071c4f75393c?q=80&w=800', desc: 'Побудова точної комп\'ютерної моделі виробу.' },
-        { id: 3, title: 'Готовий виріб', img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800', desc: 'Втілення вашої мрії у дорогоцінному металі.' }
+        { id: 1, title: 'Ескіз', img: 'https://images.pexels.com/photos/1050312/pexels-photo-1050312.jpeg', desc: 'Створення унікального дизайну на папері.' },
+        { id: 2, title: 'Моделювання', img: 'https://images.pexels.com/photos/30541169/pexels-photo-30541169.jpeg', desc: 'Створення воскової моделі та ручна робота ювеліра.' },
+        { id: 3, title: 'Готовий виріб', img: 'https://images.pexels.com/photos/6263101/pexels-photo-6263101.jpeg', desc: 'Втілення вашої мрії у дорогоцінному металі.' }
     ];
 
     const demoExclusiveMaterials = [
@@ -43,11 +42,6 @@ const formatterPrice = new Intl.NumberFormat('uk-UA', { style: 'currency', curre
         { id: 'none', label: 'Немає матеріалів', selected: false }
     ];
 
-    API.set('bv_exclusive_process', demoExclusiveProcess);
-    API.set('bv_exclusive_materials', demoExclusiveMaterials);
-    // -------------------------------------
-
-if (!API.get('bv_demo_installed_v8')) {
     const demoCats = [
         {
             id: 'gold', name: 'Золото',
@@ -73,39 +67,33 @@ if (!API.get('bv_demo_installed_v8')) {
 
     const baseProducts = [
         // ЗОЛОТО
-        { id: 'g-r-1', name: 'Каблучка "Grace" з діамантом', variant: 'Золото 585', category: 'gold', subcategory: 'gold_rings', price: 18500, img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800', desc: 'Елегантна золота каблучка з центральним діамантом 0.3 карата. Класика, що ніколи не вийде з моди.' },
-        { id: 'g-e-1', name: 'Сережки-пусети "Sparkle"', variant: 'Золото 585', category: 'gold', subcategory: 'gold_earrings', price: 9200, img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800', desc: 'Мінімалістичні пусети з білого золота. Ідеально підходять для щоденного образу.' },
-        { id: 'g-c-1', name: 'Ланцюжок "Anchor" 50см', variant: 'Золото 585', category: 'gold', subcategory: 'gold_chains', price: 14700, img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800', desc: 'Міцне якірне плетіння. Ручна робота майстрів Atelier.' },
-        { id: 'g-b-1', name: 'Жорсткий браслет "Unity"', variant: 'Золото 585', category: 'gold', subcategory: 'gold_bracelets', price: 28400, img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800', desc: 'Масивний золотий браслет з гравіюванням на внутрішній стороні.' },
-        
+        { id: 'g-r-1', name: 'Каблучка "Grace" з діамантом', variant: 'Золото 585', category: 'gold', subcategory: 'gold_rings', priceType: 'auto', weight: 2.5, workCost: 4500, price: 13250, img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800', desc: 'Елегантна золота каблучка з центральним діамантом.' },
+        { id: 'g-e-1', name: 'Сережки "Golden Drop"', variant: 'Золото 585', category: 'gold', subcategory: 'gold_earrings', priceType: 'auto', weight: 3.2, workCost: 3500, price: 14700, img: 'https://images.unsplash.com/photo-1629224316810-9d8805b95e76?q=80&w=800', desc: 'Вишукані золоті сережки, які ідеально підкреслюють лінію шиї.' },
+        { id: 'g-c-1', name: 'Ланцюжок "Anchor" 50см', variant: 'Золото 585', category: 'gold', subcategory: 'gold_chains', priceType: 'auto', weight: 8.5, workCost: 2000, price: 31750, img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800', desc: 'Міцне якірне плетіння. Ручна робота майстрів Atelier.' },
+        { id: 'g-b-1', name: 'Браслет "Royal Unity"', variant: 'Золото 585', category: 'gold', subcategory: 'gold_bracelets', priceType: 'auto', weight: 12.0, workCost: 5000, price: 47000, img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800', desc: 'Масивний золотий браслет з неймовірним плетінням та інкрустацією.' },
         // СРІБЛО
-        { id: 's-r-1', name: 'Каблучка "Moonlight"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_rings', price: 2400, img: 'https://images.unsplash.com/photo-1603561591411-071c4f75393c?q=80&w=800', desc: 'Срібна каблучка з родієвим покриттям та вставкою гірського кришталю.' },
-        { id: 's-e-1', name: 'Сережки "Minimal Leaf"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_earrings', price: 1850, img: 'https://images.unsplash.com/photo-1630019058244-4712054b147c?q=80&w=800', desc: 'Легкі та витончені срібні сережки у формі пелюсток.' },
-        { id: 's-c-1', name: 'Кольє "Silver Chain"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_chains', price: 3100, img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800', desc: 'Стильне масивне ланцюжкове кольє для сучасного образу.' },
-        { id: 's-b-1', name: 'Браслет "Infinity"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_bracelets', price: 2150, img: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800', desc: 'Тонкий браслет із символом нескінченності та фіанітами.' }
+        { id: 's-r-1', name: 'Каблучка "Platinum Dream"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_rings', priceType: 'manual', weight: 0, workCost: 0, price: 2400, img: 'https://images.unsplash.com/photo-1603561591411-071c4f75393c?q=80&w=800', desc: 'Срібна каблучка з родієвим покриттям та масивним каменем.' },
+        { id: 's-e-1', name: 'Сережки "Crystal Leaf"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_earrings', priceType: 'manual', weight: 0, workCost: 0, price: 1850, img: 'https://images.unsplash.com/photo-1635767798638-3e25273a8236?q=80&w=800', desc: 'Легкі та витончені срібні сережки у формі пелюсток.' },
+        { id: 's-c-1', name: 'Кольє "Silver Tear"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_chains', priceType: 'manual', weight: 0, workCost: 0, price: 3100, img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800', desc: 'Стильне кольє з краплеподібним кулоном.' },
+        { id: 's-b-1', name: 'Браслет "Infinity"', variant: 'Срібло 925', category: 'silver', subcategory: 'silver_bracelets', priceType: 'manual', weight: 0, workCost: 0, price: 2150, img: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800', desc: 'Тонкий браслет із символом нескінченності.' }
     ];
 
     const demoProducts = [];
-    // Створюємо 24 товари для повноцінної сітки (по 3 варіації кожного базового)
     baseProducts.forEach((bp) => {
         for(let j=1; j<=3; j++) {
             let isSale = j === 2;
             let isOut = j === 3 && Math.random() > 0.7;
             demoProducts.push({
                 id: `${bp.id}-${j}`, 
-                name: j === 1 ? bp.name : `${bp.name} (v${j})`, 
-                variant: bp.variant, 
-                category: bp.category, 
-                subcategory: bp.subcategory,
+                name: j === 1 ? bp.name : `${bp.name} (Classic)`, 
+                variant: bp.variant, category: bp.category, subcategory: bp.subcategory,
+                priceType: bp.priceType, weight: bp.weight, workCost: bp.workCost,
                 price: isSale ? Math.round(bp.price * 0.85) : bp.price, 
                 discount: isSale ? bp.price : 0, 
                 status: isOut ? 'out-stock' : 'in-stock', 
                 badge: j === 1 ? 'new' : (isSale ? 'sale' : 'none'),
-                isSpecial: Math.random() > 0.6, 
-                isWeekly: Math.random() > 0.6, 
-                featured: j === 1, 
-                img: bp.img, 
-                desc: bp.desc
+                isSpecial: Math.random() > 0.6, isWeekly: Math.random() > 0.6, featured: j === 1, 
+                img: bp.img, desc: bp.desc
             });
         }
     });
@@ -114,45 +102,45 @@ if (!API.get('bv_demo_installed_v8')) {
         template: 'grid-6',
         items: [
             { catId: 'gold', title: 'Золото', img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=800' },
-            { catId: 'silver', title: 'Срібло', img: 'https://images.unsplash.com/photo-1630019058244-4712054b147c?q=80&w=800' },
+            { catId: 'silver', title: 'Срібло', img: 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?q=80&w=800' },
             { catId: 'gold_rings', title: 'Каблучки', img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800' },
-            { catId: 'gold_earrings', title: 'Сережки', img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800' },
+            { catId: 'silver_earrings', title: 'Сережки', img: 'https://images.unsplash.com/photo-1635767798638-3e25273a8236?q=80&w=800' },
             { catId: 'gold_chains', title: 'Ланцюжки', img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800' },
-            { catId: 'gold_bracelets', title: 'Браслети', img: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800' }
+            { catId: 'silver_bracelets', title: 'Браслети', img: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800' }
         ]
     };
 
     const demoSettings = {
-        heroBg: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1920',
-        phone: '+38 063 45 40 901', 
-        tgLink: 'https://t.me/bv_jewelry_izmail', 
-        instLink: 'https://instagram.com/bv_jewelry',
-        addr1: 'м. Ізмаїл, вул. Торгова, 68', 
-        map1: 'https://share.google/R7G0tiXeqXrx98Uhi',
-        addr2: 'м. Ізмаїл, вул. Покровська, 57', 
-        map2: 'https://share.google/4fE0MoAJwCdCr4igT'
+        heroBg: 'https://media.istockphoto.com/id/1501456660/photo/abstract-pearl-white-texture-background.jpg?b=1&s=612x612&w=0&k=20&c=9b1pvHzMGRSUQnDBVyNW4mAHNJlgTI7Ys1VZmBGI-p8=',
+        goldRate: '3500',
+        phone: '+38 063 45 40 901', tgLink: 'https://t.me/bv_jewelry_izmail', instLink: 'https://instagram.com/bv_jewelry',
+        addr1: 'м. Ізмаїл, вул. Торгова, 68', map1: 'https://share.google/R7G0tiXeqXrx98Uhi',
+        addr2: 'м. Ізмаїл, вул. Покровська, 57', map2: 'https://share.google/4fE0MoAJwCdCr4igT'
     };
 
     const demoBanners = [
-        { id: 1, img: 'https://zolotiyvik.ua/media/cmsadvanced/grid/resized/1920/870/1769078629.jpg', link: 'catalog.html#gold' },
-        { id: 2, img: 'https://zolotiyvik.ua/media/cmsadvanced/grid/resized/1920/870/1183307525.jpg', link: 'catalog.html#silver' }
+        { id: 1, img: 'https://images.unsplash.com/photo-1596944924616-7b38e7cfac36?q=80&w=1920', link: 'catalog.html#gold' },
+        { id: 2, img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=1920', link: 'catalog.html#sale' }
     ];
 
+    API.set('bv_exclusive_process', demoExclusiveProcess);
+    API.set('bv_exclusive_materials', demoExclusiveMaterials);
     API.set('bv_categories_tree', demoCats);
     API.set('bv_products', demoProducts);
     API.set('bv_collage_config', demoCollage);
     API.set('bv_settings', demoSettings);
     API.set('bv_banners', demoBanners);
-    API.set('bv_demo_installed_v8', true); 
+    API.set('bv_demo_installed_v16', true); 
 }
+
+// ==========================================
+// 4. СТАН ТА СИНХРОНІЗАЦІЯ
+// ==========================================
 let categoriesTree = API.get('bv_categories_tree', []);
 let products = API.get('bv_products', []);
 let dbServices = API.get('bv_services_data', []);
 
-function getCurrentUser() {
-    return API.get('bv_current_user', null);
-}
-
+function getCurrentUser() { return API.get('bv_current_user', null); }
 function getScopedStorageKey(baseKey) {
     const currentUser = getCurrentUser();
     if (!currentUser || !currentUser.username) return baseKey;
@@ -166,68 +154,52 @@ function migrateScopedState() {
     const userCartKey = getScopedStorageKey('bv_cart');
     const globalFavs = API.get('bv_favs', null);
     const globalCart = API.get('bv_cart', null);
-
     if (!API.get(userFavsKey, null) && Array.isArray(globalFavs)) API.set(userFavsKey, globalFavs);
     if (!API.get(userCartKey, null) && Array.isArray(globalCart)) API.set(userCartKey, globalCart);
 }
 
 function getFavs() {
     const currentUser = getCurrentUser();
-    if (currentUser && Array.isArray(currentUser.favs)) {
-        API.set(getScopedStorageKey('bv_favs'), currentUser.favs);
-    }
+    if (currentUser && Array.isArray(currentUser.favs)) { API.set(getScopedStorageKey('bv_favs'), currentUser.favs); }
     return API.get(getScopedStorageKey('bv_favs'), []);
 }
-
 function setFavs(favs) {
     API.set(getScopedStorageKey('bv_favs'), favs);
     API.set('bv_favs', favs);
-
     const currentUser = getCurrentUser();
     if (!currentUser) return;
     const users = API.get('bv_users', []);
     const idx = users.findIndex((u) => u.username.toLowerCase() === currentUser.username.toLowerCase());
-    if (idx !== -1) {
-        users[idx].favs = favs;
-        API.set('bv_users', users);
-        API.set('bv_current_user', users[idx]);
-    }
+    if (idx !== -1) { users[idx].favs = favs; API.set('bv_users', users); API.set('bv_current_user', users[idx]); }
 }
 
-function getCart() {
-    return API.get(getScopedStorageKey('bv_cart'), []);
-}
+function getCart() { return API.get(getScopedStorageKey('bv_cart'), []); }
+function setCart(cart) { API.set(getScopedStorageKey('bv_cart'), cart); API.set('bv_cart', cart); }
 
-function setCart(cart) {
-    API.set(getScopedStorageKey('bv_cart'), cart);
-    API.set('bv_cart', cart);
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe.toString()
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
 }
 
 function getCategoryIconSVG(catId) {
     const id = catId.toLowerCase();
-    
-    // Золото (Діамант)
     if (id.includes('gold')) return `<path stroke-linecap="round" stroke-linejoin="round" d="M6 3h12l4 6-10 13L2 9Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M11 3 8 9l4 13"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 3l3 6-4 13"/>`; 
-    // Срібло (Місяць)
     if (id.includes('silver')) return `<path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
-    
-    // Каблучки
     if (id.includes('ring')) return `<circle cx="12" cy="14" r="5" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9l-2-3h4l-2 3z"/>`; 
-    // Сережки
     if (id.includes('earring')) return `<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v9"/><circle cx="12" cy="16" r="3" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 4h6"/>`; 
-    // Ланцюжки
     if (id.includes('chain') || id.includes('neck')) return `<circle cx="8" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M11 12h2"/>`; 
-    // Браслети
-    if (id.includes('bracelet')) return `<ellipse cx="12" cy="12" rx="7" ry="3" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 12v2c0 2 3 3 7 3s7-1 7-3v-2"/>`; 
-    // Хрестики
+    if (id.includes('bracelet')) return `<ellipse cx="12" cy="12" rx="7" ry="3" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 12v2c0 2 3 7 3s7-1 7-3v-2"/>`; 
     if (id.includes('cross')) return `<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8"/>`; 
-    
-    // Дефолтна іконка (Сонце/Сяйво)
     return `<circle cx="12" cy="12" r="4" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 20v2"/>`; 
 }
 
 // ==========================================
-// 4. ГЛОБАЛЬНІ ФУНКЦІЇ ІНТЕРФЕЙСУ
+// 5. ГЛОБАЛЬНІ ФУНКЦІЇ ІНТЕРФЕЙСУ
 // ==========================================
 window.toggleMenu = function() {
     const burger = document.getElementById('burger');
@@ -237,7 +209,6 @@ window.toggleMenu = function() {
     if(sideMenu) sideMenu.classList.toggle('active');
     if(overlay) overlay.classList.toggle('active');
     document.body.style.overflow = (sideMenu && sideMenu.classList.contains('active')) ? 'hidden' : 'auto';
-    
     const searchBox = document.getElementById('mobSearchContainer');
     if(searchBox && !searchBox.classList.contains('hidden')) window.toggleMobileSearch(true);
 };
@@ -246,28 +217,21 @@ window.toggleAccordion = function(listId, arrowId) {
     const list = document.getElementById(listId);
     const arrow = document.getElementById(arrowId);
     if (!list) return;
-
     const isOpening = !list.classList.contains('open');
-
     if (isOpening) {
         const isTopLevel = list.classList.contains('mob-accordion-list');
         const openLists = isTopLevel ? document.querySelectorAll('.mob-accordion-list.open') : list.closest('.mob-accordion-list').querySelectorAll('.mob-nested-list.open');
-
         openLists.forEach(openList => {
             if (openList !== list) {
                 openList.classList.remove('open');
                 const title = openList.previousElementSibling;
                 if (title && title.getAttribute('onclick')) {
                     const match = title.getAttribute('onclick').match(/'([^']+)',\s*'([^']+)'/);
-                    if (match && match[2]) {
-                        const oldArrow = document.getElementById(match[2]);
-                        if (oldArrow) oldArrow.style.transform = 'rotate(0deg)';
-                    }
+                    if (match && match[2]) { const oldArrow = document.getElementById(match[2]); if (oldArrow) oldArrow.style.transform = 'rotate(0deg)'; }
                 }
             }
         });
     }
-
     list.classList.toggle('open');
     if (arrow) arrow.style.transform = list.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
 };
@@ -277,74 +241,45 @@ window.toggleTheme = function() {
     const newTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
     html.setAttribute('data-theme', newTheme);
     API.set('bv_theme', newTheme);
-    
     const svg = newTheme === 'light' ? sunSVG : moonSVG;
     const icon = document.getElementById('themeIcon');
     const iconMob = document.getElementById('themeIconMob');
-    
     if(icon) icon.innerHTML = svg;
     if(iconMob) iconMob.innerHTML = svg;
 };
 
 window.changeLang = function(lang) {
-    const currentFlag = document.getElementById('currentFlag');
-    const currentLangLabel = document.getElementById('currentLangLabel');
-    const currentFlagMob = document.getElementById('currentFlagMob');
-    const currentLangLabelMob = document.getElementById('currentLangLabelMob');
-
     const displayLang = lang === 'uk' ? 'UA' : lang.toUpperCase();
-
-    if(currentFlag) currentFlag.src = `https://flagcdn.com/${flags[lang]}.svg`;
-    if(currentLangLabel) currentLangLabel.innerText = displayLang;
-    if(currentFlagMob) currentFlagMob.src = `https://flagcdn.com/${flags[lang]}.svg`;
-    if(currentLangLabelMob) currentLangLabelMob.innerText = displayLang;
-    
+    ['currentFlag', 'currentFlagMob'].forEach(id => { const el = document.getElementById(id); if(el) el.src = `https://flagcdn.com/${flags[lang]}.svg`; });
+    ['currentLangLabel', 'currentLangLabelMob'].forEach(id => { const el = document.getElementById(id); if(el) el.innerText = displayLang; });
     document.querySelectorAll('[data-i18n]').forEach(el => el.innerHTML = i18n[lang][el.dataset.i18n] || el.innerHTML);
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = i18n[lang][el.dataset.i18nPlaceholder] || el.placeholder);
     API.set('bv_lang', lang);
-    
     window.renderCart();
     window.renderFavDrawer();
-    
     if(document.getElementById('specialGrid') && typeof renderHomeSections === 'function') renderHomeSections();
     if(typeof window.renderCatalogBatch === 'function') window.renderCatalogBatch(); 
     if(document.getElementById('productContainer') && typeof renderProductPage === 'function') renderProductPage();
-    
     const mobLangList = document.getElementById('mobLangList');
     if(mobLangList && mobLangList.classList.contains('open')) window.toggleAccordion('mobLangList', 'mobLangArrow');
 };
 
-// ==========================================
-// 4.5. ГЛОБАЛЬНА ГЕНЕРАЦІЯ ЕЛЕМЕНТІВ (Telegram, Наверх, Нижнє меню)
-// ==========================================
 window.injectGlobalUI = function() {
-    // 1. Кнопка Telegram
     if (!document.getElementById('globalContactBtn')) {
-        document.body.insertAdjacentHTML('beforeend', `
-            <a href="https://t.me/bv_jewelry_izmail" target="_blank" id="globalContactBtn" class="floating-contact-btn tg-link" aria-label="Telegram">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.52-1.4.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.45-.42-1.39-.89.03-.24.37-.48 1.02-.73 4-1.74 6.67-2.88 8.01-3.41 3.81-1.52 4.6-1.78 5.12-1.79.11 0 .37.03.54.17.14.12.18.28.2.4.02.07.02.15.02.24z"/></svg>
-            </a>
-        `);
+        document.body.insertAdjacentHTML('beforeend', `<a href="https://t.me/bv_jewelry_izmail" target="_blank" id="globalContactBtn" class="floating-contact-btn tg-link" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.52-1.4.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.45-.42-1.39-.89.03-.24.37-.48 1.02-.73 4-1.74 6.67-2.88 8.01-3.41 3.81-1.52 4.6-1.78 5.12-1.79.11 0 .37.03.54.17.14.12.18.28.2.4.02.07.02.15.02.24z"/></svg></a>`);
     }
-
-    // 2. Кнопка Наверх
     if (!document.getElementById('scrollToTopBtn')) {
-        document.body.insertAdjacentHTML('beforeend', `
-            <button id="scrollToTopBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="Вверх" class="fixed bottom-[165px] right-4 z-[4800] w-12 h-12 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--gold-muted)] rounded-full flex items-center justify-center text-[var(--gold-muted)] shadow-[0_5px_20px_rgba(0,0,0,0.3)] opacity-0 translate-y-4 pointer-events-none transition-all duration-300 active:scale-95 md:bottom-10 md:right-10 hover:bg-[var(--gold-muted)] hover:text-[var(--bg-body)]">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
-            </button>
-        `);
+        document.body.insertAdjacentHTML('beforeend', `<button id="scrollToTopBtn" onclick="window.scrollTo({top:0, behavior:'smooth'})" aria-label="Вверх" class="fixed bottom-[165px] right-4 z-[4800] w-12 h-12 bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--gold-muted)] rounded-full flex items-center justify-center text-[var(--gold-muted)] shadow-[0_5px_20px_rgba(0,0,0,0.3)] opacity-0 translate-y-4 pointer-events-none transition-all duration-300 active:scale-95 md:bottom-10 md:right-10 hover:bg-[var(--gold-muted)] hover:text-[var(--bg-body)]"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg></button>`);
     }
 };
 
 // ==========================================
-// 5. КОШИК ТА УЛЮБЛЕНЕ (Drawers)
+// 6. КОШИК ТА УЛЮБЛЕНЕ
 // ==========================================
 window.toggleCart = function() {
     const drawer = document.getElementById('cartDrawer');
     const overlay = document.getElementById('cartOverlay');
     if (!drawer || !overlay) return;
-
     if (!drawer.classList.contains('active')) {
         drawer.classList.add('active'); overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -358,7 +293,7 @@ window.addToCart = function(id, title, variant, price, img) {
     let cart = getCart();
     const existing = cart.find(item => item.id === id);
     if (existing) existing.qty += 1;
-    else cart.push({ id, title, variant, price, img, qty: 1 });
+    else cart.push({ id, title: String(title), variant: String(variant), price: Number(price), img: String(img), qty: 1 });
     setCart(cart);
     window.renderCart();
     if (!document.getElementById('cartDrawer').classList.contains('active')) window.toggleCart();
@@ -380,6 +315,15 @@ window.removeFromCart = function(id) {
     window.renderCart();
 };
 
+window.clearEntireCart = function() {
+    if(confirm('Ви впевнені, що хочете видалити всі товари з кошика?')) {
+        const cartKey = typeof getScopedStorageKey === 'function' ? getScopedStorageKey('bv_cart') : 'bv_cart';
+        if (typeof API !== 'undefined' && API.set) { API.set(cartKey, []); API.set('bv_cart', []); } 
+        else { localStorage.setItem(cartKey, JSON.stringify([])); localStorage.setItem('bv_cart', JSON.stringify([])); }
+        if(typeof renderCart === 'function') renderCart();
+    }
+};
+
 window.renderCart = function() {
     let cart = getCart();
     const cartBody = document.getElementById('cartBody');
@@ -395,8 +339,16 @@ window.renderCart = function() {
         cartBody.innerHTML = `<div class="cart-empty-msg text-center text-[var(--text-muted)] mt-10">${i18n[lang].cart_empty}</div>`;
         if(subtotalVal) subtotalVal.innerText = formatterPrice.format(0);
         cartBadges.forEach(b => b.innerText = '0');
+        
+        // Прячем кнопку очистки, если корзина пуста
+        const clearBtn = document.getElementById('clearCartBtn');
+        if(clearBtn) clearBtn.style.display = 'none';
         return;
     }
+
+    // Показываем кнопку очистки
+    const clearBtn = document.getElementById('clearCartBtn');
+    if(clearBtn) clearBtn.style.display = 'flex';
 
     cart.forEach(item => {
         total += item.price * item.qty;
@@ -404,20 +356,20 @@ window.renderCart = function() {
         cartBody.insertAdjacentHTML('beforeend', `
             <div class="cart-item flex gap-4 p-3 rounded-xl mb-3 relative transition-all duration-300 hover:border-[var(--gold-muted)]/40">
                 <img src="${item.img}" class="w-20 h-20 object-cover rounded-lg border border-[var(--border)]">
-                <div class="flex-grow flex flex-col justify-center">
-                    <span class="text-sm font-semibold uppercase tracking-wide leading-tight">${item.title}</span>
-                    <span class="text-xs text-[var(--text-muted)] mt-1">${item.variant}</span>
+                <div class="flex-grow flex flex-col justify-center pr-6">
+                    <span class="text-sm font-semibold uppercase tracking-wide leading-tight line-clamp-2">${escapeHtml(item.title)}</span>
+                    <span class="text-xs text-[var(--text-muted)] mt-1">${escapeHtml(item.variant)}</span>
                     <div class="flex items-center gap-3 mt-2">
                         <span class="text-sm font-bold text-[var(--gold-muted)]">${formatterPrice.format(item.price)}</span>
                         <div class="inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--bg-elevated)]">
-                            <button class="px-2 py-1 text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all duration-300 active:scale-95" onclick="updateCartQty('${item.id}', -1)" aria-label="Зменшити кількість">−</button>
+                            <button class="px-2 py-1 text-sm text-[var(--text-muted)] hover:text-[var(--text-main)]" onclick="updateCartQty('${item.id}', -1)">−</button>
                             <span class="px-2 text-xs text-[var(--text-main)] font-semibold min-w-6 text-center">${item.qty}</span>
-                            <button class="px-2 py-1 text-sm text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all duration-300 active:scale-95" onclick="updateCartQty('${item.id}', 1)" aria-label="Збільшити кількість">+</button>
+                            <button class="px-2 py-1 text-sm text-[var(--text-muted)] hover:text-[var(--text-main)]" onclick="updateCartQty('${item.id}', 1)">+</button>
                         </div>
                     </div>
                 </div>
-                <button class="cart-item-remove absolute top-3 right-3 transition-all duration-300 active:scale-95" onclick="removeFromCart('${item.id}')">
-                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <button class="cart-item-remove absolute top-3 right-3 text-[var(--text-muted)] hover:text-[var(--danger)]" onclick="removeFromCart('${item.id}')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
         `);
@@ -430,15 +382,12 @@ window.toggleFavDrawer = function() {
     const drawer = document.getElementById('favDrawer');
     const overlay = document.getElementById('favOverlay');
     if (!drawer) return;
-
     if (!drawer.classList.contains('active')) {
         window.renderFavDrawer();
-        drawer.classList.add('active'); 
-        if(overlay) overlay.classList.add('active');
+        drawer.classList.add('active'); if(overlay) overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
     } else {
-        drawer.classList.remove('active'); 
-        if(overlay) overlay.classList.remove('active');
+        drawer.classList.remove('active'); if(overlay) overlay.classList.remove('active');
         if (!document.getElementById('sideMenu')?.classList.contains('active')) document.body.style.overflow = '';
     }
 };
@@ -453,20 +402,10 @@ window.toggleFav = function(id) {
         const icon = btn.querySelector('svg');
         if (!icon) return;
         if(favs.includes(id)) {
-            btn.classList.add('text-[var(--danger)]');
-            btn.classList.remove('text-[var(--text-muted)]');
-            if(btn.id === 'pd-fav-btn' || btn.id === 'pd-fav-btn-mob' || btn.id === 'pd-fav-btn-desktop-img') {
-                btn.classList.add('border-[var(--danger)]');
-                btn.classList.remove('border-[var(--gold-muted)]', 'border-white/20');
-            }
+            btn.classList.add('text-[var(--danger)]'); btn.classList.remove('text-[var(--text-muted)]');
             icon.setAttribute('fill', 'currentColor');
         } else {
-            btn.classList.remove('text-[var(--danger)]', 'border-[var(--danger)]');
-            btn.classList.add('text-[var(--text-muted)]');
-            if(btn.id === 'pd-fav-btn' || btn.id === 'pd-fav-btn-mob' || btn.id === 'pd-fav-btn-desktop-img') {
-                btn.classList.add('border-white/20');
-                btn.classList.remove('border-[var(--gold-muted)]');
-            }
+            btn.classList.remove('text-[var(--danger)]'); btn.classList.add('text-[var(--text-muted)]');
             icon.setAttribute('fill', 'none');
         }
     });
@@ -492,23 +431,20 @@ window.renderFavDrawer = function() {
     favBody.innerHTML = favProducts.map(prod => `
         <div class="cart-item flex gap-4 p-3 rounded-xl mb-3 relative transition-all duration-300 hover:border-[var(--gold-muted)]/35 cursor-pointer" onclick="location.href='product.html?id=${prod.id}'">
             <img src="${prod.img}" class="w-16 h-16 object-cover rounded-lg border border-[var(--border)]">
-            <div class="flex-grow flex flex-col justify-center">
-                <span class="text-xs font-semibold uppercase tracking-wide line-clamp-1">${prod.name}</span>
-                <span class="text-[10px] text-[var(--text-muted)] mt-1">${prod.variant}</span>
+            <div class="flex-grow flex flex-col justify-center pr-6">
+                <span class="text-xs font-semibold uppercase tracking-wide line-clamp-1">${escapeHtml(prod.name)}</span>
+                <span class="text-[10px] text-[var(--text-muted)] mt-1">${escapeHtml(prod.variant)}</span>
                 <span class="text-sm font-bold text-[var(--gold-muted)] mt-1">${formatterPrice.format(prod.discount || prod.price)}</span>
             </div>
-            <button class="cart-item-remove absolute top-3 right-3" onclick="event.stopPropagation(); toggleFav('${prod.id}')" title="Видалити">
-                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <button class="cart-item-remove absolute top-3 right-3 text-[var(--text-muted)] hover:text-[var(--danger)]" onclick="event.stopPropagation(); toggleFav('${prod.id}')" title="Видалити">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
     `).join('');
 };
 
 // ==========================================
-// 6. ГЛОБАЛЬНИЙ РЕНДЕР КАРТКИ ТОВАРУ
-// ==========================================
-// ==========================================
-// 6. ГЛОБАЛЬНИЙ РЕНДЕР КАРТКИ ТОВАРУ
+// 7. ГЛОБАЛЬНИЙ РЕНДЕР КАРТКИ ТОВАРУ
 // ==========================================
 window.renderProductCard = function(prod) {
     const lang = API.get('bv_lang', 'uk');
@@ -516,11 +452,9 @@ window.renderProductCard = function(prod) {
     const isPreOrder = prod.status === 'pre-order';
     const isFav = getFavs().includes(prod.id);
     
-    // Формуємо ярлики (тепер без абсолютного позиціонування для футера)
     let badgesHtml = '<div class="flex flex-wrap gap-1 justify-end items-center">';
     if (isOutOfStock) badgesHtml += `<div class="prod-badge badge-sold-out">${i18n[lang].badge_sold_out}</div>`;
     else if (isPreOrder) badgesHtml += `<div class="prod-badge badge-pre-order">${i18n[lang].badge_pre_order}</div>`;
-
     if(prod.badge === 'new') badgesHtml += `<div class="prod-badge badge-new">${i18n[lang].badge_new}</div>`;
     if(prod.badge === 'exclusive') badgesHtml += `<div class="prod-badge badge-exclusive">${i18n[lang].badge_exclusive}</div>`;
     if(prod.badge === 'sale') badgesHtml += `<div class="prod-badge badge-sale">${i18n[lang].badge_sale}</div>`;
@@ -531,6 +465,12 @@ window.renderProductCard = function(prod) {
         priceHtml = `<span class="text-[14px] md:text-[16px] font-bold text-[var(--success)]">${formatterPrice.format(prod.price)}</span><span class="text-[10px] md:text-[12px] text-[var(--text-muted)] line-through ml-2 opacity-70">${formatterPrice.format(prod.discount)}</span>`;
     }
 
+    // ЕКРАНУЄМО ЛАПКИ ДЛЯ АТРИБУТІВ ФУНКЦІЇ!
+    const safeId = escapeHtml(prod.id);
+    const safeName = escapeHtml(prod.name).replace(/'/g, "\\'"); // Додатково екрануємо одинарні лапки для JS
+    const safeVariant = escapeHtml(prod.variant).replace(/'/g, "\\'");
+    const safeImg = escapeHtml(prod.img);
+
     return `
         <div class="product-card group relative overflow-hidden transition-all duration-400 flex flex-col">
             <a href="product.html?id=${prod.id}" class="relative w-full aspect-square overflow-hidden bg-[var(--bg-elevated)] block">
@@ -538,20 +478,19 @@ window.renderProductCard = function(prod) {
             </a>
             
             <div class="p-4 flex flex-col gap-1 flex-grow bg-[var(--bg-card)]">
-                <a href="product.html?id=${prod.id}" class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--gold-muted)] transition-all duration-300">${prod.variant}</a>
-                <a href="product.html?id=${prod.id}" class="text-[12px] md:text-[14px] font-medium text-[var(--text-main)] leading-snug hover:text-[var(--gold-muted)] transition-all duration-300 line-clamp-2 mt-1">${prod.name}</a>
+                <a href="product.html?id=${prod.id}" class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--gold-muted)] transition-all duration-300">${escapeHtml(prod.variant)}</a>
+                <a href="product.html?id=${prod.id}" class="text-[12px] md:text-[14px] font-medium text-[var(--text-main)] leading-snug hover:text-[var(--gold-muted)] transition-all duration-300 line-clamp-2 mt-1">${escapeHtml(prod.name)}</a>
                 <div class="mt-3 mb-1 flex items-center">${priceHtml}</div>
             </div>
 
             <div class="px-4 py-3 border-t border-[var(--border)] flex justify-between items-center mt-auto bg-[var(--bg-card)]">
                 <div class="flex items-center gap-2">
                     ${!isOutOfStock ? `
-                    <button onclick="addToCart('${prod.id}', '${prod.name}', '${prod.variant}', ${prod.price}, '${prod.img}')" class="flex items-center gap-1 text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-[var(--text-main)] hover:text-[var(--gold-muted)] transition-all duration-300 active:scale-95 group/btn">
+                    <button onclick="addToCart('${safeId}', '${safeName}', '${safeVariant}', ${prod.price}, '${safeImg}')" class="flex items-center gap-1 text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-[var(--text-main)] hover:text-[var(--gold-muted)] transition-all duration-300 active:scale-95 group/btn">
                         <span>${i18n[lang].btn_buy}</span><span class="text-[14px] font-light mb-[2px] transition-transform group-hover/btn:rotate-90">+</span>
                     </button>
                     ` : `<span class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">${i18n[lang].out_stock}</span>`}
                 </div>
-
                 <div class="flex items-center gap-3">
                     ${badgesHtml}
                     <button class="fav-btn-inline ${isFav ? 'text-[var(--danger)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'} transition-all duration-300 active:scale-95" data-id="${prod.id}" onclick="toggleFav('${prod.id}')">
@@ -571,7 +510,6 @@ function generateMenus() {
     const megaMenu = document.querySelector('.mega-menu');
     const sideMenu = document.getElementById('sideMenu');
     
-    // --- Mega Menu (Desktop) ---
     if(megaCol1) {
         megaCol1.innerHTML = '';
         if(megaMenu) megaMenu.querySelectorAll('.mega-col-2').forEach(col => col.remove());
@@ -615,7 +553,7 @@ function generateMenus() {
                         megaCol3.innerHTML = `<div class="text-gray-500 text-sm text-center opacity-50 p-10 border border-dashed border-white/10 rounded-xl">Тут будуть показані популярні товари цієї категорії</div>`;
                     } else if (featured.length === 1) {
                         const f = featured[0];
-                        megaCol3.innerHTML = `<a href="product.html?id=${f.id}" class="preview-card"><div class="preview-img-wrap"><img src="${f.img}"></div><div class="preview-info"><span class="preview-title mt-2">${f.name}</span><span class="price-current">${formatterPrice.format(f.price)}</span></div></a>`;
+                        megaCol3.innerHTML = `<a href="product.html?id=${f.id}" class="preview-card"><div class="preview-img-wrap"><img src="${f.img}"></div><div class="preview-info"><span class="preview-title mt-2">${escapeHtml(f.name)}</span><span class="price-current">${formatterPrice.format(f.price)}</span></div></a>`;
                     } else {
                         const f1 = featured[0]; const f2 = featured[1];
                         megaCol3.innerHTML = `
@@ -624,7 +562,7 @@ function generateMenus() {
                                     <img src="${f1.img}" class="absolute inset-0 w-full h-full object-cover z-10" style="backface-visibility: hidden;">
                                     <img src="${f2.img}" class="absolute inset-0 w-full h-full object-cover" style="transform: rotateY(180deg); backface-visibility: hidden;">
                                 </div>
-                                <div class="preview-info"><span class="text-[10px] uppercase tracking-widest text-[#c5a059] font-bold mt-2">Популярне</span><span class="preview-title">${f1.name} / ${f2.name}</span></div>
+                                <div class="preview-info"><span class="text-[10px] uppercase tracking-widest text-[#c5a059] font-bold mt-2">Популярне</span><span class="preview-title">${escapeHtml(f1.name)} / ${escapeHtml(f2.name)}</span></div>
                             </a>
                         `;
                         const card = megaCol3.querySelector('.preview-card');
@@ -639,7 +577,6 @@ function generateMenus() {
         if(firstCat) firstCat.dispatchEvent(new Event('mouseenter'));
     }
 
-    // --- Side Menu (Mobile) ---
     if(sideMenu) {
         let mobCatHtml = '';
         categoriesTree.forEach(cat => {
@@ -653,7 +590,6 @@ function generateMenus() {
 
         const savedLang = API.get('bv_lang', 'uk');
         const displayLang = savedLang === 'uk' ? 'UA' : savedLang.toUpperCase();
-        
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         const currentThemeIcon = currentTheme === 'light' ? sunSVG : moonSVG;
 
@@ -665,12 +601,9 @@ function generateMenus() {
                 </a>
                 <p class="text-[9px] text-[var(--text-muted)] mt-4 uppercase tracking-[0.2em]">Вишуканість у деталях</p>
             </div>
-
             <a href="index.html" data-i18n="m1" class="mob-menu-title" onclick="window.toggleMenu()">Головна</a>
             <a href="exclusive.html" class="mob-atelier-link" onclick="window.toggleMenu()"><span data-i18n="m_atelier">Ексклюзив</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-            
             <a href="services.html" class="mob-menu-title" onclick="window.toggleMenu()"><span>Прайс</span></a>
-
             <div>
                 <div class="mob-menu-title" onclick="window.toggleAccordion('mobCatList', 'mobCatArrow')"><span data-i18n="m2">Каталог</span><svg id="mobCatArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg></div>
                 <div class="mob-accordion-list" id="mobCatList" style="gap: 0; padding-left: 0;">${mobCatHtml}</div>
@@ -684,11 +617,8 @@ function generateMenus() {
                     <a href="info.html?p=reviews" class="sub-cat-link py-2" onclick="window.toggleMenu()">Відгуки</a>
                 </div>
             </div>
-            
             <a href="#footer" data-i18n="m4" class="mob-menu-title" onclick="window.toggleMenu()">Контакти</a>
-            
             <div class="menu-divider"></div>
-            
             <div class="mobile-settings-group pb-10">
                 <div>
                     <div class="mob-menu-title" onclick="window.toggleAccordion('mobLangList', 'mobLangArrow')" style="font-size: 14px;">
@@ -706,11 +636,8 @@ function generateMenus() {
                         <div class="dropdown-item" onclick="window.changeLang('bg')"><img src="https://flagcdn.com/bg.svg" class="flag"> BG</div>
                     </div>
                 </div>
-                
                 <div id="themeToggleMob" class="mobile-theme-toggle flex items-center gap-3 py-3 mt-2 cursor-pointer opacity-80 hover:opacity-100 transition-opacity" onclick="window.toggleTheme()" style="font-size: 14px;">
-                    <svg id="themeIconMob" viewBox="0 0 24 24" class="w-5 h-5 fill-none stroke-currentColor stroke-2 text-[var(--gold-muted)]">
-                        ${currentThemeIcon}
-                    </svg>
+                    <svg id="themeIconMob" viewBox="0 0 24 24" class="w-5 h-5 fill-none stroke-currentColor stroke-2 text-[var(--gold-muted)]">${currentThemeIcon}</svg>
                     <span data-i18n="theme_mob">Змінити тему</span>
                 </div>
             </div>
@@ -726,132 +653,66 @@ function createInertiaScroll(containerSelector, trackSelector, speedAuto = 0) {
     const container = document.querySelector(containerSelector);
     const track = document.querySelector(trackSelector);
     if (!container || !track) return;
-
-    // ЖЕСТКИЙ ПРЕДОХРАНИТЕЛЬ: Защита от наслоения анимаций при двойном вызове функции
     if (container.dataset.inertiaInit === 'true') return;
     container.dataset.inertiaInit = 'true';
 
     let isDown = false; let startX; let startY; let currentX = 0; let velocity = 0; let isHorizontalSwipe = false; let hasInteracted = false;
-    let resumeTimeout; 
-    let dragDistance = 0; 
-    let dragStartX = 0;   
+    let resumeTimeout; let dragDistance = 0; let dragStartX = 0;   
 
     track.innerHTML += track.innerHTML;
-
     function getTrackWidth() { return track.scrollWidth / 2; }
 
-    // ЕДИНЫЙ БЕСКОНЕЧНЫЙ ЦИКЛ (Game Loop)
     function animate() {
         if (!isDown) {
             currentX += velocity;
-            velocity *= 0.95; // Инерция/трение
-            
-            // Применяем автоскролл только если нет активного взаимодействия
-            if (speedAuto !== 0 && !hasInteracted) {
-                currentX += speedAuto;
-            }
+            velocity *= 0.95; 
+            if (speedAuto !== 0 && !hasInteracted) currentX += speedAuto;
         }
-        
         const halfWidth = getTrackWidth();
         if (currentX <= -halfWidth) currentX += halfWidth;
         if (currentX > 0) currentX -= halfWidth;
-
         track.style.transform = `translateX(${currentX}px)`;
-        
-        // Цикл зацикливается сам на себя навсегда, без внешних вмешательств
         requestAnimationFrame(animate);
     }
 
     function resetResumeTimer() {
         clearTimeout(resumeTimeout);
-        resumeTimeout = setTimeout(() => {
-            if (!isDown) hasInteracted = false; 
-        }, 5000);
+        resumeTimeout = setTimeout(() => { if (!isDown) hasInteracted = false; }, 5000);
     }
 
-    container.addEventListener('click', (e) => {
-        if (dragDistance > 5) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    }, { capture: true }); 
-
+    container.addEventListener('click', (e) => { if (dragDistance > 5) { e.preventDefault(); e.stopPropagation(); } }, { capture: true }); 
     container.addEventListener('mousedown', (e) => { 
         isDown = true; hasInteracted = true; clearTimeout(resumeTimeout);
         container.classList.add('active'); 
-        startX = e.pageX - currentX; 
-        dragStartX = e.pageX; 
-        dragDistance = 0;     
-        velocity = 0; 
+        startX = e.pageX - currentX; dragStartX = e.pageX; dragDistance = 0; velocity = 0; 
     });
-    
-    // Теперь события просто меняют флаги состояний, не ломая поток анимации
-    container.addEventListener('mouseleave', () => { 
-        if (isDown) {
-            isDown = false; container.classList.remove('active'); 
-        }
-        resetResumeTimer();
-    });
-    
-    container.addEventListener('mouseup', () => { 
-        if (isDown) {
-            isDown = false; container.classList.remove('active'); 
-        }
-        resetResumeTimer();
-    });
-    
+    container.addEventListener('mouseleave', () => { if (isDown) { isDown = false; container.classList.remove('active'); } resetResumeTimer(); });
+    container.addEventListener('mouseup', () => { if (isDown) { isDown = false; container.classList.remove('active'); } resetResumeTimer(); });
     container.addEventListener('mousemove', (e) => { 
         if (!isDown) return; 
         e.preventDefault(); 
-        const newX = e.pageX - startX; 
-        velocity = newX - currentX; 
-        currentX = newX; 
-        dragDistance = Math.abs(e.pageX - dragStartX); 
+        const newX = e.pageX - startX; velocity = newX - currentX; currentX = newX; dragDistance = Math.abs(e.pageX - dragStartX); 
     });
-
     container.addEventListener('touchstart', (e) => { 
         isDown = true; isHorizontalSwipe = false; hasInteracted = true; clearTimeout(resumeTimeout);
         container.classList.add('active'); 
-        startX = e.touches[0].pageX - currentX; 
-        startY = e.touches[0].pageY; 
-        dragStartX = e.touches[0].pageX; 
-        dragDistance = 0;                
-        velocity = 0; 
+        startX = e.touches[0].pageX - currentX; startY = e.touches[0].pageY; dragStartX = e.touches[0].pageX; dragDistance = 0; velocity = 0; 
     }, {passive: true});
-    
-    container.addEventListener('touchend', () => { 
-        isDown = false; container.classList.remove('active'); 
-        resetResumeTimer();
-    });
-    
+    container.addEventListener('touchend', () => { isDown = false; container.classList.remove('active'); resetResumeTimer(); });
     container.addEventListener('touchmove', (e) => {
         if (!isDown) return;
         const x = e.touches[0].pageX; const y = e.touches[0].pageY;
         if (!isHorizontalSwipe) {
-            if (Math.abs(y - startY) > Math.abs(x - (startX + currentX))) { 
-                isDown = false; 
-                resetResumeTimer(); 
-                return; 
-            }
+            if (Math.abs(y - startY) > Math.abs(x - (startX + currentX))) { isDown = false; resetResumeTimer(); return; }
             isHorizontalSwipe = true; 
         }
         if (e.cancelable) e.preventDefault();
-        const newX = x - startX; 
-        velocity = newX - currentX; 
-        currentX = newX; 
-        dragDistance = Math.abs(x - dragStartX); 
+        const newX = x - startX; velocity = newX - currentX; currentX = newX; dragDistance = Math.abs(x - dragStartX); 
     }, {passive: false});
-
     container.addEventListener('wheel', (e) => { 
-        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { 
-            e.preventDefault(); 
-            hasInteracted = true; 
-            velocity = -e.deltaX * 0.5; 
-            resetResumeTimer();
-        }
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); hasInteracted = true; velocity = -e.deltaX * 0.5; resetResumeTimer(); }
     }, { passive: false });
 
-    // Единоразовый старт цикла
     requestAnimationFrame(animate);
 }
 
@@ -860,8 +721,6 @@ window.initMarqueeSim = function() {
     if (!track) return;
     const categoriesHtml = categoriesTree.map(c => `<a href="catalog.html#${c.id}" class="marquee-item">${c.name}</a>`).join('');
     track.innerHTML = Array(15).fill(categoriesHtml).join('');
-    
-    // Зменшено швидкість автоскролу з -0.5 до -0.15 для плавного, "дорогого" руху
     createInertiaScroll('.marquee-wrapper', '#marqueeTrack', -0.15); 
 };
 
@@ -869,39 +728,57 @@ window.initPromoCarouselSim = function() { createInertiaScroll('#promoCarouselCo
 window.initWeeklyCarouselSim = function() { createInertiaScroll('#weeklyCarouselContainer', '#weeklyGrid', 0); };
 
 // ==========================================
-// 10. СЛАЙДЕР БАНЕРІВ (БЕЗКІНЧЕННИЙ / INFINITE)
+// 10. СЛАЙДЕР БАНЕРІВ
 // ==========================================
 window.initBannerSlider = function() {
     const banners = API.get('bv_banners', []);
     const container = document.getElementById('mainBannerContainer');
     if(!container || banners.length === 0) return;
 
-    window.bannerCount = banners.length;
-    window.currentBanner = 0;
-    window.isBannerAnimating = false;
-
+    window.bannerCount = banners.length; window.currentBanner = 0; window.isBannerAnimating = false;
     let html = '<div class="banner-track" id="bannerTrack" style="display: flex; width: 100%; height: 100%;">';
-    banners.forEach((b, i) => { 
-        html += `<div class="banner-slide" data-index="${i}"><a href="${b.link}"><img src="${b.img}" alt="Promo"></a></div>`; 
-    });
+    banners.forEach((b, i) => { html += `<div class="banner-slide" data-index="${i}"><a href="${b.link}"><img src="${b.img}" alt="Promo"></a></div>`; });
     html += '</div>';
 
     if(banners.length > 1) {
-        html += `<button class="banner-arrow prev" onclick="moveBanner(-1)">&#10094;</button>`;
-        html += `<button class="banner-arrow next" onclick="moveBanner(1)">&#10095;</button>`;
-        html += `<div class="banner-dots">`;
+        html += `<button class="banner-arrow prev" onclick="moveBanner(-1)">&#10094;</button><button class="banner-arrow next" onclick="moveBanner(1)">&#10095;</button><div class="banner-dots">`;
         banners.forEach((_, i) => { html += `<span class="banner-dot ${i===0?'active':''}" onclick="goToBanner(${i})"></span>`; });
         html += `</div>`;
     }
-
     container.innerHTML = html;
-    
-    // Скидаємо базовий CSS-transition
     document.getElementById('bannerTrack').style.transition = 'none';
     
-    if(banners.length > 1) {
-        clearInterval(window.bannerInterval);
-        window.bannerInterval = setInterval(() => moveBanner(1), 5000);
+    if(banners.length > 1) { 
+        clearInterval(window.bannerInterval); 
+        window.bannerInterval = setInterval(() => moveBanner(1), 5000); 
+
+        // --- ДОДАНО: РОЗУМНИЙ СВАЙП ДЛЯ МОБІЛЬНИХ ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        // Коли палець торкається екрану
+        container.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            clearInterval(window.bannerInterval); // Пауза автопрокрутки під час дотику
+        }, {passive: true});
+
+        // Коли палець відривається
+        container.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            window.bannerInterval = setInterval(() => moveBanner(1), 5000); // Відновлюємо автопрокрутку
+        }, {passive: true});
+
+        // Логіка визначення напрямку
+        function handleSwipe() {
+            const swipeThreshold = 50; // Мінімальна довжина свайпу в пікселях
+            if (touchStartX - touchEndX > swipeThreshold) {
+                moveBanner(1); // Свайпнули вліво -> наступний слайд
+            }
+            if (touchEndX - touchStartX > swipeThreshold) {
+                moveBanner(-1); // Свайпнули вправо -> попередній слайд
+            }
+        }
     }
 };
 
@@ -914,92 +791,65 @@ function updateBannerDots() {
 window.moveBanner = function(dir) {
     if(window.bannerCount <= 1 || window.isBannerAnimating) return;
     clearInterval(window.bannerInterval);
-    
     const track = document.getElementById('bannerTrack');
     window.isBannerAnimating = true;
-
-    // Обчислюємо наступний індекс
     window.currentBanner = (window.currentBanner + dir + window.bannerCount) % window.bannerCount;
     updateBannerDots();
-
-    // Вимикаємо анімацію для миттєвої перестановки DOM
     track.style.transition = 'none';
-
-    // Знаходимо цільовий слайд у DOM за його індексом
     const targetSlide = track.querySelector(`.banner-slide[data-index="${window.currentBanner}"]`);
-
-    // Ставимо цільовий слайд на самий початок (зліва від поточного)
     track.prepend(targetSlide);
-
-    // Миттєво зсуваємо трек вліво, щоб поточний слайд залишився у видимій зоні (без візуальних стрибків)
     track.style.transform = 'translateX(-100%)';
-
-    // Примусовий рефлоу браузера, щоб застосувати зсув до початку анімації
     void track.offsetWidth;
-
-    // Вмикаємо анімацію і рухаємо трек вправо (візуальний рух зліва направо)
     track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
     track.style.transform = 'translateX(0)';
-
-    setTimeout(() => {
-        window.isBannerAnimating = false;
-    }, 600);
-    
+    setTimeout(() => { window.isBannerAnimating = false; }, 600);
     window.bannerInterval = setInterval(() => moveBanner(1), 5000);
 };
 
 window.goToBanner = function(index) {
     if(window.bannerCount <= 1 || window.isBannerAnimating || index === window.currentBanner) return;
     clearInterval(window.bannerInterval);
-    
     const track = document.getElementById('bannerTrack');
-    window.isBannerAnimating = true;
-    window.currentBanner = index;
-    updateBannerDots();
-
+    window.isBannerAnimating = true; window.currentBanner = index; updateBannerDots();
     track.style.transition = 'none';
-    
     const targetSlide = track.querySelector(`.banner-slide[data-index="${window.currentBanner}"]`);
-    
-    // Ставимо обраний слайд на початок
     track.prepend(targetSlide);
-    
-    // Зсуваємо трек вліво для компенсації
     track.style.transform = 'translateX(-100%)';
     void track.offsetWidth;
-
-    // Анімуємо рух вправо (зліва направо)
     track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
     track.style.transform = 'translateX(0)';
-
-    setTimeout(() => {
-        window.isBannerAnimating = false;
-    }, 600);
-
+    setTimeout(() => { window.isBannerAnimating = false; }, 600);
     window.bannerInterval = setInterval(() => moveBanner(1), 5000);
 };
 
 // ==========================================
-// 11. КОЛАЖ І ГОЛОВНА ТА СЕРВІСИ
+// 11. ГОЛОВНА ТА СЕРВІСИ
 // ==========================================
 window.renderHomeCollage = function() {
     const collage = document.getElementById('art-collage');
     if (!collage) return;
     const config = API.get('bv_collage_config', { template: 'grid-6', items: [] });
-    collage.innerHTML = ''; collage.className = 'art-collage ' + config.template;
     
-    config.items.forEach((item, index) => {
-        let gClass = 't-earrings'; 
-        if(config.template === 'grid-6') {
-            const classes = ['t-rings', 't-earrings', 't-bracelets', 't-neck', 't-wedding', 't-crosses'];
-            gClass = classes[index % classes.length];
-        } else if (config.template === 'grid-4') { gClass = 't-rings'; }
-        
-        collage.innerHTML += `<div class="collage-tile ${gClass}" onclick="location.href='catalog.html#${item.catId}'"><img src="${item.img}" alt="${item.title}"><div class="collage-label">${item.title}</div></div>`;
-    });
+    // В index.html у нас теперь <div class="grid-perfect-collage">, поэтому просто добавляем в него
+    const perfectCollage = document.querySelector('.grid-perfect-collage');
     
-    const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1 });
-    document.querySelectorAll('.collage-tile').forEach(el => observer.observe(el));
+    if (perfectCollage && config.items.length > 0) {
+        perfectCollage.innerHTML = '';
+        config.items.forEach((item, index) => {
+            let itemClass = index === 0 ? 'grid-6-big' : 'grid-6-box';
+            let badgeHtml = index === 0 ? '<span class="badge-status badge-new">New</span>' : (index === 1 ? '<span class="badge-status badge-sale">Sale</span>' : '');
+            
+            perfectCollage.innerHTML += `
+                <div class="collage-item ${itemClass} group" onclick="location.href='catalog.html#${item.catId}'">
+                    <img src="${item.img}" alt="${item.title}" class="item-img" loading="lazy">
+                    <div class="item-overlay">
+                        ${badgeHtml}
+                        <span class="item-category-serif">${item.title}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
 };
 
 window.renderHomeSections = function() {
@@ -1042,9 +892,8 @@ window.renderServicesTable = function() {
 };
 
 // ==========================================
-// 11.5 СИСТЕМА КОРИСТУВАЧІВ ТА ПОШУК
+// 12. СИСТЕМА КОРИСТУВАЧІВ ТА ПОШУК
 // ==========================================
-
 window.executeSearch = function(query) {
     if (!query || !query.trim()) return;
     window.location.href = `catalog.html?search=${encodeURIComponent(query.trim())}`;
@@ -1056,32 +905,25 @@ window.toggleMobileSearch = function(forceClose = null) {
     if (forceClose === true) { searchBox.classList.add('hidden'); return; }
     if (forceClose === false) { searchBox.classList.remove('hidden'); }
     else { searchBox.classList.toggle('hidden'); }
-    
-    if (!searchBox.classList.contains('hidden')) {
-        setTimeout(() => { const inp = document.getElementById('mobSearchOverlayInput'); if (inp) inp.focus(); }, 100);
-    }
+    if (!searchBox.classList.contains('hidden')) { setTimeout(() => { const inp = document.getElementById('mobSearchOverlayInput'); if (inp) inp.focus(); }, 100); }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     const deskSearch = document.querySelector('.search-input.desktop-only .search-input') || document.querySelector('.desktop-only .search-input');
     if (deskSearch) { deskSearch.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.executeSearch(e.target.value); }); }
-
     const overlayInput = document.getElementById('mobSearchOverlayInput');
     if (overlayInput) { overlayInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.executeSearch(e.target.value); }); }
 });
 
 let isRegisterMode = false;
-
 window.openAuthModal = function() {
     if(document.getElementById('sideMenu') && document.getElementById('sideMenu').classList.contains('active')){ window.toggleMenu(); }
-
     const currentUser = API.get('bv_current_user', null);
     if (currentUser) {
         if (currentUser.role === 'admin') { sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; 
         } else { window.location.href = 'profile.html'; }
         return; 
     }
-
     const modal = document.getElementById('authModal');
     if(!modal) return;
     modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -1114,48 +956,29 @@ document.addEventListener('DOMContentLoaded', () => {
             let users = API.get('bv_users', []);
             
             if (isRegisterMode) {
-                // Блокируем регистрацию с логином admin
                 if (user.toLowerCase() === 'admin') { alert('Цей логін зарезервовано системою!'); return; }
                 if (users.find(u => u.username.toLowerCase() === user.toLowerCase())) { alert('Користувач з таким логіном вже існує!'); return; }
                 if (user.length < 3) { alert('Логін має містити мінімум 3 символи.'); return; }
                 if (pass.length < 4) { alert('Пароль має містити мінімум 4 символи.'); return; }
-                
                 const newUser = { username: user, password: pass, role: 'user', favs: [] };
                 users.push(newUser);
-                API.set('bv_users', users);
-                API.set('bv_current_user', newUser);
-                API.set(getScopedStorageKey('bv_favs'), []);
-                API.set(getScopedStorageKey('bv_cart'), []);
-                API.set('bv_favs', []);
-                API.set('bv_cart', []);
+                API.set('bv_users', users); API.set('bv_current_user', newUser);
+                API.set(getScopedStorageKey('bv_favs'), []); API.set(getScopedStorageKey('bv_cart'), []);
+                API.set('bv_favs', []); API.set('bv_cart', []);
                 window.location.href = 'profile.html';
             } else {
-                // --- ХАРДКОД ПРОПУСК ДЛЯ АДМИНА ---
                 if (user.toLowerCase() === 'admin' && pass === 'admin') {
-                    sessionStorage.setItem('isAdminAuth', 'true');
-                    window.location.href = 'admin.html';
-                    return;
+                    sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; return;
                 }
-
-                // Обычный вход для пользователей
                 const found = users.find(u => u.username.toLowerCase() === user.toLowerCase() && u.password === pass);
                 if (found) {
-                    API.set('bv_current_user', found);
-                    migrateScopedState();
+                    API.set('bv_current_user', found); migrateScopedState();
                     const userFavs = Array.isArray(found.favs) ? found.favs : API.get(getScopedStorageKey('bv_favs'), []);
-                    API.set(getScopedStorageKey('bv_favs'), userFavs);
-                    API.set('bv_favs', userFavs);
+                    API.set(getScopedStorageKey('bv_favs'), userFavs); API.set('bv_favs', userFavs);
                     API.set('bv_cart', API.get(getScopedStorageKey('bv_cart'), []));
-                    
-                    if(found.role === 'admin') { 
-                        sessionStorage.setItem('isAdminAuth', 'true'); 
-                        window.location.href = 'admin.html'; 
-                    } else { 
-                        window.location.href = 'profile.html'; 
-                    }
-                } else { 
-                    alert('Невірний логін або пароль!'); 
-                }
+                    if(found.role === 'admin') { sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; } 
+                    else { window.location.href = 'profile.html'; }
+                } else { alert('Невірний логін або пароль!'); }
             }
         });
     }
@@ -1166,20 +989,14 @@ window.logoutUser = function() {
     if(currentUser) {
         let users = API.get('bv_users', []);
         const idx = users.findIndex(u => u.username === currentUser.username);
-        if(idx !== -1) {
-            users[idx].favs = getFavs();
-            API.set('bv_users', users);
-        }
+        if(idx !== -1) { users[idx].favs = getFavs(); API.set('bv_users', users); }
     }
-    API.set('bv_current_user', null);
-    API.set('bv_favs', []);
-    API.set('bv_cart', []);
-    sessionStorage.removeItem('isAdminAuth');
-    window.location.href = 'index.html'; 
+    API.set('bv_current_user', null); API.set('bv_favs', []); API.set('bv_cart', []);
+    sessionStorage.removeItem('isAdminAuth'); window.location.href = 'index.html'; 
 };
 
 // ==========================================
-// 12. ГЛОБАЛЬНИЙ СТАРТ ТА СКРОЛ
+// 13. ГЛОБАЛЬНИЙ СТАРТ ТА СКРОЛ
 // ==========================================
 window.onload = () => { 
     migrateScopedState();
@@ -1194,7 +1011,6 @@ window.onload = () => {
         setTimeout(initPromoCarouselSim, 100);
     }
     if(document.getElementById('weeklyGrid') && typeof initWeeklyCarouselSim === 'function') setTimeout(initWeeklyCarouselSim, 100);
-
     if(document.getElementById('productContainer') && typeof renderProductPage === 'function') { renderProductPage(); }
 
     const savedLang = API.get('bv_lang', 'uk');
@@ -1202,11 +1018,9 @@ window.onload = () => {
 
     const savedTheme = API.get('bv_theme', 'light');
     document.documentElement.setAttribute('data-theme', savedTheme);
-    const icon = document.getElementById('themeIcon');
-    const iconMob = document.getElementById('themeIconMob');
+    const icon = document.getElementById('themeIcon'); const iconMob = document.getElementById('themeIconMob');
     const svg = savedTheme === 'light' ? sunSVG : moonSVG;
-    if(icon) icon.innerHTML = svg;
-    if(iconMob) iconMob.innerHTML = svg;
+    if(icon) icon.innerHTML = svg; if(iconMob) iconMob.innerHTML = svg;
 
     const yearEl = document.getElementById('currentYear');
     if(yearEl) yearEl.textContent = new Date().getFullYear();
@@ -1219,25 +1033,17 @@ window.onload = () => {
     if(burgerBtn) { burgerBtn.onclick = function(e) { e.stopPropagation(); if(typeof window.toggleMenu === 'function') window.toggleMenu(); }; }
 };
 
-// ГЛОБАЛЬНИЙ ОБРОБНИК СКРОЛУ
 window.addEventListener('scroll', () => {
     const header = document.getElementById('header');
     if(header) header.classList.toggle('scrolled', window.scrollY > 50);
-
     const topBtn = document.getElementById('scrollToTopBtn');
     const tgBtn = document.getElementById('globalContactBtn');
 
     if(window.scrollY > 400) { 
-        if(topBtn) {
-            topBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-            topBtn.classList.add('opacity-100', 'translate-y-0');
-        }
+        if(topBtn) { topBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4'); topBtn.classList.add('opacity-100', 'translate-y-0'); }
         if(tgBtn) tgBtn.classList.add('lifted'); 
     } else {
-        if(topBtn) {
-            topBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
-            topBtn.classList.remove('opacity-100', 'translate-y-0');
-        }
+        if(topBtn) { topBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4'); topBtn.classList.remove('opacity-100', 'translate-y-0'); }
         if(tgBtn) tgBtn.classList.remove('lifted'); 
     }
 });
@@ -1245,173 +1051,6 @@ window.addEventListener('scroll', () => {
 const overlay = document.getElementById('overlay');
 const cartOverlay = document.getElementById('cartOverlay');
 const favOverlay = document.getElementById('favOverlay');
-
 if(overlay) overlay.onclick = () => { if(typeof window.toggleMenu === 'function') window.toggleMenu(); };
 if(cartOverlay) cartOverlay.onclick = () => { if(typeof window.toggleCart === 'function') window.toggleCart(); };
 if(favOverlay) favOverlay.onclick = () => { if(typeof window.toggleFavDrawer === 'function') window.toggleFavDrawer(); };
-// Отримуємо глобальний курс
-function getGlobalGoldRate() {
-    return siteSettings.goldRate ? Number(siteSettings.goldRate) : 0;
-}
-
-// Перемикач в модалці товару
-function togglePriceMode() {
-    const type = document.getElementById('prod-price-type').value;
-    if (type === 'auto') {
-        document.getElementById('price-mode-manual').classList.add('hidden');
-        document.getElementById('price-mode-auto').classList.remove('hidden');
-        previewAutoPrice();
-    } else {
-        document.getElementById('price-mode-auto').classList.add('hidden');
-        document.getElementById('price-mode-manual').classList.remove('hidden');
-    }
-}
-
-// Прев'ю ціни при вводі
-function previewAutoPrice() {
-    const weight = Number(document.getElementById('prod-weight').value) || 0;
-    const work = Number(document.getElementById('prod-work-cost').value) || 0;
-    const rate = getGlobalGoldRate();
-    const total = Math.round((weight * rate) + work);
-    document.getElementById('auto-price-preview').innerText = total + ' ₴';
-}
-
-// ОНОВИТИ ФУНКЦІЮ openProductModal
-function openProductModal(id = null) {
-    document.getElementById('productForm').reset(); 
-    document.getElementById('prodPreview').style.display = 'none'; 
-    document.getElementById('prod-id').value = '';
-    document.getElementById('prod-imgBase64').value = '';
-    document.getElementById('prodModalTitle').innerText = 'Додати товар';
-    document.getElementById('prod-price-type').value = 'manual';
-    togglePriceMode();
-    updateSubcatOptions(); 
-    
-    if(id) {
-        const p = products.find(prod => prod.id === id);
-        document.getElementById('prod-id').value = p.id; 
-        document.getElementById('prod-name').value = p.name; 
-        document.getElementById('prod-variant').value = p.variant;
-        document.getElementById('prod-category').value = p.category; 
-        updateSubcatOptions(); 
-        setTimeout(() => document.getElementById('prod-subcategory').value = p.subcategory || 'none', 50);
-        
-        document.getElementById('prod-status').value = p.status || 'in-stock'; 
-        document.getElementById('prod-badge').value = p.badge || 'none'; 
-        
-        // Відновлюємо тип ціни
-        document.getElementById('prod-price-type').value = p.priceType || 'manual';
-        document.getElementById('prod-price').value = p.price || '';
-        document.getElementById('prod-weight').value = p.weight || '';
-        document.getElementById('prod-work-cost').value = p.workCost || '';
-        togglePriceMode();
-
-        document.getElementById('prod-discount').value = p.discount || ''; 
-        document.getElementById('prod-featured').checked = p.featured || false;
-        document.getElementById('prod-imgBase64').value = p.img; 
-        if(p.img) { document.getElementById('prodPreview').src = p.img; document.getElementById('prodPreview').style.display = 'block'; }
-        document.getElementById('prod-desc').value = p.desc || ''; 
-        document.getElementById('prodModalTitle').innerText = 'Редагувати товар';
-    }
-    document.getElementById('productModal').classList.remove('hidden'); 
-    setTimeout(() => document.getElementById('productModal').classList.remove('opacity-0'), 10);
-}
-
-// ОНОВИТИ ФУНКЦІЮ productForm.onsubmit
-document.getElementById('productForm').onsubmit = (e) => {
-    e.preventDefault(); 
-    const idInput = document.getElementById('prod-id').value;
-    const imgData = document.getElementById('prod-imgBase64').value;
-    if(!imgData) return alert('Будь ласка, завантажте фото товару!');
-
-    const priceType = document.getElementById('prod-price-type').value;
-    const weight = Number(document.getElementById('prod-weight').value) || 0;
-    const workCost = Number(document.getElementById('prod-work-cost').value) || 0;
-    
-    // Розраховуємо фінальну ціну перед збереженням
-    let finalPrice = 0;
-    if (priceType === 'auto') {
-        if (getGlobalGoldRate() === 0) return alert('В налаштуваннях сайту не задано курс золота!');
-        finalPrice = Math.round((weight * getGlobalGoldRate()) + workCost);
-    } else {
-        finalPrice = Number(document.getElementById('prod-price').value) || 0;
-    }
-
-    const prodData = {
-        id: idInput || 'prod_' + Date.now(),
-        name: document.getElementById('prod-name').value,
-        variant: document.getElementById('prod-variant').value,
-        category: document.getElementById('prod-category').value,
-        subcategory: document.getElementById('prod-subcategory').value,
-        status: document.getElementById('prod-status').value,
-        badge: document.getElementById('prod-badge').value,
-        
-        // Нові поля
-        priceType: priceType,
-        weight: weight,
-        workCost: workCost,
-        price: finalPrice,
-        
-        discount: document.getElementById('prod-discount').value ? Number(document.getElementById('prod-discount').value) : '',
-        featured: document.getElementById('prod-featured').checked,
-        img: imgData,
-        desc: document.getElementById('prod-desc').value
-    };
-
-    if (idInput) { 
-        const i = products.findIndex(p => p.id === idInput); 
-        if(i !== -1) products[i] = prodData; 
-    } else { products.unshift(prodData); }
-
-    try {
-        localStorage.setItem('bv_products', JSON.stringify(products)); 
-        filteredProducts = [...products];
-        renderProducts(); 
-        closeProductModal();
-        showNotification('Товар успішно збережено!');
-    } catch (error) {
-        alert("Помилка збереження! Пам'ять переповнена.");
-    }
-};
-
-// ОНОВИТИ populateSettings ТА saveSiteSettings
-function populateSettings() {
-    ['phone','tg','inst','addr1','map1','addr2','map2', 'gold-rate'].forEach(k => {
-        const mapKey = k==='tg'?'tgLink':(k==='inst'?'instLink':(k==='gold-rate'?'goldRate':k));
-        if(document.getElementById(`set-${k}`)) document.getElementById(`set-${k}`).value = siteSettings[mapKey] || '';
-    });
-}
-
-function saveSiteSettings() {
-    const oldRate = siteSettings.goldRate;
-    const newRate = document.getElementById('set-gold-rate').value;
-
-    siteSettings = {
-        phone: document.getElementById('set-phone').value, tgLink: document.getElementById('set-tg').value,
-        instLink: document.getElementById('set-inst').value, addr1: document.getElementById('set-addr1').value,
-        map1: document.getElementById('set-map1').value, addr2: document.getElementById('set-addr2').value,
-        map2: document.getElementById('set-map2').value,
-        goldRate: newRate
-    };
-    localStorage.setItem('bv_settings', JSON.stringify(siteSettings));
-    
-    // ПЕРЕРАХУНОК ЦІН ЯКЩО КУРС ЗМІНИВСЯ
-    if (oldRate !== newRate && newRate > 0) {
-        let updatedCount = 0;
-        products.forEach(p => {
-            if (p.priceType === 'auto') {
-                p.price = Math.round((Number(p.weight) * Number(newRate)) + Number(p.workCost));
-                updatedCount++;
-            }
-        });
-        if (updatedCount > 0) {
-            localStorage.setItem('bv_products', JSON.stringify(products));
-            filteredProducts = [...products];
-            renderProducts();
-            showNotification(`Налаштування збережено. Авто-перераховано цін: ${updatedCount}`);
-            return;
-        }
-    }
-    
-    showNotification('Налаштування сайту збережено');
-}

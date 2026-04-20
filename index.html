@@ -23,12 +23,12 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     
-    </head>
+</head>
 <body class="mobile-padding antialiased selection:bg-[#c5a059] selection:text-white">
 
     <div id="authModal" class="fixed inset-0 bg-black/80 z-[6000] hidden opacity-0 transition-opacity flex items-center justify-center p-4 backdrop-blur-sm" aria-modal="true" role="dialog">
@@ -67,6 +67,12 @@
         </div>
         <div class="cart-body custom-scrollbar" id="cartBody"></div>
         <div class="cart-footer">
+            <div class="flex justify-end mb-3">
+                <button onclick="window.clearEntireCart()" class="text-[10px] uppercase tracking-widest     text-[var(--text-muted)] hover:text-[var(--danger)] transition-colors flex items-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    Очистити кошик
+                </button>
+            </div>
             <div class="cart-subtotal">
                 <span data-i18n="cart_subtotal">Підсумок:</span>
                 <span class="cart-subtotal-val text-[var(--gold-muted)] font-bold text-xl">0 ₴</span>
@@ -84,82 +90,90 @@
     </div>
 
     <header id="header">
-        <div class="header-left">
-            <button class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
-            <nav class="nav-left desktop-only">
-                <a href="index.html" data-i18n="m1" class="hover:text-[var(--gold-muted)] transition-colors">Головна</a>
-                <div class="catalog-dropdown-wrapper group">
-                    <button class="catalog-toggle flex items-center gap-1 cursor-pointer hover:text-[var(--gold-muted)] transition-colors" data-i18n="m2" onclick="location.href='catalog.html'">Каталог <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
-                    <div class="mega-menu"><div class="mega-col-1"></div><div class="mega-col-3" id="megaCol3"></div></div>
-                </div>
-                <a href="services.html" class="hover:text-[var(--gold-muted)] transition-colors">Прайс</a>
-                <div class="dropdown-wrapper group" style="padding: 20px 0; margin: -20px 0;">
-                    <button class="flex items-center gap-1 hover:text-[var(--gold-muted)] transition-colors">Бренд <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
-                    <div class="dropdown-menu">
-                        <a href="info.html?p=about" class="dropdown-item">Історія Atelier</a>
-                        <a href="info.html?p=warranty" class="dropdown-item">Гарантія</a>
-                        <a href="info.html?p=terms" class="dropdown-item">Умови</a>
-                        <a href="info.html?p=reviews" class="dropdown-item">Відгуки</a>
-                    </div>
-                </div>
-                <a href="exclusive.html" class="btn-order" data-i18n="m_atelier">Ексклюзив</a>
-            </nav>
-        </div>
-
-        <a href="index.html" class="bv-logo"><span>BV</span><span>jewelry</span></a>
-
-        <div class="header-right">
-            <button class="mobile-only mr-2 p-2 cursor-pointer relative z-50 flex items-center justify-center" onclick="window.toggleMobileSearch()">
-                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" class="w-5 h-5 active:scale-90 transition-transform"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </button>
-            <div class="search-box desktop-only group mr-4">
-                <input type="search" class="search-input" data-i18n-placeholder="search_ph" placeholder="Пошук..." onkeypress="if(event.key==='Enter') window.executeSearch(this.value)">
-                <svg class="search-icon group-focus-within:stroke-[var(--gold-muted)] transition-colors" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    <div class="header-left">
+        <button class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+        <nav class="nav-left desktop-only">
+            <a href="index.html" data-i18n="m1" class="nav-link hover:text-[var(--gold-muted)] transition-colors">Головна</a>
+            <div class="catalog-dropdown-wrapper group">
+                <button class="nav-link catalog-toggle flex items-center gap-1 cursor-pointer hover:text-[var(--gold-muted)] transition-colors" data-i18n="m2" onclick="location.href='catalog.html'">Каталог <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                <div class="mega-menu"><div class="mega-col-1"></div><div class="mega-col-3" id="megaCol3"></div></div>
             </div>
-            <a href="tel:+380634540901" class="header-phone-link desktop-only hover:text-[var(--gold-muted)] transition-colors">
-                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                <span class="header-phone-text font-medium tracking-wide">+38 063 45 40 901</span>
-            </a>
-            <button id="themeToggle" class="icon-btn desktop-only hover:text-[var(--gold-muted)]" onclick="toggleTheme()"><svg id="themeIcon" viewBox="0 0 24 24"></svg></button>
-            <div class="dropdown-wrapper lang-dropdown desktop-only">
-                <button class="lang-current"><img src="https://flagcdn.com/ua.svg" class="flag" id="currentFlag" alt=""><span id="currentLangLabel">UA</span></button>
+            <a href="services.html" class="nav-link hover:text-[var(--gold-muted)] transition-colors">Прайс</a>
+            <div class="dropdown-wrapper group" style="padding: 20px 0; margin: -20px 0;">
+                <button class="nav-link flex items-center gap-1 hover:text-[var(--gold-muted)] transition-colors">Бренд <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
                 <div class="dropdown-menu">
-                    <button class="dropdown-item w-full text-left" onclick="changeLang('uk')"><img src="https://flagcdn.com/ua.svg" class="w-5 rounded-[3px] shadow-sm" alt=""> UA</button>
-                    <button class="dropdown-item w-full text-left" onclick="changeLang('en')"><img src="https://flagcdn.com/gb.svg" class="w-5 rounded-[3px] shadow-sm" alt=""> EN</button>
-                    <button class="dropdown-item w-full text-left" onclick="changeLang('ru')"><img src="https://flagcdn.com/ru.svg" class="w-5 rounded-[3px] shadow-sm" alt=""> RU</button>
-                    <button class="dropdown-item w-full text-left" onclick="changeLang('bg')"><img src="https://flagcdn.com/bg.svg" class="w-5 rounded-[3px] shadow-sm" alt=""> BG</button>
+                    <a href="info.html?p=about" class="dropdown-item">Історія Atelier</a>
+                    <a href="info.html?p=warranty" class="dropdown-item">Гарантія</a>
+                    <a href="info.html?p=terms" class="dropdown-item">Умови</a>
+                    <a href="info.html?p=reviews" class="dropdown-item">Відгуки</a>
                 </div>
             </div>
-            <div class="dropdown-wrapper desktop-only">
-                <button class="icon-btn" onclick="openAuthModal()"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
+            <a href="exclusive.html" class="exclusive-nav-btn">
+                Ексклюзив
+            </a>
+        </nav>
+    </div>
+
+    <a href="index.html" class="bv-logo"><span>BV</span><span>jewelry</span></a>
+
+    <div class="header-right">
+        <button class="mobile-only mr-2 p-2 cursor-pointer relative z-50 flex items-center justify-center" onclick="window.toggleMobileSearch()">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" class="w-5 h-5 active:scale-90 transition-transform"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <div class="search-box desktop-only group mr-4">
+            <input type="search" class="search-input" data-i18n-placeholder="search_ph" placeholder="Пошук..." onkeypress="if(event.key==='Enter') window.executeSearch(this.value)">
+            <svg class="search-icon group-focus-within:stroke-[var(--gold-muted)] transition-colors" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+        <a href="tel:+380634540901" class="header-phone-link desktop-only hover:text-[var(--gold-muted)] transition-colors">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <span class="header-phone-text font-medium tracking-wide">+38 063 45 40 901</span>
+        </a>
+        <button id="themeToggle" class="icon-btn desktop-only hover:text-[var(--gold-muted)]" onclick="toggleTheme()"><svg id="themeIcon" viewBox="0 0 24 24"></svg></button>
+        <div class="dropdown-wrapper lang-dropdown desktop-only">
+            <button class="lang-current"><img src="https://flagcdn.com/ua.svg" class="flag" id="currentFlag" alt=""><span id="currentLangLabel">UA</span></button>
+            <div class="dropdown-menu">
+                <button class="dropdown-item w-full text-left" onclick="changeLang('uk')"><img src="https://flagcdn.com/ua.svg" class="w-5 rounded-[3px] shadow-sm" alt=""> UA</button>
+                <button class="dropdown-item w-full text-left" onclick="changeLang('en')"><img src="https://flagcdn.com/gb.svg" class="w-5 rounded-[3px] shadow-sm" alt=""> EN</button>
+                <button class="dropdown-item w-full text-left" onclick="changeLang('ru')"><img src="https://flagcdn.com/ru.svg" class="w-5 rounded-[3px] shadow-sm" alt=""> RU</button>
+                <button class="dropdown-item w-full text-left" onclick="changeLang('bg')"><img src="https://flagcdn.com/bg.svg" class="w-5 rounded-[3px] shadow-sm" alt=""> BG</button>
             </div>
-            <button onclick="toggleFavDrawer()" class="icon-btn desktop-only">
-                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                <span class="cart-badge fav-badge" style="background: var(--danger);">0</span>
-            </button>
-            <button onclick="toggleCart()" class="icon-btn desktop-only">
-                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                <span class="cart-badge">0</span>
+        </div>
+        <div class="dropdown-wrapper desktop-only">
+            <button class="icon-btn" onclick="openAuthModal()"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
+        </div>
+        <button onclick="toggleFavDrawer()" class="icon-btn desktop-only">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span class="cart-badge fav-badge" style="background: var(--danger);">0</span>
+        </button>
+        <button onclick="toggleCart()" class="icon-btn desktop-only">
+            <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            <span class="cart-badge">0</span>
+        </button>
+    </div>
+    
+    <div id="mobSearchContainer" class="absolute top-[100%] left-0 w-full p-4 bg-[var(--bg-card)] border-b border-[var(--border)] shadow-xl hidden z-[4000]">
+        <div class="flex items-center bg-black/5 dark:bg-white/5 border border-[var(--border)] rounded-2xl px-4 py-3 focus-within:border-[var(--gold-muted)] transition-colors">
+            <input type="search" id="mobSearchOverlayInput" placeholder="Пошукаємо прикрасу?..." class="w-full bg-transparent outline-none text-[var(--text-main)] text-sm font-['Inter']">
+            <button onclick="window.executeSearch(document.getElementById('mobSearchOverlayInput').value)" class="text-[var(--gold-muted)] ml-2">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </button>
         </div>
-        <div id="mobSearchContainer" class="absolute top-[100%] left-0 w-full p-4 bg-[var(--bg-card)] border-b border-[var(--border)] shadow-xl hidden z-[4000]">
-            <div class="flex items-center bg-black/5 dark:bg-white/5 border border-[var(--border)] rounded-2xl px-4 py-3 focus-within:border-[var(--gold-muted)] transition-colors">
-                <input type="search" id="mobSearchOverlayInput" placeholder="Пошукаємо прикрасу?..." class="w-full bg-transparent outline-none text-[var(--text-main)] text-sm font-['Inter']">
-                <button onclick="window.executeSearch(document.getElementById('mobSearchOverlayInput').value)" class="text-[var(--gold-muted)] ml-2">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </button>
-            </div>
-        </div>
-    </header>
+    </div>
+</header>
 
     <nav class="side-menu" id="sideMenu" aria-label="Мобильная навигация"></nav>
 
     <main id="home">
-        <section class="h-screen-hero relative flex items-center justify-center overflow-hidden">
+        <section class="h-screen-hero relative flex items-center justify-center overflow-hidden hero">
             <div class="hero-bg hero-img-bg bg-black/40 absolute inset-0 z-0"></div>
-            <div class="relative z-10 flex flex-col items-center text-center px-4">
-                <span class="hero-subtitle">Atelier since 1984</span>
-                <h1 class="hero-title">BV Jewelry</h1>
+            <div class="relative z-10 flex flex-col items-center text-center px-4 hero-content">
+                <span class="hero-subtitle tracking-[0.4em] mb-4">Atelier since 1984</span>
+                <h1 class="hero-title text-[var(--bg-elevated)]">BV Jewelry</h1>
+            </div>
+            
+            <div class="scroll-indicator">
+                <span class="scroll-text text-[9px] uppercase tracking-[0.3em] text-white/70 mb-2 block">Scroll</span>
+                <div class="scroll-line"></div>
             </div>
         </section>
 
@@ -172,43 +186,118 @@
                 <div class="w-full h-full bg-gray-200/10 animate-pulse"></div>
             </div>
         </section>
-        <div class="exclusive-entry-wrap flex flex-col items-center gap-6 py-20">
-    <a href="exclusive.html" class="exclusive-btn-premium group">
-        <span class="exclusive-label">Individual Order</span>
-        <h2 class="exclusive-title">ЕКСКЛЮЗИВ</h2>
-        <div class="exclusive-line"></div>
-        <span class="exclusive-footer">Відкрити ательє</span>
+        
+        <section class="py-6 md:py-8 px-4 md:px-6 max-w-[1200px] mx-auto w-full">
+    <a href="exclusive.html" class="relative flex flex-col md:flex-row items-stretch bg-[var(--bg-card)] rounded-[20px] md:rounded-[24px] overflow-hidden border border-[var(--border)] shadow-[var(--shadow-mid)] group cursor-pointer transition-all duration-700 hover:shadow-[var(--shadow-strong)]" style="text-decoration: none;">
+        
+        <div class="w-full md:w-5/12 h-[200px] md:h-[320px] relative overflow-hidden bg-black">
+            <img src="https://images.pexels.com/photos/28146843/pexels-photo-28146843.jpeg" alt="Ексклюзивне замовлення" class="absolute inset-0 w-full h-full object-cover opacity-85 transition-transform duration-[1.5s] group-hover:scale-105">
+            <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[var(--bg-card)] via-transparent to-transparent opacity-90 md:opacity-100"></div>
+        </div>
+
+        <div class="w-full md:w-7/12 p-6 md:p-8 lg:p-10 flex flex-col justify-center items-center md:items-start text-center md:text-left relative z-10">
+            
+            <span class="text-[9px] tracking-[0.4em] uppercase text-[var(--gold-muted)] font-medium mb-2 block">
+                Individual Order
+            </span>
+            
+            <h2 class="font-serif text-3xl md:text-4xl text-[var(--text-main)] font-light tracking-[0.1em] mb-4 group-hover:text-[var(--gold-muted)] transition-colors duration-500">
+                ЕКСКЛЮЗИВ
+            </h2>
+            
+            <p class="text-[12px] md:text-[14px] text-[var(--text-muted)] leading-relaxed mb-6 max-w-md font-light">
+                Створіть прикрасу своєї мрії. Від першого ескізу до фінального полірування — ми втілимо вашу ідею у дорогоцінному металі.
+            </p>
+            
+            <div class="inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-[var(--text-main)] group-hover:text-[var(--gold-muted)] transition-colors">
+                <span>Дізнатися більше</span>
+                <span class="w-8 h-[1px] bg-[var(--gold-muted)] transition-all duration-700 group-hover:w-16"></span>
+            </div>
+            
+        </div>
+        
     </a>
-</div>
-        <section class="max-w-[1920px] mx-auto px-4 md:px-8 py-10 md:py-20" id="special-section">
-            <div class="mb-8 md:mb-12 px-2 flex flex-col items-start">
-                <span class="text-[10px] md:text-xs uppercase tracking-[0.3em] text-[var(--gold-muted)] font-semibold block mb-2">Лімітована колекція</span>
-                <h2 class="text-3xl md:text-5xl font-serif font-light text-[var(--text-main)] tracking-wide m-0">Пропозиції місяця</h2>
+</section>
+
+        <section class="max-w-[1920px] mx-auto px-4 md:px-12 py-20 md:py-32" id="special-section">
+            <div class="mb-8 md:mb-12 text-left md:text-center px-4">
+                <span class="section-subtitle">Лімітована колекція</span>
+                <h2 class="section-title">Пропозиції місяця</h2>
             </div>
             <div class="promo-carousel-container select-none" id="promoCarouselContainer">
                 <div id="specialGrid" class="promo-track min-h-[300px]"></div>
             </div>
         </section>
 
-        <section class="max-w-[1920px] mx-auto px-4 md:px-8 py-10 md:py-20" id="weekly-section">
-            <div class="mb-8 md:mb-12 px-2 flex flex-col items-start">
-                <span class="text-[10px] md:text-xs uppercase tracking-[0.3em] text-[var(--gold-muted)] font-semibold block mb-2">Вибір Atelier</span>
-                <h2 class="text-3xl md:text-5xl font-serif font-light text-[var(--text-main)] tracking-wide m-0">Прикраси тижня</h2>
+        <section class="max-w-[1920px] mx-auto px-4 md:px-12 py-20 md:py-32" id="weekly-section">
+            <div class="mb-8 md:mb-12 text-left md:text-center px-4">
+                <span class="section-subtitle">Вибір Atelier</span>
+                <h2 class="section-title">Прикраси тижня</h2>
             </div>
             <div class="weekly-carousel-container select-none" id="weeklyCarouselContainer">
                 <div id="weeklyGrid" class="weekly-track min-h-[300px]"></div>
             </div>
         </section>
         
-        <section class="py-10 md:py-20" id="categories-section">
-            <h2 class="text-2xl md:text-4xl font-serif italic text-[var(--gold-muted)] mb-2 md:mb-4 text-center px-4">Оберіть свою категорію</h2>
-            <p class="text-center text-xs md:text-sm text-[var(--text-muted)] mb-8 md:mb-12 max-w-2xl mx-auto px-4">Кожен виріб створено з любов'ю до деталей та бездоганним смаком.</p>
-            <div class="art-collage pb-12 md:pb-24 min-h-[500px]" id="art-collage"></div>
+        <section class="max-w-[1920px] mx-auto px-4 md:px-12 py-20 md:py-32 relative" id="categories-section">
+            <div class="text-center mb-16 md:mb-24">
+                <h3 class="text-[9px] md:text-[10px] uppercase tracking-[0.4em] text-[var(--gold-muted)] font-semibold block mb-4">Our World</h3>
+                <h2 class="hero-title text-[var(--text-main)] !text-[28px] md:!text-[36px]">Категорії</h2>
+            </div>
+
+            <div class="grid-perfect-collage">
+                <div class="collage-item grid-6-big group" onclick="location.href='catalog.html#gold'">
+                    <img src="https://zolotiyvik.ua/media/catalog/product/cache/7d867076b0c31e5e4acf36489cc1e4f1/1/1/110812310101zolotoe-kolco-s-fianitami-110812310101_1_.webp" alt="Золоті каблучки" class="item-img">
+                    <div class="item-overlay">
+                        <span class="badge-status badge-sold-out">New</span>
+                        <span class="item-category-serif">Золото</span>
+                    </div>
+                </div>
+
+                <div class="collage-item grid-6-box group" onclick="location.href='catalog.html#silver'">
+                    <div class="item-img-placeholder flex items-center justify-center bg-[var(--bg-elevated)] text-[var(--text-muted)] w-full h-full absolute inset-0 transition group-hover:scale-105">
+                        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </div>
+                    <div class="item-overlay">
+                        <span class="badge-status badge-sale">Sale</span>
+                        <span class="item-category-serif">Срібло</span>
+                    </div>
+                </div>
+
+                <div class="collage-item grid-6-box group" onclick="location.href='catalog.html#rings'">
+                    <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800" alt="Каблучки" class="item-img">
+                    <div class="item-overlay">
+                        <span class="item-category-serif">Каблучки</span>
+                    </div>
+                </div>
+
+                <div class="collage-item grid-6-box group" onclick="location.href='catalog.html#earrings'">
+                    <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800" alt="Сережки" class="item-img">
+                    <div class="item-overlay">
+                        <span class="item-category-serif">Сережки</span>
+                    </div>
+                </div>
+
+                <div class="collage-item grid-6-box group" onclick="location.href='catalog.html#bracelets'">
+                    <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800" alt="Браслети" class="item-img">
+                    <div class="item-overlay">
+                        <span class="item-category-serif">Браслети</span>
+                    </div>
+                </div>
+
+                <div class="collage-item grid-6-box group" onclick="location.href='catalog.html#chains'">
+                    <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800" alt="Ланцюжки" class="item-img">
+                    <div class="item-overlay">
+                        <span class="item-category-serif">Ланцюжки</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-16 md:mt-24">
+                <a href="catalog.html" class="inline-block border border-[var(--gold-muted)] text-[var(--gold-muted)] px-10 py-4 md:px-14 md:py-5 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-[var(--gold-muted)] hover:text-[var(--bg-body)] hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] transition-all active:scale-95">Відкрити каталог</a>
+            </div>
         </section>
 
-        <div class="text-center pb-20 md:pb-32">
-            <a href="catalog.html" class="inline-block border border-[var(--gold-muted)] text-[var(--gold-muted)] px-10 py-4 md:px-14 md:py-5 rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-[var(--gold-muted)] hover:text-black hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] transition-all active:scale-95">Відкрити каталог</a>
-        </div>
     </main>
 
     <nav class="mobile-bottom-nav" aria-label="Нижняя панель навигации">
@@ -289,7 +378,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             sessionStorage.setItem('is_home_page', 'true');
-            // Немного уменьшили таймаут, так как нет тяжелой инициализации Matter.js
             setTimeout(() => {
                 if(typeof window.initMarqueeSim === 'function') window.initMarqueeSim();
                 if(typeof window.initPromoCarouselSim === 'function') window.initPromoCarouselSim();
