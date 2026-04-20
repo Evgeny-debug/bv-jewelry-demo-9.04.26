@@ -2,7 +2,7 @@
 // 0. ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ (SUPABASE)
 // ==========================================
 // ⚠️ Прибрали /rest/v1/ з кінця посилання
-const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co/rest/v1/'; 
+const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co'; 
 // ⚠️ Встав сюди ПОВНИЙ ключ, а не обрізаний з крапками!
 const supabaseKey = 'sb_publishable_6XVu2-OGKP-8dVlLW18U5w_ZfWCSpIO'; 
 
