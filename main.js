@@ -4,7 +4,7 @@
 // ⚠️ Прибрали /rest/v1/ з кінця посилання
 const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co'; 
 // ⚠️ Встав сюди ПОВНИЙ ключ, а не обрізаний з крапками!
-const supabaseKey = 'sb_publishable_6XVu2-OGKP-8dVlLW18U5w_ZfWCSpIO'; 
+const supabaseKey = 'sb_publishable_6XVu2-0GKP...'; 
 
 // ⚠️ Змінили назву змінної на _supabase, щоб уникнути помилки
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -985,16 +985,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateAuthView();
                 }
             } else {
-                // ТИМЧАСОВИЙ ПРОПУСК АДМІНА ДЛЯ РОЗРОБКИ
-                if (email.toLowerCase() === 'admin' || email.toLowerCase() === 'admin@bv.com') {
-                    if (pass === 'admin') {
-                        sessionStorage.setItem('isAdminAuth', 'true'); 
-                        window.location.href = 'admin.html'; 
-                        submitBtn.innerText = originalText; submitBtn.disabled = false;
-                        return;
-                    }
-                }
-
+                // 1. Сначала стандартный вход через Supabase Auth
                 const { data, error } = await _supabase.auth.signInWithPassword({
                     email: email,
                     password: pass,
@@ -1002,8 +993,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (error) {
                     alert('Невірний логін або пароль!');
+                    submitBtn.innerText = originalText; submitBtn.disabled = false;
+                    return;
+                }
+
+                // 2. Если вошли, проверяем роль пользователя в нашей таблице profiles
+                const { data: profile, error: profileError } = await _supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', data.user.id)
+                    .single();
+
+                if (profile && profile.role === 'admin') {
+                    // Если это админ
+                    API.set('bv_current_user', { username: data.user.email, role: 'admin' });
+                    sessionStorage.setItem('isAdminAuth', 'true'); 
+                    window.location.href = 'admin.html';
                 } else {
-                    // Успішний вхід
+                    // Если это обычный клиент
                     API.set('bv_current_user', { username: data.user.email, role: 'client' });
                     window.location.href = 'profile.html';
                 }
