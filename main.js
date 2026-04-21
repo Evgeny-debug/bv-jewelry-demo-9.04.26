@@ -1,21 +1,16 @@
 // ==========================================
 // 0. ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ (SUPABASE)
 // ==========================================
-const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co'; // Без слэша в конце!
+// ⚠️ Прибрали /rest/v1/ з кінця посилання
+const supabaseUrl = 'https://uqvbvoiuazvgfufhpbnl.supabase.co'; 
+// ⚠️ Встав сюди ПОВНИЙ ключ, а не обрізаний з крапками!
 const supabaseKey = 'sb_publishable_6XVu2-OGKP-8dVlLW18U5w_ZfWCSpIO'; 
 
-let _supabase;
+// ⚠️ Змінили назву змінної на _supabase, щоб уникнути помилки
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-try {
-    if (typeof supabase !== 'undefined') {
-        _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-        console.log("BV Jewelry: Supabase підключено успішно!");
-    } else {
-        console.error("Ошибка: Библиотека Supabase не загрузилась. Проверь интернет или ссылку в index.html");
-    }
-} catch (err) {
-    console.error("Критична помилка ініціалізації:", err);
-}
+console.log("BV Jewelry: Підключення до бази встановлено.", _supabase);
+
 // ==========================================
 // 1. API ФАСАД
 // ==========================================
@@ -62,23 +57,99 @@ if (!API.get('bv_demo_installed_v16')) {
 
     const demoCats = [
         {
-            id: 'gold', name: 'Золото',
-            subcategories: [
-                { id: 'gold_rings', name: 'Каблучки' },
-                { id: 'gold_earrings', name: 'Сережки' },
-                { id: 'gold_chains', name: 'Ланцюжки' },
-                { id: 'gold_bracelets', name: 'Браслети' },
-                { id: 'gold_crosses', name: 'Хрестики' }
+            id: 'rings', name: 'Каблучки',
+            groups: [
+                {
+                    title: 'Золоті', link: '#gold_rings',
+                    tags: [{name: 'Жіночі', link: '#f'}, {name: 'Чоловічі', link: '#m'}, {name: 'З діамантами', link: '#d'}, {name: 'У білому золоті', link: '#wg'}, {name: 'В червоному золоті', link: '#rg'}, {name: 'З фіанітами', link: '#cz'}, {name: 'Без каміння', link: '#ns'}]
+                },
+                {
+                    title: 'Срібні', link: '#silver_rings',
+                    tags: [{name: 'Жіночі', link: '#f'}, {name: 'Чоловічі', link: '#m'}, {name: 'З дорогоцінними каменями', link: '#ps'}, {name: 'Без каміння', link: '#ns'}, {name: 'З керамікою', link: '#cer'}, {name: 'З фіанітами', link: '#cz'}, {name: 'З чорнінням', link: '#blk'}]
+                },
+                {
+                    title: 'Обручки', link: '#wedding_rings',
+                    tags: [{name: 'Золоті', link: '#g'}, {name: 'Срібні', link: '#s'}, {name: 'У білому золоті', link: '#wg'}, {name: 'Чоловічі', link: '#m'}, {name: 'Жіночі', link: '#f'}, {name: 'З діамантами', link: '#d'}, {name: 'Класичні', link: '#cl'}, {name: 'Широкі', link: '#wd'}]
+                },
+                {
+                    title: 'На заручини', link: '#engagement_rings',
+                    tags: [{name: 'Золоті', link: '#g'}, {name: 'Срібні', link: '#s'}, {name: 'З діамантами', link: '#d'}, {name: 'У білому золоті', link: '#wg'}, {name: 'З 1 каменем', link: '#1s'}, {name: 'З фіанітами', link: '#cz'}, {name: 'В червоному золоті', link: '#rg'}]
+                },
+                {
+                    title: 'По дизайну', link: '#design_rings',
+                    tags: [{name: 'Подвійні', link: '#db'}, {name: 'Тонкі', link: '#th'}, {name: 'Персні-печатки', link: '#sg'}, {name: 'На фалангу', link: '#ph'}, {name: 'Трініті', link: '#tr'}, {name: 'Спаси і збережи', link: '#sv'}, {name: 'Нескінченність', link: '#inf'}, {name: 'Широкі', link: '#wd'}]
+                },
+                {
+                    title: 'З камінням', link: '#stone_rings',
+                    tags: [{name: 'З діамантами', link: '#d'}, {name: 'Зі смарагдами', link: '#em'}, {name: 'З сапфірами', link: '#sp'}, {name: 'З фіанітами', link: '#cz'}, {name: 'З перлами', link: '#pr'}, {name: 'Без каміння', link: '#ns'}]
+                },
+                {
+                    title: 'Хіти', link: '#hit_rings',
+                    tags: [{name: 'Корони', link: '#cr'}, {name: 'Доріжки', link: '#tr'}, {name: 'Сердечка', link: '#ht'}, {name: 'Усипка', link: '#us'}, {name: 'Квіти', link: '#fl'}, {name: 'З візерунками', link: '#pt'}, {name: 'Мінімалізм', link: '#mn'}, {name: 'З 1 каменем', link: '#1s'}]
+                },
+                {
+                    title: 'За кольором каменю', link: '#color_rings',
+                    tags: [{name: 'Червоний', link: '#rd'}, {name: 'Синій', link: '#bl'}, {name: 'Блакитний', link: '#lb'}, {name: 'Зелений', link: '#gr'}, {name: 'Фіолетовий', link: '#pu'}, {name: 'Коньячний', link: '#cg'}, {name: 'Білий', link: '#wh'}, {name: 'Чорний', link: '#bk'}]
+                }
+            ],
+            highlights: [
+                { name: 'Жіночі каблучки', link: '#f_rings', isAccent: false },
+                { name: 'Чоловічі кільця', link: '#m_rings', isAccent: false },
+                { name: 'Дитячі кільця', link: '#k_rings', isAccent: false },
+                { name: 'Кільця з комплектом', link: '#set_rings', isAccent: false },
+                { name: 'Білі кільця', link: '#w_rings', isAccent: false },
+                { name: 'Керамічні кільця', link: '#cer_rings', isAccent: true }
             ]
         },
         {
-            id: 'silver', name: 'Срібло',
-            subcategories: [
-                { id: 'silver_rings', name: 'Каблучки' },
-                { id: 'silver_earrings', name: 'Сережки' },
-                { id: 'silver_chains', name: 'Ланцюжки' },
-                { id: 'silver_bracelets', name: 'Браслети' },
-                { id: 'silver_crosses', name: 'Хрестики' }
+            id: 'earrings', name: 'Сережки',
+            groups: [
+                {
+                    title: 'За металом', link: '#metal_earrings',
+                    tags: [{name: 'Золоті', link: '#g'}, {name: 'Срібні', link: '#s'}, {name: 'З білого золота', link: '#wg'}, {name: 'З червоного золота', link: '#rg'}]
+                },
+                {
+                    title: 'Тип застібки', link: '#lock_earrings',
+                    tags: [{name: 'Англійська', link: '#eng'}, {name: 'Пусети (гвоздики)', link: '#studs'}, {name: 'Конго (кільця)', link: '#hoops'}, {name: 'Французька', link: '#fr'}, {name: 'Протяжки', link: '#thr'}]
+                },
+                {
+                    title: 'Вставка', link: '#stone_earrings',
+                    tags: [{name: 'З діамантами', link: '#d'}, {name: 'З перлами', link: '#pr'}, {name: 'З сапфірами', link: '#sp'}, {name: 'Без каміння', link: '#ns'}]
+                },
+                {
+                    title: 'По дизайну', link: '#design_earrings',
+                    tags: [{name: 'Довгі', link: '#lng'}, {name: 'Геометрія', link: '#geo'}, {name: 'Квіти', link: '#fl'}, {name: 'Мінімалізм', link: '#mn'}]
+                }
+            ],
+            highlights: [
+                { name: 'Пусети з діамантами', link: '#d_studs', isAccent: true },
+                { name: 'Дитячі сережки', link: '#kids_earrings', isAccent: false }
+            ]
+        },
+        {
+            id: 'chains', name: 'Ланцюжки',
+            groups: [
+                {
+                    title: 'За металом', link: '#metal_chains',
+                    tags: [{name: 'Золоті', link: '#g'}, {name: 'Срібні', link: '#s'}]
+                },
+                {
+                    title: 'Плетіння', link: '#weave_chains',
+                    tags: [{name: 'Якірне', link: '#anchor'}, {name: 'Панцирне', link: '#armor'}, {name: 'Бісмарк', link: '#bismarck'}, {name: 'Снейк', link: '#snake'}, {name: 'Фігаро', link: '#figaro'}]
+                },
+                {
+                    title: 'Для кого', link: '#who_chains',
+                    tags: [{name: 'Жіночі', link: '#f'}, {name: 'Чоловічі', link: '#m'}, {name: 'Унісекс', link: '#u'}, {name: 'Дитячі', link: '#k'}]
+                }
+            ]
+        },
+        {
+            id: 'bracelets', name: 'Браслети',
+            groups: [
+                {
+                    title: 'По дизайну', link: '#design_bracelets',
+                    tags: [{name: 'Жорсткі', link: '#hard'}, {name: 'Тенісні', link: '#tennis'}, {name: 'З підвісками', link: '#charms'}, {name: 'Червона нитка', link: '#red_thread'}]
+                }
             ]
         }
     ];
@@ -518,87 +589,126 @@ window.renderProductCard = function(prod) {
 // ==========================================
 // 8. ДИНАМІЧНА ГЕНЕРАЦІЯ МЕНЮ 
 // ==========================================
+// ==========================================
+// 8. ДИНАМІЧНА ГЕНЕРАЦІЯ МЕНЮ (ZLATO STYLE)
+// ==========================================
 function generateMenus() {
-    const megaCol1 = document.querySelector('.mega-col-1');
+    const megaCol1 = document.getElementById('megaCol1');
     const megaMenu = document.querySelector('.mega-menu');
     const sideMenu = document.getElementById('sideMenu');
     
     if(megaCol1) {
         megaCol1.innerHTML = '';
         if(megaMenu) megaMenu.querySelectorAll('.mega-col-2').forEach(col => col.remove());
-        const megaCol3 = document.querySelector('.mega-col-3');
 
         categoriesTree.forEach((cat, index) => {
             const isActive = index === 0 ? 'active' : ''; 
             const svgIcon = getCategoryIconSVG(cat.id);
+            
+            // 1. Левая колонка
             megaCol1.innerHTML += `<div class="mega-cat-item ${isActive}" data-target="mc-${cat.id}"><svg class="mega-cat-icon" viewBox="0 0 24 24">${svgIcon}</svg><span>${cat.name}</span></div>`;
 
-            let subLinksHtml = '';
-            if (cat.subcategories && cat.subcategories.length > 0) {
-                cat.subcategories.forEach(sub => { subLinksHtml += `<a href="catalog.html#${sub.id}" class="sub-cat-link">${sub.name}</a>`; });
+            // 2. Сетка групп
+            let groupsHtml = '<div class="zlato-groups-grid">';
+            if (cat.groups) {
+                cat.groups.forEach(group => {
+                    groupsHtml += `<div>`;
+                    groupsHtml += `<a href="catalog.html${group.link}" class="zlato-group-title">${group.title} <svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`;
+                    
+                    if (group.tags) {
+                        groupsHtml += `<div class="zlato-tags-container">`;
+                        group.tags.forEach(tag => { groupsHtml += `<a href="catalog.html${tag.link}" class="zlato-tag">${tag.name}</a>`; });
+                        groupsHtml += `</div>`;
+                    }
+                    groupsHtml += `</div>`;
+                });
             }
-            subLinksHtml += `<a href="catalog.html#${cat.id}" class="view-all-link mt-auto pt-4">Усі товари →</a>`;
+            groupsHtml += '</div>';
 
-            if(megaMenu && megaCol3) {
+            // 3. Блок нижних хайлайтов (красные кнопки)
+            let highlightsHtml = '';
+            if (cat.highlights && cat.highlights.length > 0) {
+                highlightsHtml += `<div class="zlato-highlights">`;
+                cat.highlights.forEach(hl => {
+                    const accentClass = hl.isAccent ? 'accent' : '';
+                    highlightsHtml += `<a href="catalog.html${hl.link}" class="zlato-highlight-btn ${accentClass}">${hl.name} &rarr;</a>`;
+                });
+                highlightsHtml += `</div>`;
+            }
+
+            // 4. Сборка правой колонки
+            if(megaMenu) {
                 const newCol2 = document.createElement('div');
-                newCol2.className = `mega-col-2 ${isActive}`;
+                newCol2.className = `mega-col-2 zlato-content ${isActive}`;
                 newCol2.id = `mc-${cat.id}`;
-                newCol2.innerHTML = subLinksHtml;
-                megaMenu.insertBefore(newCol2, megaCol3);
+                
+                newCol2.innerHTML = `
+                    <div class="flex items-center gap-3 mb-6">
+                        <h2 class="text-3xl font-serif text-[var(--text-main)]">${cat.name}</h2>
+                        <a href="catalog.html#${cat.id}" class="text-[12px] uppercase tracking-widest text-[var(--gold-muted)] font-bold transition-colors">Всі &rarr;</a>
+                    </div>
+                    ${groupsHtml}
+                    ${highlightsHtml}
+                `;
+                megaMenu.appendChild(newCol2);
             }
         });
 
-        megaCol1.innerHTML += `<a href="exclusive.html" class="mega-atelier-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7-7-7M5 12h14"/></svg><span data-i18n="m_atelier">Ексклюзив</span></a>`;
+        megaCol1.innerHTML += `<a href="exclusive.html" class="mega-atelier-btn mt-auto mx-4 mb-4 border border-[var(--gold-muted)] text-[var(--gold-muted)] p-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[var(--gold-muted)] hover:text-[#111] transition-colors font-bold uppercase tracking-widest text-[10px]"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7-7-7M5 12h14"/></svg><span data-i18n="m_atelier">Ексклюзив</span></a>`;
         
         document.querySelectorAll('.mega-cat-item').forEach(item => {
             item.addEventListener('mouseenter', () => {
                 document.querySelectorAll('.mega-cat-item').forEach(i => i.classList.remove('active'));
-                document.querySelectorAll('.mega-col-2').forEach(p => p.classList.remove('active'));
-                item.classList.add('active');
+                document.querySelectorAll('.zlato-content').forEach(p => p.classList.remove('active'));
                 
+                item.classList.add('active');
                 const targetId = item.getAttribute('data-target').replace('mc-', '');
                 const targetCol = document.getElementById('mc-' + targetId);
                 if(targetCol) targetCol.classList.add('active');
-                
-                if(megaCol3) {
-                    const featured = products.filter(p => p.category === targetId && p.featured === true).slice(0, 2);
-                    if (featured.length === 0) {
-                        megaCol3.innerHTML = `<div class="text-gray-500 text-sm text-center opacity-50 p-10 border border-dashed border-white/10 rounded-xl">Тут будуть показані популярні товари цієї категорії</div>`;
-                    } else if (featured.length === 1) {
-                        const f = featured[0];
-                        megaCol3.innerHTML = `<a href="product.html?id=${f.id}" class="preview-card"><div class="preview-img-wrap"><img src="${f.img}"></div><div class="preview-info"><span class="preview-title mt-2">${escapeHtml(f.name)}</span><span class="price-current">${formatterPrice.format(f.price)}</span></div></a>`;
-                    } else {
-                        const f1 = featured[0]; const f2 = featured[1];
-                        megaCol3.innerHTML = `
-                            <a href="catalog.html#${f1.category}" class="preview-card" style="perspective: 1000px;">
-                                <div class="preview-img-wrap" style="transform-style: preserve-3d; transition: transform 0.6s;">
-                                    <img src="${f1.img}" class="absolute inset-0 w-full h-full object-cover z-10" style="backface-visibility: hidden;">
-                                    <img src="${f2.img}" class="absolute inset-0 w-full h-full object-cover" style="transform: rotateY(180deg); backface-visibility: hidden;">
-                                </div>
-                                <div class="preview-info"><span class="text-[10px] uppercase tracking-widest text-[#c5a059] font-bold mt-2">Популярне</span><span class="preview-title">${escapeHtml(f1.name)} / ${escapeHtml(f2.name)}</span></div>
-                            </a>
-                        `;
-                        const card = megaCol3.querySelector('.preview-card');
-                        const wrap = card.querySelector('.preview-img-wrap');
-                        card.onmouseenter = () => wrap.style.transform = 'rotateY(180deg)';
-                        card.onmouseleave = () => wrap.style.transform = 'rotateY(0deg)';
-                    }
-                }
             });
         });
-        const firstCat = document.querySelector('.mega-cat-item');
-        if(firstCat) firstCat.dispatchEvent(new Event('mouseenter'));
     }
 
+    // --- ОНОВЛЕНЕ МОБІЛЬНЕ МЕНЮ (APP-STYLE) ---
     if(sideMenu) {
         let mobCatHtml = '';
         categoriesTree.forEach(cat => {
             let mobSubLinksHtml = '';
-            if (cat.subcategories && cat.subcategories.length > 0) {
-                cat.subcategories.forEach(sub => { mobSubLinksHtml += `<a href="catalog.html#${sub.id}" class="sub-cat-link" onclick="window.toggleMenu()">${sub.name}</a>`; });
+            
+            // Якщо є групи (наш новий Zlato-формат)
+            if (cat.groups) {
+                cat.groups.forEach(group => {
+                   // Додаємо заголовок групи
+                   mobSubLinksHtml += `<div class="mob-group-title">${group.title}</div>`;
+                   mobSubLinksHtml += `<div class="mob-tags-wrap">`;
+                   
+                   // Виводимо теги у вигляді плиток
+                   if (group.tags) {
+                       group.tags.forEach(tag => {
+                            mobSubLinksHtml += `<a href="catalog.html${tag.link}" class="mob-tag" onclick="window.toggleMenu()">${tag.name}</a>`; 
+                       });
+                   }
+                   mobSubLinksHtml += `</div>`;
+                });
             }
-            mobSubLinksHtml += `<a href="catalog.html#${cat.id}" class="sub-cat-link mt-2" style="color: var(--gold-muted); font-weight: 500;" onclick="window.toggleMenu()">Усі товари →</a>`;
-            mobCatHtml += `<div class="mob-nested-wrap"><div class="mob-nested-title" onclick="window.toggleAccordion('mob-sub-${cat.id}', 'mob-arrow-${cat.id}')"><div class="flex items-center gap-3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="opacity-70">${getCategoryIconSVG(cat.id)}</svg> <span>${cat.name}</span></div><svg id="mob-arrow-${cat.id}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg></div><div class="mob-nested-list" id="mob-sub-${cat.id}"><div class="mob-sub-links">${mobSubLinksHtml}</div></div></div>`;
+            
+            // Красива кнопка "Усі товари категорії"
+            mobSubLinksHtml += `<a href="catalog.html#${cat.id}" class="mob-all-btn" onclick="window.toggleMenu()">Всі товари: ${cat.name} &rarr;</a>`;
+            
+            // Збірка акордеону
+            mobCatHtml += `
+            <div class="mob-nested-wrap">
+                <div class="mob-nested-title" onclick="window.toggleAccordion('mob-sub-${cat.id}', 'mob-arrow-${cat.id}')">
+                    <div class="flex items-center gap-3">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="opacity-70">${getCategoryIconSVG(cat.id)}</svg> 
+                        <span style="font-size: 15px;">${cat.name}</span>
+                    </div>
+                    <svg id="mob-arrow-${cat.id}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+                <div class="mob-nested-list" id="mob-sub-${cat.id}">
+                    ${mobSubLinksHtml}
+                </div>
+            </div>`;
         });
 
         const savedLang = API.get('bv_lang', 'uk');
@@ -607,34 +717,48 @@ function generateMenus() {
         const currentThemeIcon = currentTheme === 'light' ? sunSVG : moonSVG;
 
         sideMenu.innerHTML = `
-            <div class="sidebar-top-logo mb-8 border-b border-[var(--border)] pb-8 pt-6 text-center flex flex-col items-center">
+            <div class="sidebar-top-logo mb-6 border-b border-[var(--border)] pb-8 pt-4 text-center flex flex-col items-center">
                 <a href="index.html" class="flex flex-col items-center justify-center gap-1">
                     <span class="text-4xl font-serif text-[var(--gold-muted)] leading-none">BV</span>
                     <span class="text-[10px] tracking-[0.4em] text-[var(--text-main)] uppercase font-light pl-1">jewelry</span>
                 </a>
                 <p class="text-[9px] text-[var(--text-muted)] mt-4 uppercase tracking-[0.2em]">Вишуканість у деталях</p>
             </div>
+            
             <a href="index.html" data-i18n="m1" class="mob-menu-title" onclick="window.toggleMenu()">Головна</a>
-            <a href="exclusive.html" class="mob-atelier-link" onclick="window.toggleMenu()"><span data-i18n="m_atelier">Ексклюзив</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-            <a href="services.html" class="mob-menu-title" onclick="window.toggleMenu()"><span>Прайс</span></a>
+            <a href="exclusive.html" class="mob-atelier-link mt-4" onclick="window.toggleMenu()"><span data-i18n="m_atelier">Ексклюзив</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            
+            <div class="menu-divider"></div>
+            
             <div>
-                <div class="mob-menu-title" onclick="window.toggleAccordion('mobCatList', 'mobCatArrow')"><span data-i18n="m2">Каталог</span><svg id="mobCatArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg></div>
+                <div class="mob-menu-title" onclick="window.toggleAccordion('mobCatList', 'mobCatArrow')">
+                    <span data-i18n="m2">Каталог</span>
+                    <svg id="mobCatArrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
                 <div class="mob-accordion-list" id="mobCatList" style="gap: 0; padding-left: 0;">${mobCatHtml}</div>
             </div>
+            
             <div>
-                <div class="mob-menu-title" onclick="window.toggleAccordion('mobInfoList', 'mobInfoArrow')"><span>Бренд</span><svg id="mobInfoArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg></div>
+                <div class="mob-menu-title" onclick="window.toggleAccordion('mobInfoList', 'mobInfoArrow')">
+                    <span>Бренд</span>
+                    <svg id="mobInfoArrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
                 <div class="mob-accordion-list" id="mobInfoList" style="gap: 5px; padding-left: 20px;">
-                    <a href="info.html?p=about" class="sub-cat-link py-2" onclick="window.toggleMenu()">Історія Atelier</a>
-                    <a href="info.html?p=warranty" class="sub-cat-link py-2" onclick="window.toggleMenu()">Гарантія</a>
-                    <a href="info.html?p=terms" class="sub-cat-link py-2" onclick="window.toggleMenu()">Умови</a>
-                    <a href="info.html?p=reviews" class="sub-cat-link py-2" onclick="window.toggleMenu()">Відгуки</a>
+                    <a href="info.html?p=about" class="sub-cat-link py-3 block text-[14px] opacity-80" onclick="window.toggleMenu()">Історія Atelier</a>
+                    <a href="info.html?p=warranty" class="sub-cat-link py-3 block text-[14px] opacity-80" onclick="window.toggleMenu()">Гарантія</a>
+                    <a href="info.html?p=terms" class="sub-cat-link py-3 block text-[14px] opacity-80" onclick="window.toggleMenu()">Умови</a>
+                    <a href="info.html?p=reviews" class="sub-cat-link py-3 block text-[14px] opacity-80" onclick="window.toggleMenu()">Відгуки</a>
                 </div>
             </div>
+            
+            <a href="services.html" class="mob-menu-title" onclick="window.toggleMenu()"><span>Прайс</span></a>
             <a href="#footer" data-i18n="m4" class="mob-menu-title" onclick="window.toggleMenu()">Контакти</a>
-            <div class="menu-divider"></div>
+            
+            <div class="menu-divider mt-6"></div>
+            
             <div class="mobile-settings-group pb-10">
                 <div>
-                    <div class="mob-menu-title" onclick="window.toggleAccordion('mobLangList', 'mobLangArrow')" style="font-size: 14px;">
+                    <div class="mob-menu-title border-none" onclick="window.toggleAccordion('mobLangList', 'mobLangArrow')" style="font-size: 14px;">
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <img src="https://flagcdn.com/${flags[savedLang]}.svg" class="flag" id="currentFlagMob">
                             <span>МОВА:</span> 
@@ -642,14 +766,15 @@ function generateMenus() {
                         </div>
                         <svg id="mobLangArrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-muted)" stroke-width="2" class="transition-transform duration-300"><path d="M6 9l6 6 6-6"/></svg>
                     </div>
-                    <div class="mob-accordion-list" id="mobLangList" style="margin-top: 10px;">
-                        <div class="dropdown-item" onclick="window.changeLang('uk')"><img src="https://flagcdn.com/ua.svg" class="flag"> UA</div>
-                        <div class="dropdown-item" onclick="window.changeLang('en')"><img src="https://flagcdn.com/gb.svg" class="flag"> EN</div>
-                        <div class="dropdown-item" onclick="window.changeLang('ru')"><img src="https://flagcdn.com/ru.svg" class="flag"> RU</div>
-                        <div class="dropdown-item" onclick="window.changeLang('bg')"><img src="https://flagcdn.com/bg.svg" class="flag"> BG</div>
+                    <div class="mob-accordion-list" id="mobLangList" style="margin-top: 10px; background: rgba(0,0,0,0.1); border-radius: 12px;">
+                        <div class="dropdown-item py-3" onclick="window.changeLang('uk')"><img src="https://flagcdn.com/ua.svg" class="flag"> Українська</div>
+                        <div class="dropdown-item py-3" onclick="window.changeLang('en')"><img src="https://flagcdn.com/gb.svg" class="flag"> English</div>
+                        <div class="dropdown-item py-3" onclick="window.changeLang('ru')"><img src="https://flagcdn.com/ru.svg" class="flag"> Русский</div>
+                        <div class="dropdown-item py-3" onclick="window.changeLang('bg')"><img src="https://flagcdn.com/bg.svg" class="flag"> Български</div>
                     </div>
                 </div>
-                <div id="themeToggleMob" class="mobile-theme-toggle flex items-center gap-3 py-3 mt-2 cursor-pointer opacity-80 hover:opacity-100 transition-opacity" onclick="window.toggleTheme()" style="font-size: 14px;">
+                
+                <div id="themeToggleMob" class="mobile-theme-toggle flex items-center gap-3 py-4 mt-2 cursor-pointer opacity-80 hover:opacity-100 transition-opacity bg-[var(--bg-elevated)] rounded-xl px-4 justify-center" onclick="window.toggleTheme()" style="font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
                     <svg id="themeIconMob" viewBox="0 0 24 24" class="w-5 h-5 fill-none stroke-currentColor stroke-2 text-[var(--gold-muted)]">${currentThemeIcon}</svg>
                     <span data-i18n="theme_mob">Змінити тему</span>
                 </div>
@@ -927,17 +1052,42 @@ document.addEventListener('DOMContentLoaded', () => {
 let isRegisterMode = false;
 window.openAuthModal = function() {
     if(document.getElementById('sideMenu') && document.getElementById('sideMenu').classList.contains('active')){ window.toggleMenu(); }
-    const currentUser = API.get('bv_current_user', null);
-    if (currentUser) {
-        if (currentUser.role === 'admin') { sessionStorage.setItem('isAdminAuth', 'true'); window.location.href = 'admin.html'; 
-        } else { window.location.href = 'profile.html'; }
-        return; 
-    }
     const modal = document.getElementById('authModal');
     if(!modal) return;
-    modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10);
-    document.getElementById('authForm').classList.remove('hidden');
-    isRegisterMode = false; updateAuthView();
+
+    const currentUser = API.get('bv_current_user', null);
+
+    // Відкриваємо модалку в будь-якому випадку
+    modal.classList.remove('hidden'); 
+    setTimeout(() => modal.classList.remove('opacity-0'), 10);
+
+    if (currentUser) {
+        // Якщо вже увійшли – показуємо профіль замість редиректу
+        document.getElementById('authFormContainer').classList.add('hidden');
+        document.getElementById('profileView').classList.remove('hidden');
+        document.getElementById('profileView').classList.add('flex');
+
+        const initial = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : (currentUser.username ? currentUser.username.charAt(0).toUpperCase() : 'U');
+        document.getElementById('profAvatar').innerText = initial;
+        document.getElementById('profName').innerText = currentUser.name || 'Клієнт';
+        document.getElementById('profEmail').innerText = currentUser.username || '';
+
+        // Показуємо правильну кнопку залежно від ролі
+        if (currentUser.role === 'admin') {
+            document.getElementById('adminLinkBtn').classList.remove('hidden');
+            document.getElementById('clientLinkBtn').classList.add('hidden');
+        } else {
+            document.getElementById('adminLinkBtn').classList.add('hidden');
+            document.getElementById('clientLinkBtn').classList.remove('hidden');
+        }
+    } else {
+        // Якщо не авторизовані – показуємо форму
+        document.getElementById('profileView').classList.add('hidden');
+        document.getElementById('profileView').classList.remove('flex');
+        document.getElementById('authFormContainer').classList.remove('hidden');
+        isRegisterMode = false; 
+        updateAuthView();
+    }
 };
 
 window.closeAuthModal = function() {
@@ -949,16 +1099,31 @@ window.toggleAuthMode = function(e) {
     e.preventDefault(); isRegisterMode = !isRegisterMode; updateAuthView();
 };
 
-function updateAuthView() {
-    document.getElementById('authTitle').innerText = isRegisterMode ? 'Створення акаунта' : 'Вхід у кабінет';
-    document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'Зареєструватися' : 'Увійти';
-    document.getElementById('authToggleLink').innerText = isRegisterMode ? 'Вже є акаунт? Увійти' : 'Зареєструватися';
-}
+window.updateAuthView = function() {
+    document.getElementById('authTitle').innerText = isRegisterMode ? 'Реєстрація' : 'Вхід';
+    document.getElementById('authSubtitle').innerText = isRegisterMode ? 'Приєднуйтесь до світу BV Jewelry' : 'Раді бачити вас знову';
+    document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'Створити акаунт' : 'Увійти';
+    document.getElementById('authToggleText').innerText = isRegisterMode ? 'Вже є акаунт?' : 'Немає акаунта?';
+    document.getElementById('authToggleLink').innerText = isRegisterMode ? 'Увійти' : 'Зареєструватися';
+    
+    // Показуємо або ховаємо поле "Ім'я"
+    const nameField = document.getElementById('nameFieldContainer');
+    if(nameField) {
+        if(isRegisterMode) {
+            nameField.classList.remove('hidden');
+            nameField.classList.add('flex');
+            document.getElementById('authName').required = true;
+        } else {
+            nameField.classList.add('hidden');
+            nameField.classList.remove('flex');
+            document.getElementById('authName').required = false;
+        }
+    }
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     const authForm = document.getElementById('authForm');
     if(authForm) {
-        // ДОДАНА ІНТЕГРАЦІЯ З SUPABASE АВТОРИЗАЦІЄЮ
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -969,6 +1134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const email = document.getElementById('authUser').value.trim();
             const pass = document.getElementById('authPass').value.trim();
+            const name = document.getElementById('authName') ? document.getElementById('authName').value.trim() : '';
             
             if (isRegisterMode) {
                 if (pass.length < 6) { 
@@ -977,9 +1143,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     return; 
                 }
                 
+                // Передаємо ім'я в метадані Supabase
                 const { data, error } = await _supabase.auth.signUp({
                     email: email,
                     password: pass,
+                    options: { data: { full_name: name } }
                 });
 
                 if (error) {
@@ -990,7 +1158,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateAuthView();
                 }
             } else {
-                // 1. Сначала стандартный вход через Supabase Auth
                 const { data, error } = await _supabase.auth.signInWithPassword({
                     email: email,
                     password: pass,
@@ -1002,23 +1169,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // 2. Если вошли, проверяем роль пользователя в нашей таблице profiles
+                // Перевіряємо роль
                 const { data: profile, error: profileError } = await _supabase
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', data.user.id)
-                    .single();
+                    .from('profiles').select('role, full_name').eq('id', data.user.id).single();
 
-                if (profile && profile.role === 'admin') {
-                    // Если это админ
-                    API.set('bv_current_user', { username: data.user.email, role: 'admin' });
-                    sessionStorage.setItem('isAdminAuth', 'true'); 
-                    window.location.href = 'admin.html';
-                } else {
-                    // Если это обычный клиент
-                    API.set('bv_current_user', { username: data.user.email, role: 'client' });
-                    window.location.href = 'profile.html';
-                }
+                const role = (profile && profile.role === 'admin') ? 'admin' : 'client';
+                const fullName = (profile && profile.full_name) ? profile.full_name : (data.user.user_metadata?.full_name || 'Клієнт');
+
+                API.set('bv_current_user', { username: data.user.email, role: role, name: fullName });
+
+                if (role === 'admin') sessionStorage.setItem('isAdminAuth', 'true');
+                
+                // Оновлюємо модалку (покажемо профіль) замість редиректу
+                openAuthModal();
             }
             
             submitBtn.innerText = originalText;
@@ -1028,12 +1191,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.logoutUser = async function() {
-    await _supabase.auth.signOut(); // Вихід з Supabase
+    if(typeof _supabase !== 'undefined') await _supabase.auth.signOut();
     API.set('bv_current_user', null); 
     API.set('bv_favs', []); 
     API.set('bv_cart', []);
     sessionStorage.removeItem('isAdminAuth'); 
-    window.location.href = 'index.html'; 
+    
+    // Якщо ми на захищеній сторінці, повертаємо на головну. Інакше просто оновлюємо вікно.
+    if (window.location.pathname.includes('admin.html') || window.location.pathname.includes('profile.html')) {
+        window.location.href = 'index.html';
+    } else {
+        openAuthModal(); // Поверне форму входу
+        if(typeof window.renderCart === 'function') window.renderCart(); 
+        if(typeof window.renderFavDrawer === 'function') window.renderFavDrawer();
+    }
 };
 
 // ==========================================
@@ -1095,3 +1266,48 @@ const favOverlay = document.getElementById('favOverlay');
 if(overlay) overlay.onclick = () => { if(typeof window.toggleMenu === 'function') window.toggleMenu(); };
 if(cartOverlay) cartOverlay.onclick = () => { if(typeof window.toggleCart === 'function') window.toggleCart(); };
 if(favOverlay) favOverlay.onclick = () => { if(typeof window.toggleFavDrawer === 'function') window.toggleFavDrawer(); };
+// ==========================================
+// 14. ЛОГІКА МЕГА-МЕНЮ ПО КЛІКУ ТА ЗАКРИТТЯ
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const catalogToggle = document.querySelector('.catalog-toggle');
+    const catalogWrapper = document.querySelector('.catalog-dropdown-wrapper');
+    
+    if (catalogToggle && catalogWrapper) {
+        catalogToggle.onclick = function(e) {
+            e.preventDefault();
+            const isOpen = catalogWrapper.classList.toggle('open');
+            
+            // Если меню открылось - блокируем скролл страницы, если закрылось - возвращаем
+            if (isOpen) {
+                document.body.classList.add('menu-open');
+            } else {
+                document.body.classList.remove('menu-open');
+            }
+        };
+        
+        document.addEventListener('click', function(e) {
+            // Закрываем, если клик был мимо и меню открыто
+            if (catalogWrapper.classList.contains('open') && !catalogWrapper.contains(e.target)) {
+                catalogWrapper.classList.remove('open');
+                document.body.classList.remove('menu-open'); // Возвращаем скролл странице
+            }
+        });
+    }
+});
+// ==========================================
+// 16. СТЕКЛЯННЫЙ АККОРДЕОН (УПРАВЛЕНИЕ КЛИКАМИ)
+// ==========================================
+window.toggleAccordionPanel = function(clickedPanel) {
+    // Находим все панели
+    const allPanels = document.querySelectorAll('.glass-panel-item');
+    
+    // Если на мобилке кликнули по уже открытой панели - ничего не делаем (чтобы можно было нажать на кнопку)
+    if (clickedPanel.classList.contains('active')) return;
+    
+    // Убираем класс active у всех
+    allPanels.forEach(panel => panel.classList.remove('active'));
+    
+    // Добавляем класс active той, по которой кликнули
+    clickedPanel.classList.add('active');
+};
