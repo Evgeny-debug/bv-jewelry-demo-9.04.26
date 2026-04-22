@@ -12,68 +12,6 @@ body {
 }
 
 /* ГАРМОНИЯ ШРИФТОВ */
-/* 1. Playfair Display: Элегантность (Заголовки, Логотип) */
-h1, h2, h3, .hero-title, .section-title, .panel-title, .bv-logo span:first-child { 
-    font-family: 'Playfair Display', serif; 
-    font-weight: 300; 
-    letter-spacing: 0.03em; 
-}
-
-/* 2. Montserrat: Геометрия (Кнопки, Подзаголовки, Теги) - всегда CAPS */
-.section-subtitle, .hero-subtitle, .panel-btn, .panel-tag, .btn-order, .btn-checkout, .exclusive-nav-btn {
-    font-family: 'Montserrat', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-}
-
-/* 3. Inter: Читабельность (Текст, Описания, Меню) */
-p, .panel-desc, .nav-link, .dropdown-item, .auth-input {
-    font-family: 'Inter', sans-serif;
-    font-weight: 300;
-}
-
-:focus-visible { outline: 2px solid var(--gold-muted); outline-offset: 2px; border-radius: 8px; }
-
-/* ==========================================
-   КОЛЬОРОВА ПАЛІТРА ТА МЯГКИЕ УГЛЫ
-   ========================================== */
-:root {
-    --bg-body: #121212; 
-    --bg-card: #1e1e20; 
-    --bg-elevated: #252528;
-    --text-main: #ffffff;
-    --text-muted: #9ca3af; 
-    --gold-gradient: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-    --gold-muted: #c7a46a; 
-    --border: rgba(255, 255, 255, 0.08);
-    --glass-bg: rgba(30, 30, 32, 0.6); 
-    --danger: #ef4444; 
-    --success: #22c55e; 
-    
-    /* Скругляем углы для эффекта "Luxury" */
-    --radius-xs: 12px;
-    --radius-sm: 18px;
-    --radius-md: 24px;
-    --radius-lg: 32px;
-    
-    --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.18);
-    --shadow-mid: 0 18px 44px rgba(0, 0, 0, 0.24);
-    --shadow-strong: 0 26px 70px rgba(0, 0, 0, 0.4);
-}
-/* ==========================================
-   БАЗОВІ НАЛАШТУВАННЯ ТА СКИДАННЯ СТИЛІВ
-   ========================================== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { line-height: 1.5; -webkit-text-size-adjust: 100%; font-family: 'Inter', sans-serif; }
-body { 
-    margin: 0; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; 
-    transition: background-color 0.5s ease, color 0.5s ease; 
-    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-tap-highlight-color: transparent;
-    background-color: var(--bg-body); color: var(--text-main);
-    letter-spacing: 0.01em;
-}
-
-/* ГАРМОНИЯ ШРИФТОВ */
 h1, h2, h3, .hero-title, .section-title, .panel-title, .bv-logo span:first-child { 
     font-family: 'Playfair Display', serif; 
     font-weight: 300; 
@@ -155,7 +93,6 @@ p, .panel-desc, .nav-link, .dropdown-item, .auth-input {
     gap: 32px; /* Ідеальне "повітря" між пунктами меню */
 }
 header {
-
     position: fixed; 
     top: 0; left: 50%; transform: translateX(-50%); 
     width: 100%; max-width: 100%; height: 90px;
@@ -360,7 +297,17 @@ header.scrolled {
 .marquee-item { font-family: 'Playfair Display', serif; font-size: 18px; font-style: italic; color: var(--gold-muted); text-transform: uppercase; letter-spacing: 2px; display: inline-block; transition: 0.3s; text-decoration: none; }
 .marquee-item:hover { color: var(--text-main); transform: scale(1.05); }
 
-.banner-slider-container { position: relative; width: 100%; aspect-ratio: 21/9; border-radius: var(--radius-lg); overflow: hidden; background: #000; border: 1px solid var(--border); box-shadow: var(--shadow-mid); }
+.banner-slider-container { 
+    position: relative; 
+    width: 100%; 
+    /* Мобільний розмір (високий вертикальний формат) */
+    aspect-ratio: 3 / 4 !important; 
+    border-radius: var(--radius-lg); 
+    overflow: hidden; 
+    background: #000; 
+    box-shadow: var(--shadow-mid); 
+    border: none !important;
+}
 .banner-track { display: flex; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
 .banner-slide { flex: 0 0 100%; width: 100%; height: 100%; }
 .banner-slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); pointer-events: none;}
@@ -656,11 +603,28 @@ body:has(#home) header:not(.scrolled) .exclusive-nav-btn {
    ========================================== */
 
 /* Робимо банер більш панорамним на десктопі */
+@media (min-width: 768px) {
+    .banner-slider-container {
+        /* Планшетний формат */
+        aspect-ratio: 16 / 9 !important; 
+    }
+}
+
 @media (min-width: 1024px) {
     .banner-slider-container {
-        aspect-ratio: 4 / 1 !important; /* Було 3/1 або 21/9, тепер вужчий */
-        max-height: 400px !important; /* Захист від розтягування на великих моніторах */
+        /* Десктопний розмір (широкий панорамний, але без жорсткого сплющення) */
+        aspect-ratio: 21 / 9 !important; 
+        max-height: 650px !important; 
     }
+}
+
+/* Зображення має завжди заповнювати весь контейнер без спотворень пропорцій */
+.banner-slide img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    object-position: center; 
+    pointer-events: none;
 }
 
 /* Стрілки завжди видимі, щоб користувач бачив карусель */
@@ -1279,4 +1243,381 @@ footer a:hover {
     width: 24px !important;
     height: 24px !important;
     margin-right: 2px; /* Легкое визуальное смещение для баланса */
+}
+
+/* ==========================================
+   АПГРЕЙД ПРОСТРАНСТВА (WIDE LOOK)
+   ========================================== */
+
+/* Увеличиваем максимальную ширину хедера при скролле */
+header.scrolled {
+    max-width: 1600px !important;
+    width: 95% !important;
+}
+
+/* Создаем новый стандарт отступов для секций (больше воздуха) */
+section {
+    padding-top: clamp(60px, 10vh, 120px) !important;
+    padding-bottom: clamp(60px, 10vh, 120px) !important;
+}
+
+/* Настройка стандартного контейнера для широких экранов */
+.container-wide {
+    width: 100%;
+    max-width: 1720px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(16px, 5vw, 80px);
+    padding-right: clamp(16px, 5vw, 80px);
+}
+
+/* Увеличиваем расстояние между карточками в сетке */
+.product-grid-wide {
+    display: grid;
+    gap: 40px 24px;
+}
+/* ==========================================
+   ЕФЕКТ "ВІДДАЛЕННЯ" ТА ІДЕАЛЬНІ ПРОПОРЦІЇ
+   ========================================== */
+
+/* 1. Звужуємо загальний контейнер для створення "повітря" по боках */
+.container-wide {
+    width: 100%;
+    max-width: 1440px !important; /* Золотий стандарт преміуму (замість 1720px) */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(20px, 6vw, 60px) !important; /* Красиві, рівні відступи */
+    padding-right: clamp(20px, 6vw, 60px) !important;
+}
+
+/* 2. Фіксуємо ширину карток у каруселях на головній, щоб вони не розтягувалися */
+.promo-track .product-card, 
+.weekly-track .product-card { 
+    width: calc(50vw - 24px); /* По дві картки на телефоні */
+    flex-shrink: 0; 
+}
+@media (min-width: 768px) { 
+    .promo-track .product-card, 
+    .weekly-track .product-card { 
+        width: 240px !important; /* Фіксуємо для планшета */
+    } 
+} 
+@media (min-width: 1024px) { 
+    .promo-track .product-card, 
+    .weekly-track .product-card { 
+        width: 280px !important; /* Ідеальний розмір для десктопа */
+    } 
+}
+@media (min-width: 1440px) { 
+    .promo-track .product-card, 
+    .weekly-track .product-card { 
+        width: 310px !important; /* Для великих моніторів */
+    } 
+}
+
+/* 3. Оптимізація сітки каталогу (красиві відступи) */
+.product-grid-wide {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 16px;
+}
+@media (min-width: 768px) {
+    .product-grid-wide { grid-template-columns: repeat(3, 1fr); gap: 40px 24px; }
+}
+@media (min-width: 1024px) {
+    .product-grid-wide { grid-template-columns: repeat(4, 1fr); gap: 56px 32px; }
+}
+
+/* Захист картки від перерозтягнення (якщо колонка заширока) */
+.product-card {
+    width: 100%;
+    max-width: 380px; 
+    margin: 0 auto; 
+}
+
+/* 4. Колаж категорій: обмежуємо ширину і додаємо повітря */
+.grid-perfect-collage {
+    max-width: 1440px !important;
+    gap: 24px !important;
+}
+@media (max-width: 768px) {
+    .grid-perfect-collage { gap: 12px !important; }
+}
+/* ==========================================
+   ГЛОБАЛЬНА СТАНДАРТИЗАЦІЯ ШИРИНИ (BOXED LUXURY LAYOUT)
+   ========================================== */
+
+/* 1. Жорстко обмежуємо абсолютно всі широкі блоки екрану */
+.hero,
+.marquee-wrapper,
+#footer,
+.banner-slider-container,
+.container-wide {
+    width: 100% !important;
+    max-width: 1440px !important; /* Золотий стандарт */
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* 2. Фіксуємо шапку, щоб вона центрувалася синхронно з сайтом */
+header {
+    max-width: 1440px !important;
+}
+
+/* 3. Вирівнюємо відступи для внутрішнього контенту */
+.container-wide {
+    padding-left: clamp(20px, 4vw, 40px) !important;
+    padding-right: clamp(20px, 4vw, 40px) !important;
+}
+
+/* 4. Магія для великих моніторів (від 1441px і вище) */
+@media (min-width: 1441px) {
+    /* Робимо обкладинку Hero красивим заокругленим полотном, а не розтягнутою плямою */
+    .hero {
+        border-radius: var(--radius-lg);
+        margin-top: 24px;
+        height: calc(100vh - 48px); /* Відступаємо від країв екрану */
+        box-shadow: var(--shadow-strong);
+        border: 1px solid var(--border);
+    }
+    
+    /* Бігучу строку теж беремо в акуратну капсулу */
+    .marquee-wrapper {
+        border-radius: var(--radius-md);
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+    }
+    
+    /* Футер акуратно замикає сторінку */
+    #footer {
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+    }
+}
+
+/* 5. Захист сітки карток від перерозтягнення */
+.product-grid-wide {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 16px;
+}
+@media (min-width: 768px) {
+    .product-grid-wide { grid-template-columns: repeat(3, 1fr); gap: 40px 24px; }
+}
+@media (min-width: 1024px) {
+    .product-grid-wide { grid-template-columns: repeat(4, 1fr); gap: 56px 32px; }
+}
+.product-card {
+    width: 100%;
+    max-width: 380px; 
+    margin: 0 auto; 
+}
+/* ==========================================
+   КЛАСИЧНИЙ LUXURY СТАНДАРТ (СТРОГІ ЛІНІЇ, БЕЗ ЗАОКРУГЛЕНЬ)
+   ========================================== */
+
+/* 1. ЖОРСТКИЙ КОНТЕЙНЕР (Залишаємо акуратну ширину, але без рамок) */
+main#home > section,
+main#home > div.marquee-wrapper,
+section.max-w-\[1200px\],
+section.container-wide,
+footer#footer > div.max-w-7xl {
+    width: 100% !important;
+    max-width: 1320px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: clamp(16px, 4vw, 40px) !important;
+    padding-right: clamp(16px, 4vw, 40px) !important;
+}
+
+/* 2. СТРОГИЙ HERO-БЛОК (Без заокруглень взагалі) */
+.hero {
+    max-width: 1320px !important;
+    margin: 0 auto !important;
+    border-radius: 0 !important; /* ЖОДНИХ ЗАОКРУГЛЕНЬ */
+}
+@media (min-width: 1340px) {
+    .hero {
+        margin-top: 110px !important;
+        border-radius: 0 !important; /* ЖОДНИХ ЗАОКРУГЛЕНЬ */
+        height: 70vh !important;
+        min-height: 500px;
+    }
+}
+
+/* 3. БІГУЧА СТРОКА */
+.marquee-wrapper {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 30px 0 !important;
+}
+
+/* 4. БАНЕР ТА ЕКСКЛЮЗИВ (Гострі кути) */
+.banner-slider-container,
+a[href="exclusive.html"].relative {
+    border-radius: 0 !important; /* Строгий журнальний стиль */
+}
+a[href="exclusive.html"].relative {
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+.banner-slider-container {
+    width: 100% !important;
+    aspect-ratio: 21 / 9 !important;
+    max-height: 450px !important;
+}
+@media (max-width: 768px) {
+    .banner-slider-container {
+        aspect-ratio: 4 / 5 !important;
+    }
+}
+
+/* 5. КАРТКИ ТОВАРІВ (Строгі прямокутники) */
+.product-card,
+.product-img-wrap, 
+.product-card > a.relative {
+    border-radius: 0 !important; /* Забираємо мило з карток */
+}
+
+.product-grid-wide, 
+.promo-track, 
+.weekly-track {
+    gap: 24px 16px !important;
+}
+@media (min-width: 768px) {
+    .product-grid-wide { gap: 32px 20px !important; }
+}
+@media (min-width: 1024px) {
+    .product-grid-wide { gap: 48px 24px !important; }
+}
+
+.product-img-wrap, 
+.product-card > a.relative {
+    aspect-ratio: 4 / 5 !important;
+    background: transparent !important;
+}
+
+/* 6. КАТЕГОРІЇ (СТЕКЛЯНИЙ АКОРДЕОН) - Тепер це суворі панелі */
+.glass-accordion-container,
+.glass-panel-item {
+    border-radius: 0 !important; /* Гострі грані */
+}
+.glass-accordion-container {
+    height: 480px !important;
+}
+@media (max-width: 768px) {
+    .glass-accordion-container { height: 75vh !important; }
+}
+/* ==========================================
+   ІДЕАЛЬНА ГЕОМЕТРІЯ ТА СИНХРОНІЗАЦІЯ БЛОКІВ (1320px)
+   ========================================== */
+
+/* 1. ЄДИНА ВІСЬ ДЛЯ ВСЬОГО САЙТУ (Строго 1320px) */
+.hero,
+main#home > section,
+main#home > div.marquee-wrapper,
+section.container-wide,
+#footer {
+    width: 100% !important;
+    max-width: 1320px !important; /* ЄДИНИЙ СТАНДАРТ ШИРИНИ */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border-radius: 0 !important; /* Строгі кути для контенту */
+}
+
+/* 2. HERO ТА ФУТЕР */
+.hero {
+    margin-top: 0 !important; /* Приклеюємо до верху */
+    height: 650px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-top: 90px !important; /* Опускаємо текст з-під шапки */
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+#footer {
+    margin-top: 60px !important;
+    border: 1px solid var(--border) !important;
+    border-bottom: none !important;
+    padding-left: clamp(20px, 4vw, 60px) !important;
+    padding-right: clamp(20px, 4vw, 60px) !important;
+    background: var(--bg-card) !important;
+}
+
+/* 3. ШАПКА: СТАТИЧНА (Ідеально в ширину Hero) */
+header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100% !important;
+    max-width: 1320px !important; /* Рівно по межах Hero */
+    margin: 0 !important;
+    z-index: 5000 !important;
+    padding-left: clamp(16px, 4vw, 40px) !important;
+    padding-right: clamp(16px, 4vw, 40px) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* 4. ШАПКА: ПРИ СКРОЛЛІ (Повертаємо заокруглену капсулу) */
+header.scrolled {
+    top: 16px !important; /* Відриваємо від верху */
+    max-width: 1280px !important; /* Робимо трохи вужчою за контент, щоб вона "парила" всередині */
+    width: 96% !important;
+    height: 64px !important;
+    border-radius: 32px !important; /* ПОВЕРНУЛИ ЗАОКРУГЛЕННЯ */
+    padding: 0 30px !important;
+    background-color: var(--glass-bg) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 5. БАГАТО КАРТОЧЕК НА ВЕЛИКИХ МОНІТОРАХ */
+/* В каруселях звужуємо картки, щоб влізло більше */
+.promo-track .product-card, 
+.weekly-track .product-card { 
+    width: 185px !important; /* Зробили ще вужче (було 210px) */
+    flex-shrink: 0; 
+}
+
+/* В сітці каталогу: збільшуємо кількість колонок */
+@media (min-width: 1024px) {
+    .product-grid-wide { grid-template-columns: repeat(5, 1fr) !important; gap: 16px !important; }
+}
+@media (min-width: 1280px) {
+    .product-grid-wide { grid-template-columns: repeat(6, 1fr) !important; gap: 20px !important; }
+}
+@media (min-width: 1440px) {
+    .product-grid-wide { grid-template-columns: repeat(7, 1fr) !important; gap: 20px !important; } /* 7 карток в ряд! */
+}
+
+/* Пропорції карток: високі, вертикальні (editorial style) */
+.product-img-wrap, 
+.product-card > a.relative {
+    aspect-ratio: 3 / 4 !important; /* Вертикальний, книжковий формат */
+    border-radius: 0 !important;
+}
+.product-card {
+    border-radius: 0 !important;
+}
+
+/* 6. ГЕОМЕТРІЯ БАНЕРІВ ТА БІГУЧОЇ СТРОКИ */
+.banner-slider-container {
+    border-radius: 0 !important;
+    aspect-ratio: 3 / 1 !important;
+    max-height: 380px !important;
+}
+.marquee-wrapper {
+    border-radius: 0 !important;
+    border-left: 1px solid var(--border) !important;
+    border-right: 1px solid var(--border) !important;
 }
